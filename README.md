@@ -6,12 +6,12 @@ Think of ICM as Trello meets Makefile meets agent prompts: each numbered folder 
 
 ## Start Here
 
-Install the CLI from the latest GitHub release in a virtual environment:
+Install the CLI from PyPI in a virtual environment:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.9.0
+python -m pip install icm-workspace-template
 icm new my-first-icm-workspace --name "My First ICM Workspace"
 ```
 
@@ -45,7 +45,7 @@ On Windows PowerShell, use backslashes if you prefer:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.9.0
+python -m pip install icm-workspace-template
 icm new my-first-icm-workspace --name "My First ICM Workspace"
 icm validate my-first-icm-workspace --strict
 ```
@@ -59,7 +59,7 @@ python -m pip install -e ".[dev]"
 icm status examples/completed-content-plan
 ```
 
-To install from GitHub instead of cloning first, see [docs/install.md](docs/install.md). The visual docs site is published at [stickwithfiddle-sys.github.io/interpretable-context-methodology-template](https://stickwithfiddle-sys.github.io/interpretable-context-methodology-template/).
+For pipx, GitHub fallback, and local development install options, see [docs/install.md](docs/install.md). The visual docs site is published at [stickwithfiddle-sys.github.io/interpretable-context-methodology-template](https://stickwithfiddle-sys.github.io/interpretable-context-methodology-template/).
 
 ## Why This Exists
 

@@ -78,10 +78,13 @@ def main() -> int:
     install_text = INSTALL_DOC.read_text(encoding="utf-8")
     docs_index_text = DOCS_INDEX.read_text(encoding="utf-8")
     expected_tag = f"@v{version}"
+    pypi_install = "python -m pip install icm-workspace-template"
     if expected_tag not in install_text:
         problems.append(f"docs/install.md does not reference {expected_tag}")
-    if expected_tag not in docs_index_text:
-        problems.append(f"docs/index.html does not reference {expected_tag}")
+    if pypi_install not in readme_text:
+        problems.append("README does not lead with the PyPI install command")
+    if pypi_install not in docs_index_text:
+        problems.append("docs/index.html does not lead with the PyPI install command")
 
     if not PUBLISH_WORKFLOW.exists():
         problems.append("Missing PyPI publishing workflow: .github/workflows/publish.yml")

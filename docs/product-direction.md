@@ -81,4 +81,4 @@ The dashboard should feel like a cockpit for the workspace, not a replacement fo
 
 ## Recommended Next Product Step
 
-Publish the first PyPI release after TestPyPI smoke testing, then add demo polish and more artifact validators before building a web dashboard. The dashboard should start only after the CLI commands, status model, and review language feel stable.
+Add demo polish, another common example workspace, and more artifact validators before building a web dashboard. The dashboard should start only after the CLI commands, status model, and review language feel stable.

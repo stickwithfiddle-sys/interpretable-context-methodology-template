@@ -20,33 +20,33 @@ Current release: `0.9.0`
 - Artifact-specific `icm review` rubrics for required sections, required terms, and forbidden terms.
 - Source-traceability rubric checks that require outputs to cite source paths or filenames.
 - A second completed example workspace for a research-brief workflow.
-- PyPI readiness checks, package build/render checks, and a manual Trusted Publishing workflow.
+- Live PyPI package, PyPI readiness checks, package build/render checks, and a manual Trusted Publishing workflow.
 
 ## Roadmap Position
 
-The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, installable CLI reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, PyPI readiness, and two completed examples are all covered.
+The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, and two completed examples are all covered.
 
 The highest-value `Next` work is:
 
-- First PyPI publish after TestPyPI smoke testing.
 - More example workspaces for common use cases.
 - Short demo or animated walkthrough for the docs site.
+- More deterministic artifact validators for common output formats.
 - A dashboard prototype once the CLI vocabulary and example library settle.
 
 ## Beginner UX Assessment
 
 The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, fill the first brief, run doctor checks, validate structure, inspect completed examples, and copy a rubric pattern for artifact-specific review.
 
-It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no live PyPI install yet, no specialized validators for artifact types beyond rubrics, and no local dashboard for visual review queues.
+It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no specialized validators for artifact types beyond rubrics, and no local dashboard for visual review queues.
 
 ## Direction Options
 
-1. Distribution: publish to TestPyPI, smoke test, then publish to PyPI.
-2. Example library: add documentation pipeline and project-planning examples.
-3. Review quality: add deterministic validators for source inventories, calendars, and decision logs.
+1. Example library: add documentation pipeline and project-planning examples.
+2. Review quality: add deterministic validators for source inventories, calendars, and decision logs.
+3. Demo polish: add a short screen recording or animated walkthrough.
 4. Dashboard prototype: build a read/write web UI over the same filesystem workspace.
-5. Demo polish: add a short screen recording or animated walkthrough.
+5. Distribution polish: add release verification docs and upgrade guidance.
 
 ## Recommendation
 
-For `0.10.0`, publish to TestPyPI first, smoke test the package, then publish to PyPI and make the README's first install command the standard `pip install icm-workspace-template` path.
+For `0.10.0`, prioritize demo polish plus another common example workspace, then add deterministic validators for common artifact shapes before starting the dashboard.

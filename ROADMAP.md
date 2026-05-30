@@ -9,6 +9,7 @@ This roadmap keeps product work visible without turning the README into a backlo
 - Keep the installable CLI reliable outside the source checkout.
 - Keep security, ownership, CI, and pytest coverage visible before release.
 - Support both clean-start and existing-project adoption with `icm new` and `icm init`.
+- Keep the PyPI install path healthy for beginners.
 - Keep the GitHub Pages docs site useful as the visual first stop.
 - Support artifact-specific `icm review` rubrics.
 - Support source-traceability checks in `icm review` rubrics.
@@ -17,10 +18,10 @@ This roadmap keeps product work visible without turning the README into a backlo
 
 ## Next
 
-- Publish the first PyPI release after TestPyPI smoke testing.
 - Add examples for project planning and documentation pipelines.
 - Add a short demo recording or animated walkthrough for the docs site.
 - Add deterministic validators for common artifact types such as calendars, source inventories, and decision logs.
+- Add release verification docs for installing from PyPI in new environments.
 
 ## Later
 

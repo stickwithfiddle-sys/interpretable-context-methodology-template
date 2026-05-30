@@ -1,6 +1,6 @@
-# PyPI Readiness
+# PyPI Publishing
 
-This project is prepared for PyPI publishing, but the first upload should still be intentional.
+This project is published on PyPI as [`icm-workspace-template`](https://pypi.org/project/icm-workspace-template/).
 
 The recommended path is PyPI Trusted Publishing, which uses GitHub Actions OpenID Connect instead of a long-lived PyPI API token. See the official PyPI docs for [Trusted Publishers](https://docs.pypi.org/trusted-publishers/) and [publishing with a Trusted Publisher](https://docs.pypi.org/trusted-publishers/using-a-publisher/).
 
@@ -15,7 +15,7 @@ Current package metadata:
 - Maintainer credit: Hobo
 - Original method credit: see `NOTICE`
 
-Before the first PyPI publish, confirm the distribution name is still available and that the README renders cleanly.
+Before any future publish, confirm the README renders cleanly and the release version has not already been uploaded.
 
 ## Local Package Checks
 
@@ -41,7 +41,7 @@ python -m venv .tmp/install-venv
 
 ## Trusted Publishing Setup
 
-Create a PyPI project or pending publisher for:
+The Trusted Publisher should match:
 
 - Owner: `stickwithfiddle-sys`
 - Repository: `interpretable-context-methodology-template`
@@ -52,12 +52,12 @@ For TestPyPI, use the same repository and workflow with the `testpypi` environme
 
 ## Publish Flow
 
-1. Create and push a release tag, for example `v0.9.0`.
+1. Create and push a release tag, for example `v0.10.0`.
 2. In GitHub Actions, run `Publish Python Package`.
 3. Select the release tag as the workflow ref.
 4. Choose `testpypi` first.
 5. Install from TestPyPI in a clean environment and smoke test `icm new`.
 6. Run the same workflow again for `pypi`.
-7. Add the PyPI install command to the README after the package is live.
+7. Install from PyPI in a clean environment and smoke test `icm new`.
 
 Do not publish from an untagged branch. The workflow intentionally fails unless it is run from a tag.

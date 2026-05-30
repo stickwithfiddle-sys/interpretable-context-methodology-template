@@ -2,12 +2,12 @@
 
 ICM can be run directly from a source checkout or installed as a CLI.
 
-## Install From GitHub
+## Install From PyPI
 
 If you use `pipx`:
 
 ```bash
-pipx install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.9.0
+pipx install icm-workspace-template
 icm --version
 icm new my-first-icm-workspace --name "My First ICM Workspace"
 ```
@@ -17,9 +17,18 @@ If you prefer a local virtual environment:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.9.0
+python -m pip install icm-workspace-template
 icm --version
 icm new my-first-icm-workspace --name "My First ICM Workspace"
+```
+
+## Install A Pinned GitHub Release
+
+Use this path when you want to test a specific repository tag before it reaches PyPI:
+
+```bash
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.9.0
+icm --version
 ```
 
 ## Add ICM To An Existing Project
@@ -45,7 +54,7 @@ python -m icm new ../my-first-icm-workspace --name "My First ICM Workspace"
 
 ## PyPI Status
 
-The package is prepared for PyPI publishing, but the beginner install path still uses the versioned GitHub release until the first PyPI upload is complete.
+The package is live on PyPI as [`icm-workspace-template`](https://pypi.org/project/icm-workspace-template/).
 
 See [pypi-readiness.md](pypi-readiness.md) for the package checks and Trusted Publishing setup.
 

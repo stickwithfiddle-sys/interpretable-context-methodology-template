@@ -12,6 +12,11 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+### Changed
+
+- Beginner install docs now lead with the live PyPI package.
+- Roadmap and revision audit now reflect that the first PyPI release is published.
+
 ## [0.9.0] - 2026-05-30
 
 ### Added
