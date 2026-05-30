@@ -35,4 +35,5 @@ Before continuing, a human should confirm the discovered workflow matches the re
 
 - Confirm `output/discovery-report.md` exists.
 - Confirm the report separates facts, assumptions, open questions, and risks.
+- Confirm the report cites the inputs it used in a Source Traceability section.
 - Confirm it identifies candidate Layer 3 reference material and Layer 4 working artifacts.

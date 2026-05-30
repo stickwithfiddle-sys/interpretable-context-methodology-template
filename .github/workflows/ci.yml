@@ -27,6 +27,9 @@ jobs:
       - name: Check docs site
         run: python tools/check_docs_site.py
 
+      - name: Check release readiness
+        run: python tools/check_release_readiness.py
+
       - name: Run pytest suite
         run: python -m pytest
 
@@ -60,8 +63,13 @@ jobs:
       - name: Smoke test research doctor
         run: icm doctor examples/completed-research-brief --strict
 
-      - name: Build wheel
-        run: python -m pip wheel . -w dist --no-deps
+      - name: Build package distributions
+        run: |
+          rm -rf dist build *.egg-info
+          python -m build
+
+      - name: Check package rendering
+        run: python -m twine check dist/*
 
       - name: Install wheel into clean venv
         run: |

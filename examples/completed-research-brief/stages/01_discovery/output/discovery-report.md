@@ -21,6 +21,14 @@
 - Should contradictory evidence block the final recommendation or become a risk note?
 - Should final briefs include a separate source appendix?
 
+## Source Traceability
+
+| Source | Used For |
+| --- | --- |
+| `../00_intake/output/project-brief.md` | Research question, audience, constraints, and success criteria |
+| `references/discovery-question-bank.md` | Discovery coverage and question prompts |
+| `../../_config/quality-gates.md` | Review gate, traceability, and validation expectations |
+
 ## Users And Reviewers
 
 | Role | Need | Review Concern |

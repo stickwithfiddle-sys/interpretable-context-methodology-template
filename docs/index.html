@@ -31,10 +31,10 @@
           </p>
           <div class="command-card" id="start">
             <div class="command-label">New workspace</div>
-            <pre><code>python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.8.0
+            <pre><code>python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.9.0
 icm new my-first-icm-workspace --name "My First ICM Workspace"
 icm doctor my-first-icm-workspace</code></pre>
-            <button class="copy-button" data-copy="python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.8.0&#10;icm new my-first-icm-workspace --name &quot;My First ICM Workspace&quot;&#10;icm doctor my-first-icm-workspace" aria-label="Copy new workspace commands">
+            <button class="copy-button" data-copy="python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.9.0&#10;icm new my-first-icm-workspace --name &quot;My First ICM Workspace&quot;&#10;icm doctor my-first-icm-workspace" aria-label="Copy new workspace commands">
               <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V7Z"></path><path d="M4 15V5a2 2 0 0 1 2-2h10"></path></svg>
               <span>Copy</span>
             </button>
@@ -84,11 +84,12 @@ icm doctor</code></pre>
           <p class="eyebrow">Beginner-friendly diagnostics</p>
           <h2>Doctor explains the next repair, not just the failure.</h2>
           <p>
-            The doctor command checks structure, empty stage sections, undeclared outputs, missing config inputs, and broken handoffs after outputs are present.
+            The doctor command checks structure, empty stage sections, undeclared outputs, missing config inputs, and broken handoffs after outputs are present. Review rubrics can also require source citations for important artifacts.
           </p>
           <ul class="check-list">
             <li>Structure validation with suggested fixes.</li>
             <li>Content checks for stage contracts and intake readiness.</li>
+            <li>Traceability checks for outputs that must cite their sources.</li>
             <li>Stage summary that points to the next action.</li>
           </ul>
         </div>
@@ -105,6 +106,8 @@ icm doctor</code></pre>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-research-brief">Research-brief example</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/glossary.md">Glossary</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/review-rubrics.md">Review rubrics</a>
+          <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/source-traceability.md">Source traceability</a>
+          <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/pypi-readiness.md">PyPI readiness</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/product-direction.md">Product direction</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/releases">Releases</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template">GitHub repository</a>
@@ -117,8 +120,8 @@ icm doctor</code></pre>
           <h2>CLI first, dashboard after the language stabilizes.</h2>
         </div>
         <ol class="roadmap">
-          <li><strong>Now:</strong> CLI onboarding, doctor checks, examples, and docs.</li>
-          <li><strong>Next:</strong> source traceability, PyPI readiness, and demo polish.</li>
+          <li><strong>Now:</strong> CLI onboarding, doctor checks, source traceability, examples, and docs.</li>
+          <li><strong>Next:</strong> first PyPI publish, demo polish, and more artifact validators.</li>
           <li><strong>Later:</strong> a dashboard over the same filesystem workspace.</li>
         </ol>
       </section>

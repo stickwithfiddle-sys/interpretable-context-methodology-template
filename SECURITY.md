@@ -23,3 +23,7 @@ Useful reports include:
 ICM workspaces are plain files by design. Do not commit API keys, credentials, private customer data, or sensitive source material unless your own repository policy explicitly allows it.
 
 Generated workspaces include a `.gitignore`, but maintainers and users should still review files before committing.
+
+## Package Publishing
+
+PyPI publishing should use the manual `Publish Python Package` GitHub Actions workflow with PyPI Trusted Publishing. Do not add long-lived PyPI API tokens to repository secrets unless the Trusted Publishing path is unavailable and the release process has been updated.

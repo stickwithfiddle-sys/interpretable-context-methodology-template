@@ -16,6 +16,7 @@ Plain-language terms for reading and using this repository.
 | Layer 3 | Stable reference material that should be reused across runs. | `_config/quality-gates.md`, `references/stage-patterns.md` |
 | Layer 4 | Working artifacts that change during a run. | Files in `stages/*/output/` |
 | Source-level improvement | Moving a repeated manual fix into a reusable instruction, reference, or script. | Updating `_config/style-guide.md` after fixing tone repeatedly |
+| Source traceability | Naming the files, references, or decisions an output relied on. | A discovery report cites `project-brief.md` and `quality-gates.md` |
 | Deterministic check | A check that code can perform reliably without model judgment. | Verifying every stage has `CONTEXT.md`, `references/`, and `output/` |
 | Builder workspace | A workspace whose job is to design another ICM workspace. | The default template in this repository |
 | Project-specific workspace | A generated workspace customized for one project or workflow. | A content-planning ICM workspace |

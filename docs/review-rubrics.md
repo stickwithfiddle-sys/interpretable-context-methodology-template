@@ -2,7 +2,7 @@
 
 Review rubrics let a stage define deterministic artifact checks that run during `icm review`.
 
-Use a rubric when an output needs more than "the file exists and has content." A rubric can require specific headings, require important terms, and reject placeholder or forbidden text.
+Use a rubric when an output needs more than "the file exists and has content." A rubric can require specific headings, require important terms, require source citations, and reject placeholder or forbidden text.
 
 ## Where Rubrics Live
 
@@ -34,6 +34,12 @@ stages/01_discovery/references/discovery-report-rubric.md
 - traceability
 - source quality
 
+## Required Sources
+
+- ../00_intake/output/project-brief.md
+- references/discovery-question-bank.md
+- ../../_config/quality-gates.md
+
 ## Forbidden Terms
 
 - TBD
@@ -51,10 +57,30 @@ icm review stages/01_discovery/output/discovery-report.md
 
 Required sections match markdown headings at any level. Required and forbidden terms are matched case-insensitively against the output text.
 
+Required sources are matched against the output text by path or filename. For example, `../00_intake/output/project-brief.md` passes when the output cites either that path or `project-brief.md`.
+
+Use `## Required Source References` if your team prefers a more explicit heading name; it behaves the same as `## Required Sources`.
+
+## Source Traceability Pattern
+
+A simple source traceability section is usually enough:
+
+```markdown
+## Source Traceability
+
+| Source | Used For |
+| --- | --- |
+| `../00_intake/output/project-brief.md` | Project goals, users, and constraints |
+| `references/discovery-question-bank.md` | Discovery coverage |
+```
+
+This keeps the review deterministic while still leaving the human reviewer room to judge whether the use of each source is reasonable.
+
 ## Good Rubric Habits
 
 - Keep rubric items concrete and easy to verify.
 - Prefer required headings for artifact structure.
 - Prefer required terms for concepts that must be present somewhere in the artifact.
+- Use required sources when an artifact should cite the inputs, references, or prior decisions it relied on.
 - Use forbidden terms for placeholders, banned claims, or known failure modes.
 - Keep subjective quality judgment in the Review Gate until it can be made deterministic.

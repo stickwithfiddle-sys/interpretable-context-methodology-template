@@ -49,3 +49,5 @@ python tools/validate_icm_workspace.py . --strict
 ```bash
 icm review stages/01_discovery
 ```
+
+The discovery report includes a `Source Traceability` section. Its rubric requires citations for the intake brief, discovery question bank, and quality gates.

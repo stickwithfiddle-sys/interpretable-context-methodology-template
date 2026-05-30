@@ -12,6 +12,23 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.9.0] - 2026-05-30
+
+### Added
+
+- Added rubric-driven source-traceability checks to `icm review` through `Required Sources` and `Required Source References` sections.
+- Added `Source Traceability` sections and required-source checks to the completed content-plan and research-brief examples.
+- Added a starter discovery report rubric to generated workspaces.
+- Added source-traceability documentation.
+- Added PyPI readiness documentation and a manual Trusted Publishing workflow for TestPyPI or PyPI.
+- Added `tools/check_release_readiness.py` for version, metadata, docs, and publishing workflow checks.
+
+### Changed
+
+- CI now builds source and wheel distributions with `python -m build` and checks package rendering with `twine check`.
+- Project metadata now includes documentation, changelog, and issue tracker URLs for package indexes.
+- Package metadata now uses an SPDX license expression and explicit license files.
+
 ## [0.8.0] - 2026-05-30
 
 ### Added
@@ -108,7 +125,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.5.0...v0.6.0

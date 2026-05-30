@@ -21,6 +21,14 @@
 - Should scoring use a numeric rubric or a simple high/medium/low priority label?
 - Should final validation check only structure, or also source coverage per content item?
 
+## Source Traceability
+
+| Source | Used For |
+| --- | --- |
+| `../00_intake/output/project-brief.md` | Project goal, audience, constraints, and acceptance criteria |
+| `references/discovery-question-bank.md` | Discovery categories and prompting coverage |
+| `../../_config/quality-gates.md` | Review gate and traceability expectations |
+
 ## Users And Reviewers
 
 | Role | Need | Review Concern |

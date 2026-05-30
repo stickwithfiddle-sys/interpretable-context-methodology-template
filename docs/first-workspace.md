@@ -138,6 +138,8 @@ Run stages/01_discovery using the approved output from stages/00_intake.
 Write the declared output, run Verify, and stop at the Review Gate.
 ```
 
+The starter discovery rubric expects the discovery report to include a `Source Traceability` section. If `icm review` says a required source is missing, cite the source path or filename in the output.
+
 Repeat that pattern through the numbered stages.
 
 ## CLI Helpers

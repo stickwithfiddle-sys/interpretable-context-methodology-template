@@ -57,6 +57,7 @@ def test_cli_review_completed_example_passes(capsys) -> None:
     assert "Review: 01_discovery" in output
     assert "Result: review checks passed." in output
     assert "Review rubric loaded" in output
+    assert "Rubric required source cited" in output
 
 
 def test_cli_review_research_example_passes(capsys) -> None:

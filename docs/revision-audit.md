@@ -2,7 +2,7 @@
 
 Last updated: 2026-05-30
 
-Current release: `0.8.0`
+Current release: `0.9.0`
 
 ## What We Have Achieved
 
@@ -18,33 +18,35 @@ Current release: `0.8.0`
 - Richer `icm doctor` content checks for empty sections, missing inputs, undeclared outputs, and broken handoffs.
 - GitHub Pages docs homepage with visual CLI screenshots and a workspace flow diagram.
 - Artifact-specific `icm review` rubrics for required sections, required terms, and forbidden terms.
+- Source-traceability rubric checks that require outputs to cite source paths or filenames.
 - A second completed example workspace for a research-brief workflow.
+- PyPI readiness checks, package build/render checks, and a manual Trusted Publishing workflow.
 
 ## Roadmap Position
 
-The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, installable CLI reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, and two completed examples are all covered.
+The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, installable CLI reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, PyPI readiness, and two completed examples are all covered.
 
 The highest-value `Next` work is:
 
-- Richer `icm review` checks for source traceability.
+- First PyPI publish after TestPyPI smoke testing.
 - More example workspaces for common use cases.
-- PyPI distribution once the CLI interface and template format stabilize.
+- Short demo or animated walkthrough for the docs site.
 - A dashboard prototype once the CLI vocabulary and example library settle.
 
 ## Beginner UX Assessment
 
 The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, fill the first brief, run doctor checks, validate structure, inspect completed examples, and copy a rubric pattern for artifact-specific review.
 
-It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no PyPI install, limited source-traceability checks, and no local dashboard for visual review queues.
+It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no live PyPI install yet, no specialized validators for artifact types beyond rubrics, and no local dashboard for visual review queues.
 
 ## Direction Options
 
-1. Review quality: add deterministic source-traceability checks for outputs.
+1. Distribution: publish to TestPyPI, smoke test, then publish to PyPI.
 2. Example library: add documentation pipeline and project-planning examples.
-3. Distribution: publish to PyPI once the CLI surface feels stable.
+3. Review quality: add deterministic validators for source inventories, calendars, and decision logs.
 4. Dashboard prototype: build a read/write web UI over the same filesystem workspace.
 5. Demo polish: add a short screen recording or animated walkthrough.
 
 ## Recommendation
 
-For `0.9.0`, prioritize source-traceability checks plus PyPI readiness. That makes the review layer more trustworthy and the install path more familiar.
+For `0.10.0`, publish to TestPyPI first, smoke test the package, then publish to PyPI and make the README's first install command the standard `pip install icm-workspace-template` path.

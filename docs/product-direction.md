@@ -55,7 +55,7 @@ icm doctor
 icm review stages/01_discovery
 ```
 
-`icm new` is for a clean workspace. `icm init` is for an existing project and skips files that already exist. `icm doctor` checks both structure and content-quality issues such as empty required sections, missing config inputs, undeclared outputs, and broken handoffs after outputs are present. `icm review` can now load artifact-specific rubrics from stage references.
+`icm new` is for a clean workspace. `icm init` is for an existing project and skips files that already exist. `icm doctor` checks both structure and content-quality issues such as empty required sections, missing config inputs, undeclared outputs, and broken handoffs after outputs are present. `icm review` can now load artifact-specific rubrics from stage references, including source-traceability checks for outputs that must cite their inputs.
 
 ## Dashboard Concept
 
@@ -81,4 +81,4 @@ The dashboard should feel like a cockpit for the workspace, not a replacement fo
 
 ## Recommended Next Product Step
 
-Build source-traceability review checks and prepare distribution for PyPI before building a web dashboard. The dashboard should start only after the CLI commands, status model, and review language feel stable.
+Publish the first PyPI release after TestPyPI smoke testing, then add demo polish and more artifact validators before building a web dashboard. The dashboard should start only after the CLI commands, status model, and review language feel stable.

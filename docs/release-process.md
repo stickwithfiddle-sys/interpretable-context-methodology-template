@@ -26,6 +26,7 @@ Run:
 python -m pytest
 python tools/check_packaged_assets.py
 python tools/check_docs_site.py
+python tools/check_release_readiness.py
 python -m icm validate templates/icm-workspace --strict
 python -m icm validate examples/completed-content-plan --strict
 python -m icm validate examples/completed-research-brief --strict
@@ -44,6 +45,9 @@ python -m icm doctor examples/completed-research-brief --strict
 python tools/validate_icm_workspace.py templates/icm-workspace --strict
 python examples/completed-content-plan/tools/validate_icm_workspace.py examples/completed-content-plan --strict
 python examples/completed-research-brief/tools/validate_icm_workspace.py examples/completed-research-brief --strict
+rm -rf dist build *.egg-info
+python -m build
+python -m twine check dist/*
 ```
 
 Check:
@@ -55,13 +59,15 @@ Check:
 - The completed example still validates.
 - Pytest covers the expected CLI and workspace behavior.
 - The docs homepage still references existing local assets.
-- The wheel builds and `icm new` works outside the source checkout.
+- The source distribution and wheel build cleanly.
+- `twine check dist/*` passes before publishing.
+- The wheel installs and `icm new` works outside the source checkout.
 
 ## Installed Package Smoke Test
 
 ```bash
 rm -rf .tmp/wheelhouse .tmp/install-venv
-python -m pip wheel . -w .tmp/wheelhouse --no-deps
+python -m build --outdir .tmp/wheelhouse
 python -m venv .tmp/install-venv
 .tmp/install-venv/bin/python -m pip install .tmp/wheelhouse/*.whl
 rm -rf /tmp/icm-install-smoke
@@ -88,6 +94,25 @@ git push origin vX.Y.Z
 5. Create a GitHub release from the tag.
 6. Paste the changelog section into the release notes.
 7. After release, add a fresh `Unreleased` section if needed.
+
+## PyPI Publishing Checklist
+
+Use this only after a tagged GitHub release exists and the PyPI Trusted Publisher is configured.
+
+1. Confirm the PyPI or TestPyPI publisher matches:
+
+```text
+Owner: stickwithfiddle-sys
+Repository: interpretable-context-methodology-template
+Workflow: publish.yml
+Environment: testpypi or pypi
+```
+
+2. In GitHub Actions, run `Publish Python Package` from the release tag.
+3. Choose `testpypi` first.
+4. Install from TestPyPI into a clean environment and run `icm new`.
+5. Run `Publish Python Package` again from the same tag and choose `pypi`.
+6. After PyPI is live, update README and docs/install.md to lead with `pip install icm-workspace-template`.
 
 ## Recommended GitHub Settings
 

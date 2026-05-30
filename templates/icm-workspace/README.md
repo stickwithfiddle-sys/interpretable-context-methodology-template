@@ -47,6 +47,8 @@ icm review stages/01_discovery
 icm doctor .
 ```
 
+`stages/01_discovery/references/discovery-report-rubric.md` shows the starter rubric pattern. The discovery report should include a `Source Traceability` section that cites the input files it used.
+
 ## Layer Map
 
 ```mermaid

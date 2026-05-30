@@ -96,6 +96,7 @@ class ReviewRubric:
     path: Path
     required_sections: tuple[str, ...]
     required_terms: tuple[str, ...]
+    required_sources: tuple[str, ...]
     forbidden_terms: tuple[str, ...]
 
 
@@ -477,6 +478,10 @@ def parse_review_rubric(rubric_path: Path) -> ReviewRubric:
     markdown = rubric_path.read_text(encoding="utf-8")
     required_sections = parse_bullet_items(extract_section(markdown, "Required Sections"))
     required_terms = parse_bullet_items(extract_section(markdown, "Required Terms"))
+    required_sources = (
+        parse_bullet_items(extract_section(markdown, "Required Sources"))
+        + parse_bullet_items(extract_section(markdown, "Required Source References"))
+    )
     forbidden_terms = (
         parse_bullet_items(extract_section(markdown, "Forbidden Terms"))
         + parse_bullet_items(extract_section(markdown, "Must Not Include"))
@@ -485,6 +490,7 @@ def parse_review_rubric(rubric_path: Path) -> ReviewRubric:
         path=rubric_path,
         required_sections=required_sections,
         required_terms=required_terms,
+        required_sources=required_sources,
         forbidden_terms=forbidden_terms,
     )
 
@@ -505,6 +511,23 @@ def review_rubric_paths(stage_path: Path, output_name: str) -> tuple[Path, ...]:
     return tuple(paths)
 
 
+def source_reference_variants(source_reference: str) -> tuple[str, ...]:
+    normalized = source_reference.strip().replace("\\", "/")
+    if not normalized:
+        return ()
+
+    variants = [normalized]
+    source_name = Path(normalized).name
+    if source_name and source_name != normalized:
+        variants.append(source_name)
+    return tuple(dict.fromkeys(variants))
+
+
+def source_reference_present(output_text: str, source_reference: str) -> bool:
+    normalized_output = output_text.replace("\\", "/").lower()
+    return any(variant.lower() in normalized_output for variant in source_reference_variants(source_reference))
+
+
 def apply_review_rubrics(stage_path: Path, output_name: str, output_text: str) -> tuple[ReviewFinding, ...]:
     findings: list[ReviewFinding] = []
     output_text_lower = output_text.lower()
@@ -523,6 +546,12 @@ def apply_review_rubrics(stage_path: Path, output_name: str, output_text: str) -
                 findings.append(ReviewFinding("PASS", f"Rubric required term present in {output_name}: {term}"))
             else:
                 findings.append(ReviewFinding("FAIL", f"Rubric required term missing in {output_name}: {term}"))
+
+        for source_reference in rubric.required_sources:
+            if source_reference_present(output_text, source_reference):
+                findings.append(ReviewFinding("PASS", f"Rubric required source cited in {output_name}: {source_reference}"))
+            else:
+                findings.append(ReviewFinding("FAIL", f"Rubric required source missing in {output_name}: {source_reference}"))
 
         for term in rubric.forbidden_terms:
             if term.lower() in output_text_lower:
@@ -938,6 +967,8 @@ def suggest_fix(message: str) -> str:
         return "Add the missing rubric-required heading to the output, or update the stage rubric if the requirement is wrong."
     if "Rubric required term missing" in message:
         return "Add the missing rubric-required concept to the output, or update the stage rubric if it is not required."
+    if "Rubric required source missing" in message:
+        return "Cite the source path or filename in the output, or update the stage rubric if that source is not required."
     if "Rubric forbidden term found" in message:
         return "Remove the forbidden term or explain the exception by updating the review rubric."
     if "Project brief is missing" in message:

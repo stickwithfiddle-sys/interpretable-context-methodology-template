@@ -19,6 +19,7 @@ What changed?
 - [ ] `python -m pytest`
 - [ ] `python tools/check_packaged_assets.py`
 - [ ] `python tools/check_docs_site.py`
+- [ ] `python tools/check_release_readiness.py`
 - [ ] `python -m icm validate templates/icm-workspace --strict`
 - [ ] `python -m icm validate examples/completed-content-plan --strict`
 - [ ] `python -m icm validate examples/completed-research-brief --strict`
@@ -28,6 +29,7 @@ What changed?
 - [ ] `python -m icm review stages/01_discovery --workspace examples/completed-research-brief`
 - [ ] `python -m icm doctor examples/completed-content-plan --strict`
 - [ ] `python -m icm doctor examples/completed-research-brief --strict`
+- [ ] `python -m build && python -m twine check dist/*` if packaging changed
 
 ## Notes For Reviewers
 

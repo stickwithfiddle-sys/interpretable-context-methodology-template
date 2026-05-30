@@ -44,6 +44,7 @@ Run these before opening or merging a pull request:
 python -m pytest
 python tools/check_packaged_assets.py
 python tools/check_docs_site.py
+python tools/check_release_readiness.py
 python -m icm validate templates/icm-workspace --strict
 python -m icm validate examples/completed-content-plan --strict
 python -m icm validate examples/completed-research-brief --strict
@@ -65,6 +66,14 @@ python examples/completed-content-plan/tools/validate_icm_workspace.py examples/
 python examples/completed-research-brief/tools/validate_icm_workspace.py examples/completed-research-brief --strict
 ```
 
+When packaging changes, also run:
+
+```bash
+rm -rf dist build *.egg-info
+python -m build
+python -m twine check dist/*
+```
+
 ## Change Checklist
 
 - The README still tells a beginner what to do first.
@@ -75,6 +84,7 @@ python examples/completed-research-brief/tools/validate_icm_workspace.py example
 - `CHANGELOG.md` has an entry under `Unreleased` or the release version.
 - Version numbers are updated when preparing a release.
 - Package-embedded assets match `templates/icm-workspace`.
+- Release metadata passes `python tools/check_release_readiness.py`.
 - Tests pass locally with `python -m pytest`.
 - The docs homepage passes `python tools/check_docs_site.py` when visual docs change.
 

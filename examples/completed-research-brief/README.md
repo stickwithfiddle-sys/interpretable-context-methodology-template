@@ -4,6 +4,8 @@ This is a completed Interpretable Context Methodology example workspace created 
 
 It shows how the template can design a project-specific research brief workflow with review rubrics, traceability checks, and staged handoffs.
 
+The discovery report includes a `Source Traceability` section. Its rubric requires citations for the intake brief, discovery question bank, and quality gates.
+
 ## Start Here
 
 1. Fill in `stages/00_intake/output/project-brief.md`.
