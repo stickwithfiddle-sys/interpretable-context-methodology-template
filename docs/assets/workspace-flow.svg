@@ -16,8 +16,9 @@
   <text x="422" y="138" fill="#454b52" font-family="Inter, Arial, sans-serif" font-size="16">Layer 1 routing</text>
   <line x1="630" y1="117" x2="730" y2="117" stroke="#454b52" stroke-width="3" marker-end="url(#arrow)"/>
   <rect x="738" y="68" width="342" height="98" fill="#f7eef0" stroke="#b42318" stroke-width="3"/>
-  <text x="762" y="108" fill="#b42318" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">stages/01_discovery/CONTEXT.md</text>
-  <text x="762" y="138" fill="#454b52" font-family="Inter, Arial, sans-serif" font-size="16">Layer 2 stage contract</text>
+  <text x="762" y="102" fill="#b42318" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">stages/01_discovery/</text>
+  <text x="762" y="128" fill="#b42318" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">CONTEXT.md</text>
+  <text x="762" y="150" fill="#454b52" font-family="Inter, Arial, sans-serif" font-size="16">Layer 2 stage contract</text>
   <line x1="909" y1="166" x2="909" y2="234" stroke="#454b52" stroke-width="3" marker-end="url(#arrow)"/>
   <rect x="702" y="242" width="250" height="104" fill="#f5f7fa" stroke="#7a828c" stroke-width="2"/>
   <text x="726" y="282" fill="#171717" font-family="Inter, Arial, sans-serif" font-size="21" font-weight="700">references/</text>

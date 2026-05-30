@@ -12,6 +12,19 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.8.0] - 2026-05-30
+
+### Added
+
+- Added artifact-specific `icm review` rubrics from stage `references/` files.
+- Added deterministic rubric checks for required sections, required terms, and forbidden terms.
+- Added a completed research-brief example workspace with a discovery report rubric.
+- Added review-rubric documentation.
+
+### Fixed
+
+- Fixed the GitHub Pages workspace-flow diagram so the red stage-contract label stays inside its box.
+
 ## [0.7.0] - 2026-05-30
 
 ### Added
@@ -95,7 +108,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.4.0...v0.5.0

@@ -10,11 +10,13 @@ This roadmap keeps product work visible without turning the README into a backlo
 - Keep security, ownership, CI, and pytest coverage visible before release.
 - Support both clean-start and existing-project adoption with `icm new` and `icm init`.
 - Keep the GitHub Pages docs site useful as the visual first stop.
+- Support artifact-specific `icm review` rubrics.
+- Maintain at least two completed example workspaces.
 
 ## Next
 
-- Add richer `icm review` checks for artifact-specific rubrics and source traceability.
-- Add examples for research synthesis, project planning, and documentation pipelines.
+- Add richer `icm review` checks for source traceability.
+- Add examples for project planning and documentation pipelines.
 - Add a short demo recording or animated walkthrough for the docs site.
 - Prepare for PyPI once the CLI interface and template format stabilize.
 

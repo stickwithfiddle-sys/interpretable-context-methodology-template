@@ -28,6 +28,7 @@ python tools/check_packaged_assets.py
 python tools/check_docs_site.py
 python -m icm validate templates/icm-workspace --strict
 python -m icm validate examples/completed-content-plan --strict
+python -m icm validate examples/completed-research-brief --strict
 rm -rf /tmp/icm-existing-smoke
 mkdir -p /tmp/icm-existing-smoke
 printf '# Existing\n' > /tmp/icm-existing-smoke/README.md
@@ -37,9 +38,12 @@ python -m icm status examples/completed-content-plan
 python -m icm next examples/completed-content-plan
 python -m icm explain stages/01_discovery --workspace examples/completed-content-plan
 python -m icm review stages/01_discovery --workspace examples/completed-content-plan
+python -m icm review stages/01_discovery --workspace examples/completed-research-brief
 python -m icm doctor examples/completed-content-plan --strict
+python -m icm doctor examples/completed-research-brief --strict
 python tools/validate_icm_workspace.py templates/icm-workspace --strict
 python examples/completed-content-plan/tools/validate_icm_workspace.py examples/completed-content-plan --strict
+python examples/completed-research-brief/tools/validate_icm_workspace.py examples/completed-research-brief --strict
 ```
 
 Check:

@@ -11,7 +11,7 @@ Install the CLI from the latest GitHub release in a virtual environment:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.7.0
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.8.0
 icm new my-first-icm-workspace --name "My First ICM Workspace"
 ```
 
@@ -45,7 +45,7 @@ On Windows PowerShell, use backslashes if you prefer:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.7.0
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.8.0
 icm new my-first-icm-workspace --name "My First ICM Workspace"
 icm validate my-first-icm-workspace --strict
 ```
@@ -102,10 +102,12 @@ Start with these files:
 | [docs/install.md](docs/install.md) | GitHub, virtualenv, and local install options |
 | [docs/index.html](docs/index.html) | GitHub Pages visual docs homepage |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
+| [examples/completed-research-brief](examples/completed-research-brief) | Completed research-brief example with review rubrics |
 | [docs/dashboard-direction.md](docs/dashboard-direction.md) | Dashboard direction and readiness criteria |
 | [docs/product-direction.md](docs/product-direction.md) | UX/product roadmap, including Hermes Agent-inspired ideas |
 | [docs/revision-audit.md](docs/revision-audit.md) | Current product audit, UX assessment, and next direction options |
 | [docs/release-process.md](docs/release-process.md) | Versioning, release, and GitHub workflow checklist |
+| [docs/review-rubrics.md](docs/review-rubrics.md) | Artifact-specific `icm review` rubric format |
 | [docs/research-summary.md](docs/research-summary.md) | Practical summary of the ICM paper |
 | [docs/template-design.md](docs/template-design.md) | Design decisions behind this starter kit |
 
@@ -150,6 +152,7 @@ templates/icm-workspace/
   .github/prompts/          Optional VS Code prompt files for running/reviewing stages
 examples/
   completed-content-plan/   Filled example workspace for a small content workflow
+  completed-research-brief/ Filled example workspace for a research brief workflow
 tools/
   check_docs_site.py        Validates GitHub Pages homepage references
   new_icm_workspace.py      Copies the template into a new project folder
@@ -167,6 +170,7 @@ docs/
   install.md                Install options and package smoke checks
   product-direction.md      UX and product roadmap
   release-process.md        GitHub and versioning workflow
+  review-rubrics.md         Artifact-specific review rubric format
   research-summary.md       Practical findings extracted from the paper
   template-design.md        Design decisions and adaptation notes
 ```
@@ -205,7 +209,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.7.0`.
+Current package version: `0.8.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 

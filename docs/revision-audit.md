@@ -2,7 +2,7 @@
 
 Last updated: 2026-05-30
 
-Current release: `0.7.0`
+Current release: `0.8.0`
 
 ## What We Have Achieved
 
@@ -17,31 +17,34 @@ Current release: `0.7.0`
 - Safe `icm init` flow for adding ICM to an existing project without overwriting files.
 - Richer `icm doctor` content checks for empty sections, missing inputs, undeclared outputs, and broken handoffs.
 - GitHub Pages docs homepage with visual CLI screenshots and a workspace flow diagram.
+- Artifact-specific `icm review` rubrics for required sections, required terms, and forbidden terms.
+- A second completed example workspace for a research-brief workflow.
 
 ## Roadmap Position
 
-The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, installable CLI reliability, release hygiene, safe existing-project adoption, and visual docs are all covered.
+The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, installable CLI reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, and two completed examples are all covered.
 
 The highest-value `Next` work is:
 
-- Richer `icm review` checks for artifact-specific rubrics and source traceability.
+- Richer `icm review` checks for source traceability.
 - More example workspaces for common use cases.
+- PyPI distribution once the CLI interface and template format stabilize.
 - A dashboard prototype once the CLI vocabulary and example library settle.
 
 ## Beginner UX Assessment
 
-The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, fill the first brief, run doctor checks, validate structure, and inspect a completed example.
+The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, fill the first brief, run doctor checks, validate structure, inspect completed examples, and copy a rubric pattern for artifact-specific review.
 
-It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no PyPI install, limited artifact-specific review rubrics, and no local dashboard for visual review queues.
+It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no PyPI install, limited source-traceability checks, and no local dashboard for visual review queues.
 
 ## Direction Options
 
-1. Review quality: add artifact-specific checks and traceability prompts for outputs.
-2. Example library: add research synthesis, documentation pipeline, and planning examples.
+1. Review quality: add deterministic source-traceability checks for outputs.
+2. Example library: add documentation pipeline and project-planning examples.
 3. Distribution: publish to PyPI once the CLI surface feels stable.
 4. Dashboard prototype: build a read/write web UI over the same filesystem workspace.
 5. Demo polish: add a short screen recording or animated walkthrough.
 
 ## Recommendation
 
-For `0.8.0`, prioritize artifact-specific `icm review` rubrics plus one more completed example workspace. That gives the eventual dashboard better data to display.
+For `0.9.0`, prioritize source-traceability checks plus PyPI readiness. That makes the review layer more trustworthy and the install path more familiar.

@@ -5,6 +5,7 @@ import icm.workspace as workspace
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 COMPLETED_EXAMPLE = REPO_ROOT / "examples" / "completed-content-plan"
+RESEARCH_EXAMPLE = REPO_ROOT / "examples" / "completed-research-brief"
 
 
 def test_slugify_normalizes_names() -> None:
@@ -89,6 +90,55 @@ def test_review_completed_example_passes() -> None:
     assert review.passed(strict=True)
     assert not review.errors
     assert any("Declared output has content" in finding.message for finding in review.passes)
+    assert any("Review rubric loaded" in finding.message for finding in review.passes)
+    assert any("Rubric required section present" in finding.message for finding in review.passes)
+
+
+def test_review_fails_when_rubric_required_section_is_missing(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+    workspace.create_workspace(target, name="Demo")
+    brief_path = target / "stages" / "00_intake" / "output" / "project-brief.md"
+    brief_path.write_text(
+        """# Project Brief
+
+## Desired Outcome
+
+Demo outcome.
+
+## Audience Or Users
+
+Demo audience.
+
+## Success Criteria
+
+Demo criteria.
+""",
+        encoding="utf-8",
+    )
+    rubric_path = target / "stages" / "00_intake" / "references" / "project-brief-rubric.md"
+    rubric_path.write_text(
+        """# Project Brief Rubric
+
+## Required Sections
+
+- Definitely Missing
+""",
+        encoding="utf-8",
+    )
+
+    review = workspace.review_stage(target, "00_intake")
+
+    assert not review.passed()
+    assert any("Rubric required section missing" in finding.message for finding in review.errors)
+
+
+def test_research_example_validates_and_review_rubric_passes() -> None:
+    assert workspace.validate_workspace(RESEARCH_EXAMPLE).passed(strict=True)
+
+    review = workspace.review_stage(RESEARCH_EXAMPLE, "stages/01_discovery")
+
+    assert review.passed(strict=True)
+    assert any("Review rubric loaded" in finding.message for finding in review.passes)
 
 
 def test_review_unfinished_intake_fails(tmp_path: Path) -> None:

@@ -92,6 +92,14 @@ class ReviewFinding:
 
 
 @dataclass(frozen=True)
+class ReviewRubric:
+    path: Path
+    required_sections: tuple[str, ...]
+    required_terms: tuple[str, ...]
+    forbidden_terms: tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class DoctorFinding:
     level: str
     message: str
@@ -449,6 +457,82 @@ def parse_contract_rows(context_markdown: str, section_name: str) -> list[TableR
     return parse_markdown_table(extract_section(context_markdown, section_name))
 
 
+def parse_bullet_items(markdown: str) -> tuple[str, ...]:
+    items: list[str] = []
+    for line in markdown.splitlines():
+        match = re.match(r"^\s*[-*]\s+(.+?)\s*$", line)
+        if match:
+            items.append(normalize_rubric_item(match.group(1)))
+    return tuple(item for item in items if item)
+
+
+def normalize_rubric_item(item: str) -> str:
+    item = item.strip()
+    if item.startswith("`") and item.endswith("`") and len(item) > 1:
+        item = item[1:-1]
+    return item.lstrip("#").strip()
+
+
+def parse_review_rubric(rubric_path: Path) -> ReviewRubric:
+    markdown = rubric_path.read_text(encoding="utf-8")
+    required_sections = parse_bullet_items(extract_section(markdown, "Required Sections"))
+    required_terms = parse_bullet_items(extract_section(markdown, "Required Terms"))
+    forbidden_terms = (
+        parse_bullet_items(extract_section(markdown, "Forbidden Terms"))
+        + parse_bullet_items(extract_section(markdown, "Must Not Include"))
+    )
+    return ReviewRubric(
+        path=rubric_path,
+        required_sections=required_sections,
+        required_terms=required_terms,
+        forbidden_terms=forbidden_terms,
+    )
+
+
+def review_rubric_paths(stage_path: Path, output_name: str) -> tuple[Path, ...]:
+    references_dir = stage_path / "references"
+    output_stem = Path(output_name).stem
+    candidates = (
+        references_dir / "review-rubric.md",
+        references_dir / f"{output_stem}-rubric.md",
+    )
+    paths: list[Path] = []
+    seen: set[Path] = set()
+    for candidate in candidates:
+        if candidate.exists() and candidate not in seen:
+            paths.append(candidate)
+            seen.add(candidate)
+    return tuple(paths)
+
+
+def apply_review_rubrics(stage_path: Path, output_name: str, output_text: str) -> tuple[ReviewFinding, ...]:
+    findings: list[ReviewFinding] = []
+    output_text_lower = output_text.lower()
+    for rubric_path in review_rubric_paths(stage_path, output_name):
+        rubric = parse_review_rubric(rubric_path)
+        findings.append(ReviewFinding("PASS", f"Review rubric loaded: {path_label(stage_path, rubric.path)}"))
+
+        for heading in rubric.required_sections:
+            if has_heading(output_text, heading):
+                findings.append(ReviewFinding("PASS", f"Rubric required section present in {output_name}: {heading}"))
+            else:
+                findings.append(ReviewFinding("FAIL", f"Rubric required section missing in {output_name}: {heading}"))
+
+        for term in rubric.required_terms:
+            if term.lower() in output_text_lower:
+                findings.append(ReviewFinding("PASS", f"Rubric required term present in {output_name}: {term}"))
+            else:
+                findings.append(ReviewFinding("FAIL", f"Rubric required term missing in {output_name}: {term}"))
+
+        for term in rubric.forbidden_terms:
+            if term.lower() in output_text_lower:
+                findings.append(ReviewFinding("FAIL", f"Rubric forbidden term found in {output_name}: {term}"))
+            else:
+                findings.append(ReviewFinding("PASS", f"Rubric forbidden term absent in {output_name}: {term}"))
+
+    return tuple(findings)
+
+
 def parse_input_paths(context_markdown: str) -> tuple[str, ...]:
     paths: list[str] = []
     for row in parse_contract_rows(context_markdown, "Inputs"):
@@ -684,6 +768,8 @@ def review_stage(workspace_root: Path, target: str) -> StageReview:
             findings.append(ReviewFinding("FAIL", f"Declared output is empty: {output_name}"))
         else:
             findings.append(ReviewFinding("PASS", f"Declared output has content: {output_name}"))
+            output_text = output_path.read_text(encoding="utf-8", errors="replace")
+            findings.extend(apply_review_rubrics(stage_path, output_name, output_text))
         if output_name == "project-brief.md" and intake_needs_input(stage_path):
             findings.append(
                 ReviewFinding(
@@ -848,6 +934,12 @@ def suggest_fix(message: str) -> str:
         return "Either add the file to the Outputs table or move it out of the stage output folder."
     if "Requested output is not declared" in message:
         return "Review the stage Outputs table and either declare this output or choose a declared output file."
+    if "Rubric required section missing" in message:
+        return "Add the missing rubric-required heading to the output, or update the stage rubric if the requirement is wrong."
+    if "Rubric required term missing" in message:
+        return "Add the missing rubric-required concept to the output, or update the stage rubric if it is not required."
+    if "Rubric forbidden term found" in message:
+        return "Remove the forbidden term or explain the exception by updating the review rubric."
     if "Project brief is missing" in message:
         return "Fill Desired Outcome, Audience Or Users, and Success Criteria before treating intake as reviewed."
     if "Project brief needs required sections" in message:

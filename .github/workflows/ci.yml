@@ -33,8 +33,11 @@ jobs:
       - name: Validate template
         run: icm validate templates/icm-workspace --strict
 
-      - name: Validate completed example
+      - name: Validate content-plan example
         run: icm validate examples/completed-content-plan --strict
+
+      - name: Validate research-brief example
+        run: icm validate examples/completed-research-brief --strict
 
       - name: Smoke test CLI status
         run: icm status examples/completed-content-plan
@@ -48,8 +51,14 @@ jobs:
       - name: Smoke test CLI review
         run: icm review stages/01_discovery --workspace examples/completed-content-plan
 
+      - name: Smoke test research rubric review
+        run: icm review stages/01_discovery --workspace examples/completed-research-brief
+
       - name: Smoke test CLI doctor
         run: icm doctor examples/completed-content-plan --strict
+
+      - name: Smoke test research doctor
+        run: icm doctor examples/completed-research-brief --strict
 
       - name: Build wheel
         run: python -m pip wheel . -w dist --no-deps
