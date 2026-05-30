@@ -35,12 +35,13 @@ Set up the editable CLI in a virtual environment:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e .
+python -m pip install -e ".[dev]"
 ```
 
 Run these before opening or merging a pull request:
 
 ```bash
+python -m pytest
 python tools/check_packaged_assets.py
 python -m icm validate templates/icm-workspace --strict
 python -m icm validate examples/completed-content-plan --strict
@@ -68,6 +69,7 @@ python examples/completed-content-plan/tools/validate_icm_workspace.py examples/
 - `CHANGELOG.md` has an entry under `Unreleased` or the release version.
 - Version numbers are updated when preparing a release.
 - Package-embedded assets match `templates/icm-workspace`.
+- Tests pass locally with `python -m pytest`.
 
 When changing `templates/icm-workspace`, mirror it into `icm/templates/icm-workspace` and run:
 

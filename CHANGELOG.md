@@ -12,6 +12,19 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.6.0] - 2026-05-30
+
+### Added
+
+- Added a security policy and repository code ownership.
+- Added pytest coverage for CLI commands, workspace creation, packaged resources, status detection, and review checks.
+- Added a revision audit document summarizing product progress, UX status, roadmap position, and next direction options.
+
+### Changed
+
+- CI now installs development dependencies and runs the pytest suite before smoke tests.
+- Beginner install docs now lead with installing the versioned CLI from GitHub.
+
 ## [0.5.0] - 2026-05-30
 
 ### Added
@@ -67,7 +80,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.2.0...v0.3.0

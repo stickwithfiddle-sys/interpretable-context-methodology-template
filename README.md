@@ -6,16 +6,19 @@ Think of ICM as Trello meets Makefile meets agent prompts: each numbered folder 
 
 ## Start Here
 
-From a source checkout, run:
+Install the CLI from the latest GitHub release in a virtual environment:
 
 ```bash
-python -m icm new ../my-first-icm-workspace --name "My First ICM Workspace"
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.6.0
+icm new my-first-icm-workspace --name "My First ICM Workspace"
 ```
 
 Then open the new folder and fill in:
 
 ```text
-stages/00_intake/output/project-brief.md
+my-first-icm-workspace/stages/00_intake/output/project-brief.md
 ```
 
 Ask your coding agent:
@@ -28,7 +31,7 @@ Write only the declared outputs, run the Verify checks, and stop at the Review G
 Finally, validate the workspace structure:
 
 ```bash
-python -m icm validate ../my-first-icm-workspace --strict
+icm validate my-first-icm-workspace --strict
 ```
 
 Expected output:
@@ -40,16 +43,19 @@ OK: workspace passed validation with 0 warning(s)
 On Windows PowerShell, use backslashes if you prefer:
 
 ```powershell
-python -m icm new ..\my-first-icm-workspace --name "My First ICM Workspace"
-python -m icm validate ..\my-first-icm-workspace --strict
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.6.0
+icm new my-first-icm-workspace --name "My First ICM Workspace"
+icm validate my-first-icm-workspace --strict
 ```
 
-If you want the shorter `icm` command while developing from this repo, install it in a virtual environment:
+If you are developing from this repo, install the editable package:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e .
+python -m pip install -e ".[dev]"
 icm status examples/completed-content-plan
 ```
 
@@ -96,6 +102,7 @@ Start with these files:
 | [docs/install.md](docs/install.md) | GitHub, virtualenv, and local install options |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
 | [docs/product-direction.md](docs/product-direction.md) | UX/product roadmap, including Hermes Agent-inspired ideas |
+| [docs/revision-audit.md](docs/revision-audit.md) | Current product audit, UX assessment, and next direction options |
 | [docs/release-process.md](docs/release-process.md) | Versioning, release, and GitHub workflow checklist |
 | [docs/research-summary.md](docs/research-summary.md) | Practical summary of the ICM paper |
 | [docs/template-design.md](docs/template-design.md) | Design decisions behind this starter kit |
@@ -144,6 +151,9 @@ tools/
   validate_icm_workspace.py Checks stage naming, contracts, and handoff folders
 icm/
   cli.py                    Product CLI for new, validate, status, next, explain, review, doctor
+tests/
+  test_cli.py               CLI behavior coverage
+  test_workspace.py         Workspace helper and review coverage
 docs/
   first-workspace.md        Beginner tutorial
   glossary.md               Plain-language terms
@@ -188,9 +198,11 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.5.0`.
+Current package version: `0.6.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
+
+Repository safety practices live in [SECURITY.md](SECURITY.md) and [.github/CODEOWNERS](.github/CODEOWNERS). Public users can open issues, forks, and pull requests, but they cannot directly change protected `main` without maintainer-controlled review and passing checks.
 
 Maintained by Hobo.
 

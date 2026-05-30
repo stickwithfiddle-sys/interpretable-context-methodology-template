@@ -19,10 +19,13 @@ jobs:
           python-version: "3.11"
 
       - name: Install package
-        run: python -m pip install -e .
+        run: python -m pip install -e ".[dev]"
 
       - name: Check packaged assets
         run: python tools/check_packaged_assets.py
+
+      - name: Run pytest suite
+        run: python -m pytest
 
       - name: Validate template
         run: icm validate templates/icm-workspace --strict
