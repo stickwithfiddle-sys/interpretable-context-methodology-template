@@ -12,6 +12,10 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+### Fixed
+
+- Fixed the GitHub Pages homepage link for the demo walkthrough so it opens the generated HTML page.
+
 ## [0.10.0] - 2026-05-30
 
 ### Added

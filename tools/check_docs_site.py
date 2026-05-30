@@ -43,7 +43,9 @@ def main() -> int:
         relative_path = reference.split("#", 1)[0].split("?", 1)[0]
         if not relative_path:
             continue
-        if not (SITE_ROOT / relative_path).exists():
+        local_path = SITE_ROOT / relative_path
+        generated_markdown_source = local_path.with_suffix(".md") if local_path.suffix == ".html" else None
+        if not local_path.exists() and not (generated_markdown_source and generated_markdown_source.exists()):
             missing.append(reference)
 
     if missing:
