@@ -43,6 +43,7 @@ python tools/validate_icm_workspace.py . --strict
 icm status .
 icm next .
 icm explain stages/01_discovery
+icm review stages/01_discovery
 icm doctor .
 ```
 

@@ -36,5 +36,8 @@ jobs:
       - name: Smoke test CLI explain
         run: icm explain stages/01_discovery --workspace examples/completed-content-plan
 
+      - name: Smoke test CLI review
+        run: icm review stages/01_discovery --workspace examples/completed-content-plan
+
       - name: Smoke test CLI doctor
         run: icm doctor examples/completed-content-plan --strict

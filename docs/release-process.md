@@ -27,6 +27,7 @@ python -m icm validate examples/completed-content-plan --strict
 python -m icm status examples/completed-content-plan
 python -m icm next examples/completed-content-plan
 python -m icm explain stages/01_discovery --workspace examples/completed-content-plan
+python -m icm review stages/01_discovery --workspace examples/completed-content-plan
 python -m icm doctor examples/completed-content-plan --strict
 python tools/validate_icm_workspace.py templates/icm-workspace --strict
 ```

@@ -12,6 +12,14 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.4.0] - 2026-05-30
+
+### Added
+
+- Added `icm review` for deterministic stage-output review against the stage contract.
+- Review checks now inspect required contract headings, declared inputs, declared outputs, output content, review gate text, verify text, undeclared extra outputs, and intake brief readiness.
+- Added review smoke checks to docs, CI, and contribution/release checklists.
+
 ## [0.3.0] - 2026-05-30
 
 ### Added
@@ -46,7 +54,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/releases/tag/v0.1.0

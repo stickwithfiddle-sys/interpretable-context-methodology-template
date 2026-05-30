@@ -43,3 +43,9 @@ If `icm` is not installed, use:
 ```bash
 python tools/validate_icm_workspace.py . --strict
 ```
+
+## Review An Output
+
+```bash
+icm review stages/01_discovery
+```

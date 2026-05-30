@@ -148,6 +148,7 @@ These commands help you see what is going on:
 python -m icm status .
 python -m icm next .
 python -m icm explain stages/01_discovery
+python -m icm review stages/01_discovery
 python -m icm doctor .
 ```
 

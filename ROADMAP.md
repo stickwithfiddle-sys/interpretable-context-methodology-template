@@ -12,7 +12,7 @@ This roadmap keeps product work visible without turning the README into a backlo
 
 - Add richer `icm doctor` checks for empty required sections and broken handoffs.
 - Add `icm init` for converting an existing folder into an ICM workspace.
-- Add `icm review` for checking a stage output against its contract.
+- Add richer `icm review` checks for artifact-specific rubrics and source traceability.
 - Add examples for research synthesis, project planning, and documentation pipelines.
 - Add a docs site once the CLI vocabulary stabilizes.
 

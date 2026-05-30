@@ -12,6 +12,7 @@ from .workspace import (
     extract_section,
     next_stage,
     parse_contract_rows,
+    review_stage,
     resolve_stage_path,
     suggest_fix,
     unquote_markdown_cell,
@@ -223,6 +224,39 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     return result.exit_code(strict=args.strict)
 
 
+def cmd_review(args: argparse.Namespace) -> int:
+    workspace_root = Path(args.workspace).expanduser().resolve()
+    try:
+        review = review_stage(workspace_root, args.target)
+    except FileNotFoundError as error:
+        print(f"ERROR {error}", file=sys.stderr)
+        return 1
+
+    print(f"Review: {review.stage_name}")
+    print(f"Stage path: {review.stage_path}")
+    if review.output_path is not None:
+        print(f"Output: {review.output_path}")
+    print()
+
+    for finding in review.findings:
+        print(f"{finding.level:<4} {finding.message}")
+
+    print()
+    print(f"Summary: {len(review.errors)} fail, {len(review.warnings)} warn, {len(review.passes)} pass")
+    if review.passed(strict=args.strict):
+        print("Result: review checks passed.")
+    else:
+        print("Result: review checks need attention.")
+
+    if review.errors or review.warnings:
+        print()
+        print("Next actions:")
+        for finding in (*review.errors, *review.warnings):
+            print(f"- {suggest_fix(finding.message)}")
+
+    return review.exit_code(strict=args.strict)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="icm", description="Work with Interpretable Context Methodology workspaces.")
     parser.add_argument("--version", action="version", version=f"icm {__version__}")
@@ -255,6 +289,12 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_parser.add_argument("workspace", nargs="?", default=".", help="Path to the workspace. Defaults to the current directory.")
     doctor_parser.add_argument("--strict", action="store_true", help="Return failure when warnings exist.")
     doctor_parser.set_defaults(func=cmd_doctor)
+
+    review_parser = subparsers.add_parser("review", help="Review a stage output against its contract")
+    review_parser.add_argument("target", help="Stage name/path or output file path to review.")
+    review_parser.add_argument("--workspace", default=".", help="Workspace root. Defaults to the current directory.")
+    review_parser.add_argument("--strict", action="store_true", help="Return failure when warnings exist.")
+    review_parser.set_defaults(func=cmd_review)
 
     return parser
 

@@ -62,6 +62,38 @@ class StageStatus:
     note: str
 
 
+@dataclass(frozen=True)
+class ReviewFinding:
+    level: str
+    message: str
+
+
+@dataclass(frozen=True)
+class StageReview:
+    stage_name: str
+    stage_path: Path
+    output_path: Path | None
+    findings: tuple[ReviewFinding, ...]
+
+    @property
+    def errors(self) -> tuple[ReviewFinding, ...]:
+        return tuple(finding for finding in self.findings if finding.level == "FAIL")
+
+    @property
+    def warnings(self) -> tuple[ReviewFinding, ...]:
+        return tuple(finding for finding in self.findings if finding.level == "WARN")
+
+    @property
+    def passes(self) -> tuple[ReviewFinding, ...]:
+        return tuple(finding for finding in self.findings if finding.level == "PASS")
+
+    def passed(self, strict: bool = False) -> bool:
+        return not self.errors and not (strict and self.warnings)
+
+    def exit_code(self, strict: bool = False) -> int:
+        return 0 if self.passed(strict=strict) else 1
+
+
 def slugify(value: str) -> str:
     characters: list[str] = []
     previous_dash = False
@@ -258,6 +290,31 @@ def parse_contract_rows(context_markdown: str, section_name: str) -> list[TableR
     return parse_markdown_table(extract_section(context_markdown, section_name))
 
 
+def parse_input_paths(context_markdown: str) -> tuple[str, ...]:
+    paths: list[str] = []
+    for row in parse_contract_rows(context_markdown, "Inputs"):
+        if len(row.cells) < 2:
+            continue
+        input_path = unquote_markdown_cell(row.cells[1])
+        if input_path.lower() == "path" or not input_path:
+            continue
+        paths.append(input_path)
+    return tuple(paths)
+
+
+def parse_output_specs(context_markdown: str) -> tuple[tuple[str, str], ...]:
+    specs: list[tuple[str, str]] = []
+    for row in parse_contract_rows(context_markdown, "Outputs"):
+        if len(row.cells) < 2:
+            continue
+        output_name = unquote_markdown_cell(row.cells[0])
+        location = unquote_markdown_cell(row.cells[1])
+        if output_name.lower() == "file" or not output_name:
+            continue
+        specs.append((output_name, location))
+    return tuple(specs)
+
+
 def existing_output_files(stage_directory: Path) -> tuple[str, ...]:
     output_dir = stage_directory / "output"
     if not output_dir.is_dir():
@@ -359,6 +416,155 @@ def resolve_stage_path(workspace_root: Path, stage: str) -> Path:
     raise FileNotFoundError(f"Stage not found: {stage}")
 
 
+def find_stage_for_output(workspace_root: Path, output_path: Path) -> Path:
+    workspace_root = workspace_root.expanduser().resolve()
+    resolved_output = output_path.expanduser().resolve()
+    if not resolved_output.exists() or not resolved_output.is_file():
+        raise FileNotFoundError(f"Output file not found: {output_path}")
+
+    if resolved_output.parent.name == "output" and (resolved_output.parent.parent / "CONTEXT.md").exists():
+        return resolved_output.parent.parent
+
+    for parent in resolved_output.parents:
+        if (parent / "CONTEXT.md").exists() and parent.parent.name == "stages":
+            return parent
+
+    try:
+        resolved_output.relative_to(workspace_root)
+    except ValueError:
+        pass
+
+    raise FileNotFoundError(f"Could not find a containing ICM stage for output: {output_path}")
+
+
+def resolve_review_target(workspace_root: Path, target: str) -> tuple[Path, Path | None]:
+    candidate = Path(target).expanduser()
+    workspace_root = workspace_root.expanduser().resolve()
+
+    if candidate.exists() and candidate.is_file():
+        output_path = candidate.resolve()
+        return find_stage_for_output(workspace_root, output_path), output_path
+
+    workspace_candidate = workspace_root / target
+    if workspace_candidate.exists() and workspace_candidate.is_file():
+        output_path = workspace_candidate.resolve()
+        return find_stage_for_output(workspace_root, output_path), output_path
+
+    stage_path = resolve_stage_path(workspace_root, target)
+    return stage_path, None
+
+
+def resolve_contract_path(stage_path: Path, contract_path: str) -> Path:
+    return (stage_path / contract_path).resolve()
+
+
+def path_label(stage_path: Path, path: Path) -> str:
+    try:
+        return str(path.relative_to(stage_path))
+    except ValueError:
+        return str(path)
+
+
+def review_stage(workspace_root: Path, target: str) -> StageReview:
+    stage_path, requested_output = resolve_review_target(workspace_root, target)
+    context_path = stage_path / "CONTEXT.md"
+    findings: list[ReviewFinding] = []
+
+    if not context_path.exists():
+        return StageReview(
+            stage_name=stage_path.name,
+            stage_path=stage_path,
+            output_path=requested_output,
+            findings=(ReviewFinding("FAIL", f"Missing stage contract: {context_path}"),),
+        )
+
+    context_markdown = context_path.read_text(encoding="utf-8")
+    for heading in REQUIRED_STAGE_HEADINGS:
+        if has_heading(context_markdown, heading):
+            findings.append(ReviewFinding("PASS", f"Contract has required heading: {heading}"))
+        else:
+            findings.append(ReviewFinding("FAIL", f"Contract missing required heading: {heading}"))
+
+    purpose = extract_section(context_markdown, "Purpose")
+    if first_paragraph(purpose):
+        findings.append(ReviewFinding("PASS", "Purpose is present."))
+    else:
+        findings.append(ReviewFinding("FAIL", "Purpose section is empty."))
+
+    input_paths = parse_input_paths(context_markdown)
+    if not input_paths:
+        findings.append(ReviewFinding("WARN", "No declared inputs found."))
+    for input_path in input_paths:
+        resolved_input = resolve_contract_path(stage_path, input_path)
+        if resolved_input.exists():
+            findings.append(ReviewFinding("PASS", f"Declared input exists: {input_path}"))
+        else:
+            findings.append(ReviewFinding("FAIL", f"Declared input is missing: {input_path}"))
+
+    output_specs = parse_output_specs(context_markdown)
+    if not output_specs:
+        findings.append(ReviewFinding("FAIL", "No declared outputs found."))
+
+    declared_output_names = {output_name for output_name, _ in output_specs}
+    selected_output_name = requested_output.name if requested_output is not None else None
+    if selected_output_name and selected_output_name not in declared_output_names:
+        findings.append(ReviewFinding("WARN", f"Requested output is not declared by the stage: {selected_output_name}"))
+
+    for output_name, location in output_specs:
+        if requested_output is not None and output_name != requested_output.name:
+            continue
+        output_path = resolve_contract_path(stage_path, str(Path(location) / output_name))
+        if not output_path.exists():
+            findings.append(ReviewFinding("FAIL", f"Declared output is missing: {path_label(stage_path, output_path)}"))
+            continue
+        if output_path.parent.name != "output":
+            findings.append(ReviewFinding("WARN", f"Declared output is outside output/: {path_label(stage_path, output_path)}"))
+        else:
+            findings.append(ReviewFinding("PASS", f"Declared output is in output/: {output_name}"))
+        if output_path.stat().st_size == 0:
+            findings.append(ReviewFinding("FAIL", f"Declared output is empty: {output_name}"))
+        else:
+            findings.append(ReviewFinding("PASS", f"Declared output has content: {output_name}"))
+        if output_name == "project-brief.md" and intake_needs_input(stage_path):
+            findings.append(
+                ReviewFinding(
+                    "FAIL",
+                    "Project brief is missing one or more required sections: Desired Outcome, Audience Or Users, Success Criteria",
+                )
+            )
+
+    extra_outputs = set(existing_output_files(stage_path)) - declared_output_names
+    if requested_output is None:
+        for output_name in sorted(extra_outputs):
+            findings.append(ReviewFinding("WARN", f"Output file is not declared in the contract: output/{output_name}"))
+
+    review_gate = extract_section(context_markdown, "Review Gate")
+    if first_paragraph(review_gate):
+        findings.append(ReviewFinding("PASS", "Review Gate gives the human something to inspect."))
+    else:
+        findings.append(ReviewFinding("FAIL", "Review Gate is empty."))
+
+    verify = extract_section(context_markdown, "Verify")
+    if first_paragraph(verify):
+        findings.append(ReviewFinding("PASS", "Verify section is present."))
+    else:
+        findings.append(ReviewFinding("FAIL", "Verify section is empty."))
+
+    if requested_output is not None and requested_output.exists() and requested_output.stat().st_size > 0:
+        text = requested_output.read_text(encoding="utf-8", errors="replace")
+        if re.search(r"^#\s+", text, re.MULTILINE):
+            findings.append(ReviewFinding("PASS", f"Requested output has a top-level heading: {requested_output.name}"))
+        else:
+            findings.append(ReviewFinding("WARN", f"Requested output has no top-level markdown heading: {requested_output.name}"))
+
+    return StageReview(
+        stage_name=stage_path.name,
+        stage_path=stage_path,
+        output_path=requested_output,
+        findings=tuple(findings),
+    )
+
+
 def suggest_fix(message: str) -> str:
     if "Missing Layer 0" in message:
         return "Add AGENTS.md at the workspace root, or copy it from templates/icm-workspace/."
@@ -379,4 +585,21 @@ def suggest_fix(message: str) -> str:
         return "Create a references/ folder inside the stage."
     if "Missing Layer 4" in message:
         return "Create an output/ folder inside the stage."
+    if "Declared input is missing" in message:
+        missing_path = message.rsplit(":", 1)[-1].strip()
+        return f"Create or restore the declared input, or update the Inputs table if it should not be required: {missing_path}"
+    if "Declared output is missing" in message:
+        missing_path = message.rsplit(":", 1)[-1].strip()
+        return f"Run the stage or create the declared output before review: {missing_path}"
+    if "Declared output is empty" in message:
+        output_name = message.rsplit(":", 1)[-1].strip()
+        return f"Fill the output file with the artifact required by the stage contract: {output_name}"
+    if "not declared in the contract" in message:
+        return "Either add the file to the Outputs table or move it out of the stage output folder."
+    if "Requested output is not declared" in message:
+        return "Review the stage Outputs table and either declare this output or choose a declared output file."
+    if "Project brief is missing" in message:
+        return "Fill Desired Outcome, Audience Or Users, and Success Criteria before treating intake as reviewed."
+    if "top-level markdown heading" in message:
+        return "Add a top-level markdown heading so the artifact is easier to scan and review."
     return "Review the named file or folder and align it with the ICM template."

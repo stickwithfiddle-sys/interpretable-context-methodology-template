@@ -107,6 +107,7 @@ python -m icm validate ../demo --strict
 python -m icm status ../demo
 python -m icm next ../demo
 python -m icm explain stages/01_discovery --workspace ../demo
+python -m icm review stages/01_discovery --workspace ../demo
 python -m icm doctor ../demo
 ```
 
@@ -118,6 +119,7 @@ icm validate ../demo --strict
 icm status ../demo
 icm next ../demo
 icm explain stages/01_discovery --workspace ../demo
+icm review stages/01_discovery --workspace ../demo
 icm doctor ../demo
 ```
 
@@ -138,7 +140,7 @@ tools/
   new_icm_workspace.py      Copies the template into a new project folder
   validate_icm_workspace.py Checks stage naming, contracts, and handoff folders
 icm/
-  cli.py                    Product CLI for new, validate, status, next, explain, doctor
+  cli.py                    Product CLI for new, validate, status, next, explain, review, doctor
 docs/
   first-workspace.md        Beginner tutorial
   glossary.md               Plain-language terms
@@ -182,7 +184,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.3.0`.
+Current package version: `0.4.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 
