@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Interpretable Context Methodology Template</title>
+    <meta name="description" content="Beginner-friendly CLI and reusable workspace template for Interpretable Context Methodology.">
+    <link rel="stylesheet" href="assets/site.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="ICM docs home">
+        <span class="brand-mark">ICM</span>
+        <span>Workspace Template</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#start">Start</a>
+        <a href="#existing">Existing Project</a>
+        <a href="#doctor">Doctor</a>
+        <a href="#roadmap">Roadmap</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="intro-band">
+        <div class="intro-copy">
+          <p class="eyebrow">Filesystem-based agent workflows</p>
+          <h1>Interpretable Context Methodology, ready to run from the CLI.</h1>
+          <p class="lead">
+            Create or retrofit a plain-file workspace where every stage has a contract, every output is reviewable, and humans can inspect what the agent is doing before the next step runs.
+          </p>
+          <div class="command-card" id="start">
+            <div class="command-label">New workspace</div>
+            <pre><code>python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.7.0
+icm new my-first-icm-workspace --name "My First ICM Workspace"
+icm doctor my-first-icm-workspace</code></pre>
+            <button class="copy-button" data-copy="python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.7.0&#10;icm new my-first-icm-workspace --name &quot;My First ICM Workspace&quot;&#10;icm doctor my-first-icm-workspace" aria-label="Copy new workspace commands">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V7Z"></path><path d="M4 15V5a2 2 0 0 1 2-2h10"></path></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+        <figure class="screenshot">
+          <img src="assets/screenshot-new.svg" alt="Terminal screenshot showing icm new creating a workspace and listing next steps.">
+        </figure>
+      </section>
+
+      <section class="flow-band" aria-labelledby="flow-title">
+        <div class="section-heading">
+          <p class="eyebrow">How the method stays inspectable</p>
+          <h2 id="flow-title">Stages are folders. Contracts are markdown. Outputs are handoffs.</h2>
+        </div>
+        <img class="flow-image" src="assets/workspace-flow.svg" alt="Diagram showing AGENTS.md, CONTEXT.md, stage contracts, references, and output handoffs.">
+      </section>
+
+      <section class="split-band" id="existing">
+        <div>
+          <p class="eyebrow">Adopt ICM inside a real project</p>
+          <h2>Add ICM without overwriting your existing files.</h2>
+          <p>
+            `icm init` copies only missing starter files into the target folder. Existing README, source files, config, and docs stay untouched.
+          </p>
+          <div class="command-card">
+            <div class="command-label">Existing project</div>
+            <pre><code>cd my-existing-project
+icm init . --name "My Existing Project"
+icm doctor</code></pre>
+            <button class="copy-button" data-copy="cd my-existing-project&#10;icm init . --name &quot;My Existing Project&quot;&#10;icm doctor" aria-label="Copy init commands">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V7Z"></path><path d="M4 15V5a2 2 0 0 1 2-2h10"></path></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+        <figure class="screenshot">
+          <img src="assets/screenshot-init.svg" alt="Terminal screenshot showing icm init preserving an existing README while creating ICM files.">
+        </figure>
+      </section>
+
+      <section class="split-band alternate" id="doctor">
+        <figure class="screenshot">
+          <img src="assets/screenshot-doctor.svg" alt="Terminal screenshot showing icm doctor reporting content checks and suggested fixes.">
+        </figure>
+        <div>
+          <p class="eyebrow">Beginner-friendly diagnostics</p>
+          <h2>Doctor explains the next repair, not just the failure.</h2>
+          <p>
+            The doctor command checks structure, empty stage sections, undeclared outputs, missing config inputs, and broken handoffs after outputs are present.
+          </p>
+          <ul class="check-list">
+            <li>Structure validation with suggested fixes.</li>
+            <li>Content checks for stage contracts and intake readiness.</li>
+            <li>Stage summary that points to the next action.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="links-band">
+        <div class="section-heading">
+          <p class="eyebrow">Read next</p>
+          <h2>Docs, example workspace, and release notes.</h2>
+        </div>
+        <div class="link-grid">
+          <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/first-workspace.md">First workspace tutorial</a>
+          <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-content-plan">Completed example</a>
+          <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/glossary.md">Glossary</a>
+          <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/product-direction.md">Product direction</a>
+          <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/releases">Releases</a>
+          <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template">GitHub repository</a>
+        </div>
+      </section>
+
+      <section class="roadmap-band" id="roadmap">
+        <div class="section-heading">
+          <p class="eyebrow">Product path</p>
+          <h2>CLI first, dashboard after the language stabilizes.</h2>
+        </div>
+        <ol class="roadmap">
+          <li><strong>Now:</strong> CLI onboarding, doctor checks, examples, and docs.</li>
+          <li><strong>Next:</strong> artifact-specific review rubrics and more example workflows.</li>
+          <li><strong>Later:</strong> a dashboard that reads and writes the same filesystem workspace.</li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Maintained by Hobo.</span>
+      <a href="https://arxiv.org/html/2603.16021v2">ICM paper</a>
+      <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/LICENSE">MIT license</a>
+    </footer>
+
+    <script>
+      document.querySelectorAll(".copy-button").forEach((button) => {
+        button.addEventListener("click", async () => {
+          await navigator.clipboard.writeText(button.dataset.copy);
+          button.classList.add("copied");
+          window.setTimeout(() => button.classList.remove("copied"), 1200);
+        });
+      });
+    </script>
+  </body>
+</html>

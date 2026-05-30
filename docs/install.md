@@ -7,7 +7,7 @@ ICM can be run directly from a source checkout or installed as a CLI.
 If you use `pipx`:
 
 ```bash
-pipx install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.6.0
+pipx install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.7.0
 icm --version
 icm new my-first-icm-workspace --name "My First ICM Workspace"
 ```
@@ -17,10 +17,22 @@ If you prefer a local virtual environment:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.6.0
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.7.0
 icm --version
 icm new my-first-icm-workspace --name "My First ICM Workspace"
 ```
+
+## Add ICM To An Existing Project
+
+`icm init` copies only missing ICM starter files. It does not overwrite existing files.
+
+```bash
+cd my-existing-project
+icm init . --name "My Existing Project"
+icm doctor
+```
+
+If your project already has `AGENTS.md` or `CONTEXT.md`, `icm init` leaves them alone. `icm doctor` will tell you if those files need the ICM Stage Index or operating guidance merged in.
 
 ## From A Source Checkout
 
@@ -46,6 +58,8 @@ icm status examples/completed-content-plan
 ## Why Installability Matters
 
 `icm new` uses a template embedded in the Python package. That means it can create a workspace even when you are not running inside this repository.
+
+`icm init` uses the same embedded template, but skips files that already exist.
 
 The generated workspace still includes a fallback validator:
 

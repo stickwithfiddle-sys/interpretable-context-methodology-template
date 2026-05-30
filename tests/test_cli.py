@@ -23,6 +23,32 @@ def test_cli_new_validate_status_and_review(tmp_path: Path, capsys) -> None:
     assert "Project brief is missing" in capsys.readouterr().out
 
 
+def test_cli_init_preserves_existing_project_files(tmp_path: Path, capsys) -> None:
+    target = tmp_path / "existing"
+    target.mkdir()
+    (target / "README.md").write_text("# Existing\n", encoding="utf-8")
+
+    assert cli.main(["init", str(target), "--name", "Existing"]) == 0
+    output = capsys.readouterr().out
+
+    assert "Initialized ICM workspace" in output
+    assert "Skipped existing files" in output
+    assert (target / "README.md").read_text(encoding="utf-8") == "# Existing\n"
+    assert (target / "stages" / "00_intake" / "CONTEXT.md").is_file()
+
+
+def test_cli_doctor_reports_content_checks(tmp_path: Path, capsys) -> None:
+    target = tmp_path / "doctor-demo"
+    cli.main(["new", str(target), "--name", "Doctor Demo"])
+    capsys.readouterr()
+
+    assert cli.main(["doctor", str(target), "--strict"]) == 1
+    output = capsys.readouterr().out
+
+    assert "Content checks: needs attention" in output
+    assert "Project brief needs required sections" in output
+
+
 def test_cli_review_completed_example_passes(capsys) -> None:
     assert cli.main(["review", "stages/01_discovery", "--workspace", str(COMPLETED_EXAMPLE)]) == 0
 

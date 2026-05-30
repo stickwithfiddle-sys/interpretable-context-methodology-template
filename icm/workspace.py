@@ -39,6 +39,14 @@ class WorkspaceCreation:
 
 
 @dataclass(frozen=True)
+class WorkspaceInitialization:
+    target: Path
+    project_name: str
+    created_files: tuple[str, ...]
+    skipped_files: tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class ValidationResult:
     errors: tuple[str, ...]
     warnings: tuple[str, ...]
@@ -81,6 +89,31 @@ class StageStatus:
 class ReviewFinding:
     level: str
     message: str
+
+
+@dataclass(frozen=True)
+class DoctorFinding:
+    level: str
+    message: str
+
+
+@dataclass(frozen=True)
+class DoctorResult:
+    findings: tuple[DoctorFinding, ...]
+
+    @property
+    def failures(self) -> tuple[DoctorFinding, ...]:
+        return tuple(finding for finding in self.findings if finding.level == "FAIL")
+
+    @property
+    def warnings(self) -> tuple[DoctorFinding, ...]:
+        return tuple(finding for finding in self.findings if finding.level == "WARN")
+
+    def passed(self, strict: bool = False) -> bool:
+        return not self.failures and not (strict and self.warnings)
+
+    def exit_code(self, strict: bool = False) -> int:
+        return 0 if self.passed(strict=strict) else 1
 
 
 @dataclass(frozen=True)
@@ -142,12 +175,43 @@ def copy_resource_tree(source: ResourcePath, target: Path) -> None:
         target.write_bytes(source.read_bytes())
 
 
+def iter_resource_file_bytes(source: ResourcePath, prefix: Path | None = None):
+    prefix = prefix or Path()
+    if source.is_dir():
+        for child in sorted(source.iterdir(), key=lambda item: item.name):
+            if child.name == "__pycache__" or child.name.endswith(".pyc"):
+                continue
+            yield from iter_resource_file_bytes(child, prefix / child.name)
+        return
+
+    if source.is_file():
+        yield prefix, source.read_bytes()
+
+
+def iter_template_file_bytes():
+    if TEMPLATE_ROOT.exists():
+        for source_path in sorted(TEMPLATE_ROOT.rglob("*")):
+            if not source_path.is_file():
+                continue
+            if source_path.name == "__pycache__" or source_path.name.endswith(".pyc"):
+                continue
+            yield source_path.relative_to(TEMPLATE_ROOT), source_path.read_bytes()
+    else:
+        yield from iter_resource_file_bytes(packaged_template_root())
+
+
 def packaged_template_root() -> ResourcePath:
     return resources.files("icm").joinpath("templates", "icm-workspace")
 
 
 def packaged_validator() -> ResourcePath:
     return resources.files("icm").joinpath("legacy_tools", "validate_icm_workspace.py")
+
+
+def validator_bytes() -> bytes:
+    if LEGACY_VALIDATOR.exists():
+        return LEGACY_VALIDATOR.read_bytes()
+    return packaged_validator().read_bytes()
 
 
 def copy_template(target: Path) -> None:
@@ -164,19 +228,29 @@ def copy_template(target: Path) -> None:
         (target_tools / "validate_icm_workspace.py").write_bytes(packaged_validator().read_bytes())
 
 
+def is_text_file(file_path: Path) -> bool:
+    return file_path.suffix in TEXT_SUFFIXES or file_path.name in TEXT_SUFFIXES
+
+
+def replace_tokens_in_file(file_path: Path, replacements: dict[str, str]) -> None:
+    if not is_text_file(file_path):
+        return
+    try:
+        original_text = file_path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return
+    updated_text = original_text
+    for token, replacement in replacements.items():
+        updated_text = updated_text.replace(token, replacement)
+    if updated_text != original_text:
+        file_path.write_text(updated_text, encoding="utf-8")
+
+
 def replace_tokens(target: Path, replacements: dict[str, str]) -> None:
     for file_path in target.rglob("*"):
-        if not file_path.is_file() or file_path.suffix not in TEXT_SUFFIXES:
+        if not file_path.is_file():
             continue
-        try:
-            original_text = file_path.read_text(encoding="utf-8")
-        except UnicodeDecodeError:
-            continue
-        updated_text = original_text
-        for token, replacement in replacements.items():
-            updated_text = updated_text.replace(token, replacement)
-        if updated_text != original_text:
-            file_path.write_text(updated_text, encoding="utf-8")
+        replace_tokens_in_file(file_path, replacements)
 
 
 def create_workspace(target: Path, name: str | None = None) -> WorkspaceCreation:
@@ -192,6 +266,50 @@ def create_workspace(target: Path, name: str | None = None) -> WorkspaceCreation
     copy_template(resolved_target)
     replace_tokens(resolved_target, replacements)
     return WorkspaceCreation(target=resolved_target, project_name=project_name)
+
+
+def initialize_workspace(target: Path, name: str | None = None) -> WorkspaceInitialization:
+    resolved_target = target.expanduser().resolve()
+    if resolved_target.exists() and not resolved_target.is_dir():
+        raise ValueError(f"Target is not a directory: {resolved_target}")
+    resolved_target.mkdir(parents=True, exist_ok=True)
+
+    project_name = name or resolved_target.name.replace("-", " ").replace("_", " ").title()
+    replacements = {
+        "{{PROJECT_NAME}}": project_name,
+        "{{PROJECT_SLUG}}": slugify(project_name),
+        "{{CREATED_DATE}}": dt.date.today().isoformat(),
+    }
+
+    created_files: list[str] = []
+    skipped_files: list[str] = []
+
+    for relative_path, content in iter_template_file_bytes():
+        destination = resolved_target / relative_path
+        relative_label = relative_path.as_posix()
+        if destination.exists():
+            skipped_files.append(relative_label)
+            continue
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(content)
+        replace_tokens_in_file(destination, replacements)
+        created_files.append(relative_label)
+
+    validator_relative = Path("tools") / "validate_icm_workspace.py"
+    validator_destination = resolved_target / validator_relative
+    if validator_destination.exists():
+        skipped_files.append(validator_relative.as_posix())
+    else:
+        validator_destination.parent.mkdir(parents=True, exist_ok=True)
+        validator_destination.write_bytes(validator_bytes())
+        created_files.append(validator_relative.as_posix())
+
+    return WorkspaceInitialization(
+        target=resolved_target,
+        project_name=project_name,
+        created_files=tuple(sorted(created_files)),
+        skipped_files=tuple(sorted(skipped_files)),
+    )
 
 
 def has_heading(markdown: str, heading: str) -> bool:
@@ -606,7 +724,91 @@ def review_stage(workspace_root: Path, target: str) -> StageReview:
     )
 
 
+def is_output_handoff_path(input_path: str) -> bool:
+    normalized = input_path.replace("\\", "/")
+    return "/output/" in normalized or normalized.startswith("output/") or "stages/" in normalized
+
+
+def doctor_workspace(workspace_root: Path) -> DoctorResult:
+    workspace_root = workspace_root.expanduser().resolve()
+    findings: list[DoctorFinding] = []
+
+    if not workspace_root.exists() or not workspace_root.is_dir():
+        return DoctorResult(findings=(DoctorFinding("FAIL", f"Workspace is not a directory: {workspace_root}"),))
+
+    if not (workspace_root / ".gitignore").exists():
+        findings.append(DoctorFinding("WARN", "Workspace .gitignore is missing."))
+
+    identity_path = workspace_root / "AGENTS.md"
+    if not identity_path.exists():
+        identity_path = workspace_root / "CLAUDE.md"
+    if identity_path.exists():
+        identity_text = identity_path.read_text(encoding="utf-8", errors="replace")
+        if "Interpretable Context Methodology" not in identity_text and "ICM" not in identity_text:
+            findings.append(DoctorFinding("WARN", f"Layer 0 identity file may not contain ICM guidance: {identity_path.name}"))
+
+    root_context_path = workspace_root / "CONTEXT.md"
+    if root_context_path.exists():
+        root_context = root_context_path.read_text(encoding="utf-8", errors="replace")
+        if not has_heading(root_context, "Stage Index") or "stages/" not in root_context:
+            findings.append(DoctorFinding("WARN", "Layer 1 routing file may not include an ICM Stage Index: CONTEXT.md"))
+
+    for stage_directory in collect_stage_directories(workspace_root):
+        context_path = stage_directory / "CONTEXT.md"
+        stage_label = f"stages/{stage_directory.name}"
+        if not context_path.exists():
+            findings.append(DoctorFinding("FAIL", f"Missing stage contract: {stage_label}/CONTEXT.md"))
+            continue
+
+        context_markdown = context_path.read_text(encoding="utf-8")
+        for heading in REQUIRED_STAGE_HEADINGS:
+            section = extract_section(context_markdown, heading)
+            if not section:
+                findings.append(DoctorFinding("FAIL", f"{stage_label}/CONTEXT.md section is empty: {heading}"))
+                continue
+            if heading in {"Inputs", "Outputs"} and not parse_contract_rows(context_markdown, heading):
+                findings.append(DoctorFinding("FAIL", f"{stage_label}/CONTEXT.md table has no rows: {heading}"))
+            elif heading not in {"Inputs", "Outputs"} and not first_paragraph(section):
+                findings.append(DoctorFinding("FAIL", f"{stage_label}/CONTEXT.md section is empty: {heading}"))
+
+        existing_outputs = existing_output_files(stage_directory)
+        for input_path in parse_input_paths(context_markdown):
+            resolved_input = resolve_contract_path(stage_directory, input_path)
+            if resolved_input.exists():
+                continue
+            if is_output_handoff_path(input_path):
+                if existing_outputs:
+                    findings.append(DoctorFinding("WARN", f"Declared handoff input is missing after this stage produced output: {stage_label}/CONTEXT.md -> {input_path}"))
+            else:
+                findings.append(DoctorFinding("FAIL", f"Declared input is missing: {stage_label}/CONTEXT.md -> {input_path}"))
+
+        declared_output_names = {output_name for output_name, _ in parse_output_specs(context_markdown)}
+        for output_name, location in parse_output_specs(context_markdown):
+            output_path = resolve_contract_path(stage_directory, str(Path(location) / output_name))
+            if output_path.exists() and output_path.stat().st_size == 0:
+                findings.append(DoctorFinding("FAIL", f"Declared output is empty: {stage_label}/output/{output_name}"))
+
+        for output_name in sorted(set(existing_output_files(stage_directory)) - declared_output_names):
+            findings.append(DoctorFinding("WARN", f"Output file is not declared in the contract: {stage_label}/output/{output_name}"))
+
+        if stage_directory.name.startswith("00_") and intake_needs_input(stage_directory):
+            findings.append(
+                DoctorFinding(
+                    "WARN",
+                    f"Project brief needs required sections before downstream stages run: {stage_label}/output/project-brief.md",
+                )
+            )
+
+    return DoctorResult(findings=tuple(findings))
+
+
 def suggest_fix(message: str) -> str:
+    if "Workspace .gitignore is missing" in message:
+        return "Run icm init . to add missing ICM starter files, or copy .gitignore from the template."
+    if "Layer 0 identity file may not contain ICM guidance" in message:
+        return "Merge the ICM operating guidance from the generated AGENTS.md template into the existing identity file."
+    if "Layer 1 routing file may not include" in message:
+        return "Merge the Stage Index and Stage Execution Protocol from the generated CONTEXT.md template into the existing routing file."
     if "Missing Layer 0" in message:
         return "Add AGENTS.md at the workspace root, or copy it from templates/icm-workspace/."
     if "Missing Layer 1" in message:
@@ -622,6 +824,10 @@ def suggest_fix(message: str) -> str:
         return "Add CONTEXT.md to the stage folder using templates/icm-workspace/_templates/stage-context.md."
     if "missing heading" in message:
         return "Add the missing required heading to the stage CONTEXT.md."
+    if "section is empty" in message:
+        return "Fill the named section so the stage gives the agent enough instruction to run safely."
+    if "table has no rows" in message:
+        return "Add at least one concrete row to the named Inputs or Outputs table."
     if "Missing Layer 3 folder" in message:
         return "Create a references/ folder inside the stage."
     if "Missing Layer 4" in message:
@@ -629,6 +835,9 @@ def suggest_fix(message: str) -> str:
     if "Declared input is missing" in message:
         missing_path = message.rsplit(":", 1)[-1].strip()
         return f"Create or restore the declared input, or update the Inputs table if it should not be required: {missing_path}"
+    if "Declared handoff input is missing after this stage produced output" in message:
+        missing_path = message.rsplit("->", 1)[-1].strip()
+        return f"Restore the upstream handoff or rerun the upstream stage before trusting this output: {missing_path}"
     if "Declared output is missing" in message:
         missing_path = message.rsplit(":", 1)[-1].strip()
         return f"Run the stage or create the declared output before review: {missing_path}"
@@ -641,6 +850,8 @@ def suggest_fix(message: str) -> str:
         return "Review the stage Outputs table and either declare this output or choose a declared output file."
     if "Project brief is missing" in message:
         return "Fill Desired Outcome, Audience Or Users, and Success Criteria before treating intake as reviewed."
+    if "Project brief needs required sections" in message:
+        return "Fill Desired Outcome, Audience Or Users, and Success Criteria in the intake brief."
     if "top-level markdown heading" in message:
         return "Add a top-level markdown heading so the artifact is easier to scan and review."
     return "Review the named file or folder and align it with the ICM template."

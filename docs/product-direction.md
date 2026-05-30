@@ -44,6 +44,18 @@ icm doctor
 5. Example workflows for research, content planning, documentation, and project planning.
 6. Docs site generated from the repo docs.
 
+## Current Product Spine
+
+The CLI now supports both adoption paths:
+
+```bash
+icm new my-project
+icm init .
+icm doctor
+```
+
+`icm new` is for a clean workspace. `icm init` is for an existing project and skips files that already exist. `icm doctor` now checks both structure and content-quality issues such as empty required sections, missing config inputs, undeclared outputs, and broken handoffs after outputs are present.
+
 ## Dashboard Concept
 
 A dashboard could become the product layer after the CLI and examples are strong.
@@ -68,4 +80,4 @@ The dashboard should feel like a cockpit for the workspace, not a replacement fo
 
 ## Recommended Next Product Step
 
-Build a small `icm` CLI before building a web dashboard. The CLI will clarify the domain language, expose the needed status model, and make the later dashboard much easier to design.
+Build artifact-specific review rubrics and more example workspaces before building a web dashboard. The dashboard should start only after the CLI commands, status model, and review language feel stable.

@@ -11,7 +11,7 @@ Install the CLI from the latest GitHub release in a virtual environment:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.6.0
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.7.0
 icm new my-first-icm-workspace --name "My First ICM Workspace"
 ```
 
@@ -45,7 +45,7 @@ On Windows PowerShell, use backslashes if you prefer:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.6.0
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.7.0
 icm new my-first-icm-workspace --name "My First ICM Workspace"
 icm validate my-first-icm-workspace --strict
 ```
@@ -59,7 +59,7 @@ python -m pip install -e ".[dev]"
 icm status examples/completed-content-plan
 ```
 
-To install from GitHub instead of cloning first, see [docs/install.md](docs/install.md).
+To install from GitHub instead of cloning first, see [docs/install.md](docs/install.md). The visual docs site is published at [stickwithfiddle-sys.github.io/interpretable-context-methodology-template](https://stickwithfiddle-sys.github.io/interpretable-context-methodology-template/).
 
 ## Why This Exists
 
@@ -100,7 +100,9 @@ Start with these files:
 | [docs/first-workspace.md](docs/first-workspace.md) | Step-by-step first run tutorial |
 | [docs/glossary.md](docs/glossary.md) | Plain-language definitions of ICM terms |
 | [docs/install.md](docs/install.md) | GitHub, virtualenv, and local install options |
+| [docs/index.html](docs/index.html) | GitHub Pages visual docs homepage |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
+| [docs/dashboard-direction.md](docs/dashboard-direction.md) | Dashboard direction and readiness criteria |
 | [docs/product-direction.md](docs/product-direction.md) | UX/product roadmap, including Hermes Agent-inspired ideas |
 | [docs/revision-audit.md](docs/revision-audit.md) | Current product audit, UX assessment, and next direction options |
 | [docs/release-process.md](docs/release-process.md) | Versioning, release, and GitHub workflow checklist |
@@ -113,6 +115,7 @@ The product path is the `icm` CLI:
 
 ```bash
 python -m icm new ../demo --name "Demo"
+python -m icm init ../existing-project --name "Existing Project"
 python -m icm validate ../demo --strict
 python -m icm status ../demo
 python -m icm next ../demo
@@ -121,10 +124,11 @@ python -m icm review stages/01_discovery --workspace ../demo
 python -m icm doctor ../demo
 ```
 
-After installing in a virtual environment with `python -m pip install -e .`, the same commands are available as:
+After installing in a virtual environment with `python -m pip install -e ".[dev]"`, the same commands are available as:
 
 ```bash
 icm new ../demo --name "Demo"
+icm init ../existing-project --name "Existing Project"
 icm validate ../demo --strict
 icm status ../demo
 icm next ../demo
@@ -147,6 +151,7 @@ templates/icm-workspace/
 examples/
   completed-content-plan/   Filled example workspace for a small content workflow
 tools/
+  check_docs_site.py        Validates GitHub Pages homepage references
   new_icm_workspace.py      Copies the template into a new project folder
   validate_icm_workspace.py Checks stage naming, contracts, and handoff folders
 icm/
@@ -155,7 +160,9 @@ tests/
   test_cli.py               CLI behavior coverage
   test_workspace.py         Workspace helper and review coverage
 docs/
+  index.html                GitHub Pages visual docs homepage
   first-workspace.md        Beginner tutorial
+  dashboard-direction.md    Dashboard readiness notes
   glossary.md               Plain-language terms
   install.md                Install options and package smoke checks
   product-direction.md      UX and product roadmap
@@ -198,7 +205,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.6.0`.
+Current package version: `0.7.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 

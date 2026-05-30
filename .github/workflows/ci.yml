@@ -24,6 +24,9 @@ jobs:
       - name: Check packaged assets
         run: python tools/check_packaged_assets.py
 
+      - name: Check docs site
+        run: python tools/check_docs_site.py
+
       - name: Run pytest suite
         run: python -m pytest
 
@@ -62,6 +65,7 @@ jobs:
           rm -rf icm-install-smoke
           /tmp/icm-wheel-venv/bin/icm --version
           /tmp/icm-wheel-venv/bin/icm new icm-install-smoke --name "Install Smoke"
+          /tmp/icm-wheel-venv/bin/icm init icm-install-smoke --name "Install Smoke"
           /tmp/icm-wheel-venv/bin/icm validate icm-install-smoke --strict
           /tmp/icm-wheel-venv/bin/icm status icm-install-smoke
           test -f icm-install-smoke/.gitignore

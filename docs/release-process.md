@@ -25,8 +25,14 @@ Run:
 ```bash
 python -m pytest
 python tools/check_packaged_assets.py
+python tools/check_docs_site.py
 python -m icm validate templates/icm-workspace --strict
 python -m icm validate examples/completed-content-plan --strict
+rm -rf /tmp/icm-existing-smoke
+mkdir -p /tmp/icm-existing-smoke
+printf '# Existing\n' > /tmp/icm-existing-smoke/README.md
+python -m icm init /tmp/icm-existing-smoke --name "Existing Smoke"
+python -m icm validate /tmp/icm-existing-smoke --strict
 python -m icm status examples/completed-content-plan
 python -m icm next examples/completed-content-plan
 python -m icm explain stages/01_discovery --workspace examples/completed-content-plan
@@ -44,6 +50,7 @@ Check:
 - Any new workflow behavior appears in a doc or example.
 - The completed example still validates.
 - Pytest covers the expected CLI and workspace behavior.
+- The docs homepage still references existing local assets.
 - The wheel builds and `icm new` works outside the source checkout.
 
 ## Installed Package Smoke Test
@@ -56,6 +63,7 @@ python -m venv .tmp/install-venv
 rm -rf /tmp/icm-install-smoke
 cd /tmp
 /path/to/repo/.tmp/install-venv/bin/icm new /tmp/icm-install-smoke --name "Install Smoke"
+/path/to/repo/.tmp/install-venv/bin/icm init /tmp/icm-install-smoke --name "Install Smoke"
 /path/to/repo/.tmp/install-venv/bin/icm validate /tmp/icm-install-smoke --strict
 python /tmp/icm-install-smoke/tools/validate_icm_workspace.py /tmp/icm-install-smoke --strict
 ```
@@ -88,3 +96,4 @@ Use these settings once the project has collaborators:
 - Use squash merges for tidy history, unless preserving commits helps review.
 - Delete branches after merge.
 - Keep issues and discussions enabled for feedback.
+- Use GitHub Pages from the `main` branch `/docs` folder for the visual docs site.

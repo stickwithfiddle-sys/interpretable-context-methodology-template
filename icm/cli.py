@@ -9,7 +9,9 @@ from pathlib import Path
 from . import __version__
 from .workspace import (
     create_workspace,
+    doctor_workspace,
     extract_section,
+    initialize_workspace,
     next_stage,
     parse_contract_rows,
     review_stage,
@@ -41,6 +43,31 @@ def cmd_new(args: argparse.Namespace) -> int:
         print(f"ERROR {error}", file=sys.stderr)
         return 1
     print_creation_next_steps(created.target, created.project_name)
+    return 0
+
+
+def cmd_init(args: argparse.Namespace) -> int:
+    try:
+        initialized = initialize_workspace(Path(args.target), name=args.name)
+    except (FileNotFoundError, ValueError) as error:
+        print(f"ERROR {error}", file=sys.stderr)
+        return 1
+
+    print(f"Initialized ICM workspace: {initialized.target}")
+    print(f"Project name: {initialized.project_name}")
+    print(f"Created files: {len(initialized.created_files)}")
+    if initialized.skipped_files:
+        print(f"Skipped existing files: {len(initialized.skipped_files)}")
+        for file_name in initialized.skipped_files[:8]:
+            print(f"  - {file_name}")
+        if len(initialized.skipped_files) > 8:
+            print(f"  - ...and {len(initialized.skipped_files) - 8} more")
+    print()
+    print("Next steps:")
+    print("  1. Run icm doctor")
+    print("  2. Fill stages/00_intake/output/project-brief.md")
+    print("  3. Ask your agent to run stages/00_intake and stop at the Review Gate")
+    print("  4. Run icm validate --strict")
     return 0
 
 
@@ -201,6 +228,16 @@ def cmd_doctor(args: argparse.Namespace) -> int:
             print(f"- {error}")
             print(f"  Fix: {suggest_fix(error)}")
 
+    doctor = doctor_workspace(workspace_root)
+    print()
+    if doctor.findings:
+        print("Content checks: needs attention")
+        for finding in (*doctor.failures, *doctor.warnings):
+            print(f"{finding.level:<4} {finding.message}")
+            print(f"     Fix: {suggest_fix(finding.message)}")
+    else:
+        print("Content checks: OK")
+
     statuses = workspace_statuses(workspace_root)
     if statuses:
         print()
@@ -221,7 +258,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
                 relative_stage = recommended.path
             print(f"Likely next action: run or repair {relative_stage}")
 
-    return result.exit_code(strict=args.strict)
+    return 1 if result.exit_code(strict=args.strict) or doctor.exit_code(strict=args.strict) else 0
 
 
 def cmd_review(args: argparse.Namespace) -> int:
@@ -266,6 +303,11 @@ def build_parser() -> argparse.ArgumentParser:
     new_parser.add_argument("target", help="Directory to create. It must be empty if it already exists.")
     new_parser.add_argument("--name", help="Human-readable project name. Defaults to the target directory name.")
     new_parser.set_defaults(func=cmd_new)
+
+    init_parser = subparsers.add_parser("init", help="Add ICM files to an existing project without overwriting files")
+    init_parser.add_argument("target", nargs="?", default=".", help="Project directory to initialize. Defaults to the current directory.")
+    init_parser.add_argument("--name", help="Human-readable project name. Defaults to the target directory name.")
+    init_parser.set_defaults(func=cmd_init)
 
     validate_parser = subparsers.add_parser("validate", help="Validate an ICM workspace")
     validate_parser.add_argument("workspace", nargs="?", default=".", help="Path to the workspace. Defaults to the current directory.")

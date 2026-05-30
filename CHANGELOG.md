@@ -12,6 +12,21 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.7.0] - 2026-05-30
+
+### Added
+
+- Added `icm init` to initialize existing project folders without overwriting existing files.
+- Added richer `icm doctor` content checks for empty stage sections, missing declared inputs, undeclared output files, empty outputs, and broken handoffs.
+- Added a GitHub Pages docs homepage with visual CLI screenshots and a workspace flow diagram.
+- Added `tools/check_docs_site.py` and CI coverage for local docs site references.
+- Added dashboard direction notes with readiness criteria and MVP boundaries.
+
+### Changed
+
+- Updated beginner docs to show both clean-start and existing-project adoption flows.
+- Updated the roadmap and revision audit now that `icm init`, richer `doctor`, and the visual docs site are in place.
+
 ## [0.6.0] - 2026-05-30
 
 ### Added
@@ -80,7 +95,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.3.0...v0.4.0

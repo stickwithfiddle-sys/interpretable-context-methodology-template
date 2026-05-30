@@ -43,8 +43,10 @@ Run these before opening or merging a pull request:
 ```bash
 python -m pytest
 python tools/check_packaged_assets.py
+python tools/check_docs_site.py
 python -m icm validate templates/icm-workspace --strict
 python -m icm validate examples/completed-content-plan --strict
+python -m icm init /tmp/icm-existing-smoke --name "Existing Smoke"
 python -m icm status examples/completed-content-plan
 python -m icm next examples/completed-content-plan
 python -m icm explain stages/01_discovery --workspace examples/completed-content-plan
@@ -70,6 +72,7 @@ python examples/completed-content-plan/tools/validate_icm_workspace.py examples/
 - Version numbers are updated when preparing a release.
 - Package-embedded assets match `templates/icm-workspace`.
 - Tests pass locally with `python -m pytest`.
+- The docs homepage passes `python tools/check_docs_site.py` when visual docs change.
 
 When changing `templates/icm-workspace`, mirror it into `icm/templates/icm-workspace` and run:
 

@@ -8,14 +8,15 @@ This roadmap keeps product work visible without turning the README into a backlo
 - Keep generated workspaces self-contained and inspectable.
 - Keep the installable CLI reliable outside the source checkout.
 - Keep security, ownership, CI, and pytest coverage visible before release.
+- Support both clean-start and existing-project adoption with `icm new` and `icm init`.
+- Keep the GitHub Pages docs site useful as the visual first stop.
 
 ## Next
 
-- Add richer `icm doctor` checks for empty required sections and broken handoffs.
-- Add `icm init` for converting an existing folder into an ICM workspace.
 - Add richer `icm review` checks for artifact-specific rubrics and source traceability.
 - Add examples for research synthesis, project planning, and documentation pipelines.
-- Add a docs site once the CLI vocabulary stabilizes.
+- Add a short demo recording or animated walkthrough for the docs site.
+- Prepare for PyPI once the CLI interface and template format stabilize.
 
 ## Later
 

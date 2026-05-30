@@ -43,6 +43,35 @@ def test_create_workspace_from_packaged_resources_preserves_beginner_assets(
     assert workspace.validate_workspace(target).passed(strict=True)
 
 
+def test_initialize_workspace_preserves_existing_files(tmp_path: Path) -> None:
+    target = tmp_path / "existing-project"
+    target.mkdir()
+    readme_path = target / "README.md"
+    readme_path.write_text("# Existing Project\n", encoding="utf-8")
+
+    initialized = workspace.initialize_workspace(target, name="Existing Project")
+
+    assert "README.md" in initialized.skipped_files
+    assert "AGENTS.md" in initialized.created_files
+    assert readme_path.read_text(encoding="utf-8") == "# Existing Project\n"
+    assert (target / "stages" / "00_intake" / "CONTEXT.md").is_file()
+    assert (target / "tools" / "validate_icm_workspace.py").is_file()
+    assert workspace.validate_workspace(target).passed(strict=True)
+
+
+def test_doctor_warns_when_existing_root_files_need_icm_guidance(tmp_path: Path) -> None:
+    target = tmp_path / "existing-project"
+    target.mkdir()
+    (target / "AGENTS.md").write_text("# Existing Agent Notes\n", encoding="utf-8")
+    (target / "CONTEXT.md").write_text("# Existing Context\n", encoding="utf-8")
+
+    workspace.initialize_workspace(target, name="Existing Project")
+    result = workspace.doctor_workspace(target)
+
+    assert any("Layer 0 identity file may not contain ICM guidance" in finding.message for finding in result.warnings)
+    assert any("Layer 1 routing file may not include" in finding.message for finding in result.warnings)
+
+
 def test_new_workspace_status_starts_at_intake(tmp_path: Path) -> None:
     target = tmp_path / "demo"
     workspace.create_workspace(target, name="Demo")
@@ -70,3 +99,15 @@ def test_review_unfinished_intake_fails(tmp_path: Path) -> None:
 
     assert not review.passed()
     assert any("Project brief is missing" in finding.message for finding in review.errors)
+
+
+def test_doctor_flags_empty_intake_and_missing_config_input(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+    workspace.create_workspace(target, name="Demo")
+    (target / "_config" / "quality-gates.md").unlink()
+
+    result = workspace.doctor_workspace(target)
+
+    assert not result.passed()
+    assert any("Project brief needs required sections" in finding.message for finding in result.warnings)
+    assert any("Declared input is missing" in finding.message for finding in result.failures)

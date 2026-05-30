@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" role="img" aria-labelledby="title desc">
+  <title id="title">icm new terminal screenshot</title>
+  <desc id="desc">Terminal output showing a new ICM workspace being created.</desc>
+  <rect width="960" height="580" fill="#f5f7fa"/>
+  <rect x="44" y="44" width="872" height="492" fill="#151719" stroke="#2f363d" stroke-width="2"/>
+  <rect x="44" y="44" width="872" height="42" fill="#22272c"/>
+  <circle cx="70" cy="65" r="7" fill="#d94841"/>
+  <circle cx="94" cy="65" r="7" fill="#d9a441"/>
+  <circle cx="118" cy="65" r="7" fill="#3fb37f"/>
+  <text x="146" y="70" fill="#dce3e8" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16">terminal</text>
+  <text x="72" y="128" fill="#94d7ca" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="20">$ icm new my-first-icm-workspace --name "My First ICM Workspace"</text>
+  <text x="72" y="176" fill="#f1f5f4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="20">Created ICM workspace: /projects/my-first-icm-workspace</text>
+  <text x="72" y="212" fill="#f1f5f4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="20">Project name: My First ICM Workspace</text>
+  <text x="72" y="274" fill="#d7dee4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="20">Next steps:</text>
+  <text x="96" y="314" fill="#d7dee4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="20">1. cd "/projects/my-first-icm-workspace"</text>
+  <text x="96" y="354" fill="#d7dee4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="20">2. Fill stages/00_intake/output/project-brief.md</text>
+  <text x="96" y="394" fill="#d7dee4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="20">3. Ask your agent to run stages/00_intake</text>
+  <text x="96" y="434" fill="#d7dee4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="20">4. Run icm validate --strict</text>
+  <rect x="70" y="472" width="258" height="38" fill="#0f766e"/>
+  <text x="90" y="497" fill="#ffffff" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18">OK: ready for intake</text>
+</svg>
