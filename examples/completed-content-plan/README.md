@@ -29,11 +29,17 @@ The important thing to notice is the shape of the handoffs:
 From this example folder:
 
 ```bash
-python tools/validate_icm_workspace.py . --strict
+icm validate --strict
 ```
 
 Expected output:
 
 ```text
 OK: workspace passed validation with 0 warning(s)
+```
+
+If `icm` is not installed, use:
+
+```bash
+python tools/validate_icm_workspace.py . --strict
 ```

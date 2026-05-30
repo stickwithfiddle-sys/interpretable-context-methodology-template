@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package
+        run: python -m pip install -e .
+
+      - name: Validate template
+        run: icm validate templates/icm-workspace --strict
+
+      - name: Validate completed example
+        run: icm validate examples/completed-content-plan --strict
+
+      - name: Smoke test CLI status
+        run: icm status examples/completed-content-plan
+
+      - name: Smoke test CLI next
+        run: icm next examples/completed-content-plan
+
+      - name: Smoke test CLI explain
+        run: icm explain stages/01_discovery --workspace examples/completed-content-plan
+
+      - name: Smoke test CLI doctor
+        run: icm doctor examples/completed-content-plan --strict

@@ -18,7 +18,7 @@ The point is not automation for its own sake. The point is to keep the workflow 
 From this repository root:
 
 ```bash
-python tools/new_icm_workspace.py ../my-first-icm-workspace --name "My First ICM Workspace"
+python -m icm new ../my-first-icm-workspace --name "My First ICM Workspace"
 ```
 
 Expected output:
@@ -33,7 +33,7 @@ Next steps:
   3. Ask your agent:
      Read AGENTS.md and CONTEXT.md, then run stages/00_intake.
      Write only the declared outputs, run Verify, and stop at the Review Gate.
-  4. Run python tools/validate_icm_workspace.py . --strict
+  4. Run icm validate --strict
 ```
 
 ## Step 2: Fill The First Input
@@ -100,7 +100,7 @@ Busy technical readers who want a clear summary without reading every source.
 From the new workspace root:
 
 ```bash
-python tools/validate_icm_workspace.py . --strict
+python -m icm validate . --strict
 ```
 
 Expected output:
@@ -139,6 +139,17 @@ Write the declared output, run Verify, and stop at the Review Gate.
 ```
 
 Repeat that pattern through the numbered stages.
+
+## CLI Helpers
+
+These commands help you see what is going on:
+
+```bash
+python -m icm status .
+python -m icm next .
+python -m icm explain stages/01_discovery
+python -m icm doctor .
+```
 
 ## Step 6: Improve The Source
 

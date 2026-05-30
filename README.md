@@ -9,7 +9,7 @@ Think of ICM as Trello meets Makefile meets agent prompts: each numbered folder 
 If you only run one command, run this:
 
 ```bash
-python tools/new_icm_workspace.py ../my-first-icm-workspace --name "My First ICM Workspace"
+python -m icm new ../my-first-icm-workspace --name "My First ICM Workspace"
 ```
 
 Then open the new folder and fill in:
@@ -28,7 +28,7 @@ Write only the declared outputs, run the Verify checks, and stop at the Review G
 Finally, validate the workspace structure:
 
 ```bash
-python tools/validate_icm_workspace.py ../my-first-icm-workspace --strict
+python -m icm validate ../my-first-icm-workspace --strict
 ```
 
 Expected output:
@@ -40,8 +40,17 @@ OK: workspace passed validation with 0 warning(s)
 On Windows PowerShell, use backslashes if you prefer:
 
 ```powershell
-python tools\new_icm_workspace.py ..\my-first-icm-workspace --name "My First ICM Workspace"
-python tools\validate_icm_workspace.py ..\my-first-icm-workspace --strict
+python -m icm new ..\my-first-icm-workspace --name "My First ICM Workspace"
+python -m icm validate ..\my-first-icm-workspace --strict
+```
+
+If you want the shorter `icm` command while developing from this repo, install it in a virtual environment:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+icm status examples/completed-content-plan
 ```
 
 ## Why This Exists
@@ -84,8 +93,33 @@ Start with these files:
 | [docs/glossary.md](docs/glossary.md) | Plain-language definitions of ICM terms |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
 | [docs/product-direction.md](docs/product-direction.md) | UX/product roadmap, including Hermes Agent-inspired ideas |
+| [docs/release-process.md](docs/release-process.md) | Versioning, release, and GitHub workflow checklist |
 | [docs/research-summary.md](docs/research-summary.md) | Practical summary of the ICM paper |
 | [docs/template-design.md](docs/template-design.md) | Design decisions behind this starter kit |
+
+## CLI MVP
+
+The product path is the `icm` CLI:
+
+```bash
+python -m icm new ../demo --name "Demo"
+python -m icm validate ../demo --strict
+python -m icm status ../demo
+python -m icm next ../demo
+python -m icm explain stages/01_discovery --workspace ../demo
+python -m icm doctor ../demo
+```
+
+After installing in a virtual environment with `python -m pip install -e .`, the same commands are available as:
+
+```bash
+icm new ../demo --name "Demo"
+icm validate ../demo --strict
+icm status ../demo
+icm next ../demo
+icm explain stages/01_discovery --workspace ../demo
+icm doctor ../demo
+```
 
 ## What Is Included
 
@@ -103,10 +137,13 @@ examples/
 tools/
   new_icm_workspace.py      Copies the template into a new project folder
   validate_icm_workspace.py Checks stage naming, contracts, and handoff folders
+icm/
+  cli.py                    Product CLI for new, validate, status, next, explain, doctor
 docs/
   first-workspace.md        Beginner tutorial
   glossary.md               Plain-language terms
   product-direction.md      UX and product roadmap
+  release-process.md        GitHub and versioning workflow
   research-summary.md       Practical findings extracted from the paper
   template-design.md        Design decisions and adaptation notes
 ```
@@ -144,6 +181,10 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 ## Status
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
+
+Current package version: `0.3.0`.
+
+Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 
 Maintained by Hobo.
 

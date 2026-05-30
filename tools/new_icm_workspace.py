@@ -94,7 +94,8 @@ def main() -> int:
     print("  3. Ask your agent:")
     print("     Read AGENTS.md and CONTEXT.md, then run stages/00_intake.")
     print("     Write only the declared outputs, run Verify, and stop at the Review Gate.")
-    print("  4. Run python tools/validate_icm_workspace.py . --strict")
+    print("  4. Run icm validate --strict")
+    print("     Or use the bundled fallback: python tools/validate_icm_workspace.py . --strict")
     return 0
 
 

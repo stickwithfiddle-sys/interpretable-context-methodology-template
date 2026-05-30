@@ -22,13 +22,28 @@ Write only the declared outputs, run Verify, and stop at the Review Gate.
 ## Validate
 
 ```bash
-python tools/validate_icm_workspace.py . --strict
+icm validate --strict
 ```
 
 Expected output:
 
 ```text
 OK: workspace passed validation with 0 warning(s)
+```
+
+If the `icm` command is not installed, use the bundled validator:
+
+```bash
+python tools/validate_icm_workspace.py . --strict
+```
+
+## Useful CLI Commands
+
+```bash
+icm status .
+icm next .
+icm explain stages/01_discovery
+icm doctor .
 ```
 
 ## Layer Map

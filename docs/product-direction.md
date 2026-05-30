@@ -28,8 +28,7 @@ ICM has a different center of gravity. Hermes is an agent runtime that grows wit
 
 1. Beginner README, glossary, tutorial, and completed example workspace.
 2. Friendlier command output from `new_icm_workspace.py`.
-3. Better validator messages with suggested fixes.
-4. A small CLI facade:
+3. A small CLI facade:
 
 ```bash
 icm new my-project
@@ -40,6 +39,7 @@ icm explain stages/01_discovery
 icm doctor
 ```
 
+4. Better validator messages with suggested fixes.
 5. Example workflows for research, content planning, documentation, and project planning.
 6. Docs site generated from the repo docs.
 
