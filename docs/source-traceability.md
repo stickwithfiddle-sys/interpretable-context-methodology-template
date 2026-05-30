@@ -36,6 +36,19 @@ icm review stages/01_discovery
 
 The review fails when the output does not cite a required source by path or filename.
 
+To also require the table shape and a minimum number of cited paths, extend the rubric:
+
+```markdown
+## Required Table Columns
+
+- Source
+- Used For
+
+## Required Link Or Path Count
+
+- 3
+```
+
 ## Good Habits
 
 - Cite the source path when the output depends on a file, prior stage output, or reusable reference.

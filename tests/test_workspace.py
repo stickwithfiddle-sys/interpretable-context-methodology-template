@@ -6,6 +6,7 @@ import icm.workspace as workspace
 REPO_ROOT = Path(__file__).resolve().parents[1]
 COMPLETED_EXAMPLE = REPO_ROOT / "examples" / "completed-content-plan"
 RESEARCH_EXAMPLE = REPO_ROOT / "examples" / "completed-research-brief"
+DOCS_EXAMPLE = REPO_ROOT / "examples" / "completed-documentation-refresh"
 
 
 def test_slugify_normalizes_names() -> None:
@@ -211,6 +212,141 @@ Demo criteria.
     assert any("Rubric required source cited" in finding.message for finding in review.passes)
 
 
+def test_review_fails_when_required_table_columns_are_missing(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+    workspace.create_workspace(target, name="Demo")
+    brief_path = target / "stages" / "00_intake" / "output" / "project-brief.md"
+    brief_path.write_text(
+        """# Project Brief
+
+| Source | Status |
+| --- | --- |
+| `README.md` | Current |
+
+## Desired Outcome
+
+Demo outcome.
+
+## Audience Or Users
+
+Demo audience.
+
+## Success Criteria
+
+Demo criteria.
+""",
+        encoding="utf-8",
+    )
+    rubric_path = target / "stages" / "00_intake" / "references" / "project-brief-rubric.md"
+    rubric_path.write_text(
+        """# Project Brief Rubric
+
+## Required Table Columns
+
+- Source
+- Status
+- Owner
+""",
+        encoding="utf-8",
+    )
+
+    review = workspace.review_stage(target, "00_intake")
+
+    assert not review.passed()
+    assert any("Rubric required table columns missing" in finding.message for finding in review.errors)
+
+
+def test_review_passes_when_table_columns_and_path_count_match(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+    workspace.create_workspace(target, name="Demo")
+    brief_path = target / "stages" / "00_intake" / "output" / "project-brief.md"
+    brief_path.write_text(
+        """# Project Brief
+
+| Source | Status | Owner |
+| --- | --- | --- |
+| `README.md` | Current | Hobo |
+| `docs/install.md` | Needs review | Hobo |
+| [Roadmap](../../ROADMAP.md) | Current | Hobo |
+
+## Desired Outcome
+
+Demo outcome.
+
+## Audience Or Users
+
+Demo audience.
+
+## Success Criteria
+
+Demo criteria.
+""",
+        encoding="utf-8",
+    )
+    rubric_path = target / "stages" / "00_intake" / "references" / "project-brief-rubric.md"
+    rubric_path.write_text(
+        """# Project Brief Rubric
+
+## Required Table Columns
+
+- Source
+- Status
+- Owner
+
+## Required Link Or Path Count
+
+- 3
+""",
+        encoding="utf-8",
+    )
+
+    review = workspace.review_stage(target, "00_intake")
+
+    assert review.passed(strict=True)
+    assert any("Rubric required table columns present" in finding.message for finding in review.passes)
+    assert any("Rubric link/path reference count met" in finding.message for finding in review.passes)
+
+
+def test_review_fails_when_path_count_is_too_low(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+    workspace.create_workspace(target, name="Demo")
+    brief_path = target / "stages" / "00_intake" / "output" / "project-brief.md"
+    brief_path.write_text(
+        """# Project Brief
+
+Source: `README.md`
+
+## Desired Outcome
+
+Demo outcome.
+
+## Audience Or Users
+
+Demo audience.
+
+## Success Criteria
+
+Demo criteria.
+""",
+        encoding="utf-8",
+    )
+    rubric_path = target / "stages" / "00_intake" / "references" / "project-brief-rubric.md"
+    rubric_path.write_text(
+        """# Project Brief Rubric
+
+## Required Link Or Path Count
+
+- 2
+""",
+        encoding="utf-8",
+    )
+
+    review = workspace.review_stage(target, "00_intake")
+
+    assert not review.passed()
+    assert any("Rubric link/path reference count too low" in finding.message for finding in review.errors)
+
+
 def test_research_example_validates_and_review_rubric_passes() -> None:
     assert workspace.validate_workspace(RESEARCH_EXAMPLE).passed(strict=True)
 
@@ -219,6 +355,16 @@ def test_research_example_validates_and_review_rubric_passes() -> None:
     assert review.passed(strict=True)
     assert any("Review rubric loaded" in finding.message for finding in review.passes)
     assert any("Rubric required source cited" in finding.message for finding in review.passes)
+
+
+def test_documentation_example_validates_and_review_validators_pass() -> None:
+    assert workspace.validate_workspace(DOCS_EXAMPLE).passed(strict=True)
+
+    review = workspace.review_stage(DOCS_EXAMPLE, "stages/01_discovery")
+
+    assert review.passed(strict=True)
+    assert any("Rubric required table columns present" in finding.message for finding in review.passes)
+    assert any("Rubric link/path reference count met" in finding.message for finding in review.passes)
 
 
 def test_review_unfinished_intake_fails(tmp_path: Path) -> None:

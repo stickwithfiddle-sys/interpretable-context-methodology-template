@@ -12,10 +12,19 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.10.0] - 2026-05-30
+
+### Added
+
+- Added deterministic `icm review` rubric checks for required markdown table columns.
+- Added deterministic `icm review` rubric checks for minimum link/path reference counts.
+- Added a completed documentation-refresh example workspace that demonstrates table-column and path-count checks.
+- Added a copy-paste demo walkthrough and a visual docs homepage demo section.
+
 ### Changed
 
-- Beginner install docs now lead with the live PyPI package.
-- Roadmap and revision audit now reflect that the first PyPI release is published.
+- Beginner install docs continue to lead with the live PyPI package.
+- Roadmap, product direction, revision audit, and release checklists now reflect the v0.10.0 demo and validator work.
 
 ## [0.9.0] - 2026-05-30
 
@@ -130,7 +139,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.6.0...v0.7.0

@@ -97,6 +97,8 @@ class ReviewRubric:
     required_sections: tuple[str, ...]
     required_terms: tuple[str, ...]
     required_sources: tuple[str, ...]
+    required_table_columns: tuple[str, ...]
+    minimum_link_or_path_count: int | None
     forbidden_terms: tuple[str, ...]
 
 
@@ -474,6 +476,17 @@ def normalize_rubric_item(item: str) -> str:
     return item.lstrip("#").strip()
 
 
+def parse_first_integer(markdown: str) -> int | None:
+    for item in parse_bullet_items(markdown):
+        match = re.search(r"\d+", item)
+        if match:
+            return int(match.group(0))
+    match = re.search(r"\d+", markdown)
+    if match:
+        return int(match.group(0))
+    return None
+
+
 def parse_review_rubric(rubric_path: Path) -> ReviewRubric:
     markdown = rubric_path.read_text(encoding="utf-8")
     required_sections = parse_bullet_items(extract_section(markdown, "Required Sections"))
@@ -481,6 +494,12 @@ def parse_review_rubric(rubric_path: Path) -> ReviewRubric:
     required_sources = (
         parse_bullet_items(extract_section(markdown, "Required Sources"))
         + parse_bullet_items(extract_section(markdown, "Required Source References"))
+    )
+    required_table_columns = parse_bullet_items(extract_section(markdown, "Required Table Columns"))
+    minimum_link_or_path_count = (
+        parse_first_integer(extract_section(markdown, "Required Link Or Path Count"))
+        or parse_first_integer(extract_section(markdown, "Minimum Link Or Path Count"))
+        or parse_first_integer(extract_section(markdown, "Required Path Count"))
     )
     forbidden_terms = (
         parse_bullet_items(extract_section(markdown, "Forbidden Terms"))
@@ -491,6 +510,8 @@ def parse_review_rubric(rubric_path: Path) -> ReviewRubric:
         required_sections=required_sections,
         required_terms=required_terms,
         required_sources=required_sources,
+        required_table_columns=required_table_columns,
+        minimum_link_or_path_count=minimum_link_or_path_count,
         forbidden_terms=forbidden_terms,
     )
 
@@ -528,6 +549,73 @@ def source_reference_present(output_text: str, source_reference: str) -> bool:
     return any(variant.lower() in normalized_output for variant in source_reference_variants(source_reference))
 
 
+def normalize_table_column(column: str) -> str:
+    unquoted = unquote_markdown_cell(column).lower()
+    return re.sub(r"[^a-z0-9]+", " ", unquoted).strip()
+
+
+def split_raw_markdown_table_row(line: str) -> tuple[str, ...] | None:
+    stripped = line.strip()
+    if not stripped.startswith("|") or not stripped.endswith("|"):
+        return None
+    return tuple(cell.strip() for cell in stripped.strip("|").split("|"))
+
+
+def is_table_separator(cells: tuple[str, ...]) -> bool:
+    return all(not cell.replace("-", "").replace(":", "").strip() for cell in cells)
+
+
+def markdown_table_headers(markdown: str) -> tuple[tuple[str, ...], ...]:
+    headers: list[tuple[str, ...]] = []
+    current_header: tuple[str, ...] | None = None
+
+    for line in markdown.splitlines():
+        cells = split_raw_markdown_table_row(line)
+        if cells is None:
+            current_header = None
+            continue
+        if is_table_separator(cells):
+            continue
+        if current_header is None:
+            current_header = tuple(normalize_table_column(cell) for cell in cells if normalize_table_column(cell))
+            if current_header:
+                headers.append(current_header)
+
+    return tuple(headers)
+
+
+def has_table_with_columns(markdown: str, required_columns: tuple[str, ...]) -> bool:
+    required = {normalize_table_column(column) for column in required_columns}
+    required.discard("")
+    if not required:
+        return True
+    return any(required.issubset(set(header)) for header in markdown_table_headers(markdown))
+
+
+def looks_like_path_or_url(value: str) -> bool:
+    stripped = value.strip().strip("<>")
+    if not stripped:
+        return False
+    if re.match(r"https?://", stripped):
+        return True
+    if "/" in stripped or "\\" in stripped:
+        return True
+    return bool(re.search(r"\.(md|txt|json|ya?ml|csv|py|html|css|js|ts|tsx|svg|png|jpe?g|pdf)$", stripped, re.IGNORECASE))
+
+
+def count_link_or_path_references(markdown: str) -> int:
+    references: set[str] = set()
+    for match in re.finditer(r"\[[^\]]+\]\(([^)]+)\)", markdown):
+        target = match.group(1).split()[0].strip()
+        if looks_like_path_or_url(target):
+            references.add(target)
+    for match in re.finditer(r"`([^`]+)`", markdown):
+        target = match.group(1).strip()
+        if looks_like_path_or_url(target):
+            references.add(target)
+    return len(references)
+
+
 def apply_review_rubrics(stage_path: Path, output_name: str, output_text: str) -> tuple[ReviewFinding, ...]:
     findings: list[ReviewFinding] = []
     output_text_lower = output_text.lower()
@@ -552,6 +640,30 @@ def apply_review_rubrics(stage_path: Path, output_name: str, output_text: str) -
                 findings.append(ReviewFinding("PASS", f"Rubric required source cited in {output_name}: {source_reference}"))
             else:
                 findings.append(ReviewFinding("FAIL", f"Rubric required source missing in {output_name}: {source_reference}"))
+
+        if rubric.required_table_columns:
+            columns = ", ".join(rubric.required_table_columns)
+            if has_table_with_columns(output_text, rubric.required_table_columns):
+                findings.append(ReviewFinding("PASS", f"Rubric required table columns present in {output_name}: {columns}"))
+            else:
+                findings.append(ReviewFinding("FAIL", f"Rubric required table columns missing in {output_name}: {columns}"))
+
+        if rubric.minimum_link_or_path_count is not None:
+            reference_count = count_link_or_path_references(output_text)
+            if reference_count >= rubric.minimum_link_or_path_count:
+                findings.append(
+                    ReviewFinding(
+                        "PASS",
+                        f"Rubric link/path reference count met in {output_name}: {reference_count}/{rubric.minimum_link_or_path_count}",
+                    )
+                )
+            else:
+                findings.append(
+                    ReviewFinding(
+                        "FAIL",
+                        f"Rubric link/path reference count too low in {output_name}: {reference_count}/{rubric.minimum_link_or_path_count}",
+                    )
+                )
 
         for term in rubric.forbidden_terms:
             if term.lower() in output_text_lower:
@@ -969,6 +1081,10 @@ def suggest_fix(message: str) -> str:
         return "Add the missing rubric-required concept to the output, or update the stage rubric if it is not required."
     if "Rubric required source missing" in message:
         return "Cite the source path or filename in the output, or update the stage rubric if that source is not required."
+    if "Rubric required table columns missing" in message:
+        return "Add a markdown table with the required columns, or update the stage rubric if the artifact uses a different structure."
+    if "Rubric link/path reference count too low" in message:
+        return "Add more file paths, source links, or cited artifacts to the output, or lower the rubric count if it is too strict."
     if "Rubric forbidden term found" in message:
         return "Remove the forbidden term or explain the exception by updating the review rubric."
     if "Project brief is missing" in message:

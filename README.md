@@ -61,6 +61,8 @@ icm status examples/completed-content-plan
 
 For pipx, GitHub fallback, and local development install options, see [docs/install.md](docs/install.md). The visual docs site is published at [stickwithfiddle-sys.github.io/interpretable-context-methodology-template](https://stickwithfiddle-sys.github.io/interpretable-context-methodology-template/).
 
+Want to see a completed review before creating your own workflow? Start with the [demo walkthrough](docs/demo.md) and the completed documentation-refresh example.
+
 ## Why This Exists
 
 Most agent workflows become hard to inspect once the logic lives inside a chat thread, framework state, or hidden prompt chain. ICM keeps the workflow visible:
@@ -98,11 +100,13 @@ Start with these files:
 | File | Use |
 | --- | --- |
 | [docs/first-workspace.md](docs/first-workspace.md) | Step-by-step first run tutorial |
+| [docs/demo.md](docs/demo.md) | Copy-paste demo for first install and completed review checks |
 | [docs/glossary.md](docs/glossary.md) | Plain-language definitions of ICM terms |
 | [docs/install.md](docs/install.md) | GitHub, virtualenv, and local install options |
 | [docs/index.html](docs/index.html) | GitHub Pages visual docs homepage |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
 | [examples/completed-research-brief](examples/completed-research-brief) | Completed research-brief example with review rubrics |
+| [examples/completed-documentation-refresh](examples/completed-documentation-refresh) | Completed documentation-refresh example with table and path-count rubric checks |
 | [docs/dashboard-direction.md](docs/dashboard-direction.md) | Dashboard direction and readiness criteria |
 | [docs/product-direction.md](docs/product-direction.md) | UX/product roadmap, including Hermes Agent-inspired ideas |
 | [docs/revision-audit.md](docs/revision-audit.md) | Current product audit, UX assessment, and next direction options |
@@ -155,6 +159,7 @@ templates/icm-workspace/
 examples/
   completed-content-plan/   Filled example workspace for a small content workflow
   completed-research-brief/ Filled example workspace for a research brief workflow
+  completed-documentation-refresh/ Filled example workspace for a documentation refresh workflow
 tools/
   check_docs_site.py        Validates GitHub Pages homepage references
   check_release_readiness.py Checks version, metadata, docs, and publish workflow readiness
@@ -167,6 +172,7 @@ tests/
   test_workspace.py         Workspace helper and review coverage
 docs/
   index.html                GitHub Pages visual docs homepage
+  demo.md                   Copy-paste demo walkthrough
   first-workspace.md        Beginner tutorial
   dashboard-direction.md    Dashboard readiness notes
   glossary.md               Plain-language terms
@@ -193,6 +199,25 @@ The included template is a workspace-builder. Its output is a project-specific I
 | `04_questionnaire` | Produce setup questions and reference-material prompts | `setup-questionnaire.md` |
 | `05_validation` | Dry-run the workflow and report gaps before use | `validation-report.md` |
 
+## Deterministic Review Rubrics
+
+`icm review` can load markdown rubrics from a stage `references/` folder. Rubrics can require artifact sections, terms, source citations, table columns, link/path counts, and forbidden placeholder text.
+
+The completed documentation-refresh example demonstrates the newest checks:
+
+```bash
+icm review stages/01_discovery --workspace examples/completed-documentation-refresh
+```
+
+Look for PASS lines such as:
+
+```text
+Rubric required table columns present in discovery-report.md: Source, Used For
+Rubric link/path reference count met in discovery-report.md: 14/3
+```
+
+See [docs/review-rubrics.md](docs/review-rubrics.md) for the full rubric format.
+
 ## Common Mistakes
 
 | Mistake | Better Move |
@@ -214,7 +239,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.9.0`.
+Current package version: `0.10.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 

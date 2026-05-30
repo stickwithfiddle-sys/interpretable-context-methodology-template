@@ -30,6 +30,7 @@ python tools/check_release_readiness.py
 python -m icm validate templates/icm-workspace --strict
 python -m icm validate examples/completed-content-plan --strict
 python -m icm validate examples/completed-research-brief --strict
+python -m icm validate examples/completed-documentation-refresh --strict
 rm -rf /tmp/icm-existing-smoke
 mkdir -p /tmp/icm-existing-smoke
 printf '# Existing\n' > /tmp/icm-existing-smoke/README.md
@@ -40,11 +41,14 @@ python -m icm next examples/completed-content-plan
 python -m icm explain stages/01_discovery --workspace examples/completed-content-plan
 python -m icm review stages/01_discovery --workspace examples/completed-content-plan
 python -m icm review stages/01_discovery --workspace examples/completed-research-brief
+python -m icm review stages/01_discovery --workspace examples/completed-documentation-refresh
 python -m icm doctor examples/completed-content-plan --strict
 python -m icm doctor examples/completed-research-brief --strict
+python -m icm doctor examples/completed-documentation-refresh --strict
 python tools/validate_icm_workspace.py templates/icm-workspace --strict
 python examples/completed-content-plan/tools/validate_icm_workspace.py examples/completed-content-plan --strict
 python examples/completed-research-brief/tools/validate_icm_workspace.py examples/completed-research-brief --strict
+python examples/completed-documentation-refresh/tools/validate_icm_workspace.py examples/completed-documentation-refresh --strict
 rm -rf dist build *.egg-info
 python -m build
 python -m twine check dist/*
@@ -56,7 +60,7 @@ Check:
 - `CHANGELOG.md` names the user-facing changes.
 - Any new command has help text.
 - Any new workflow behavior appears in a doc or example.
-- The completed example still validates.
+- The completed examples still validate.
 - Pytest covers the expected CLI and workspace behavior.
 - The docs homepage still references existing local assets.
 - The source distribution and wheel build cleanly.

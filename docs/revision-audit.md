@@ -2,7 +2,7 @@
 
 Last updated: 2026-05-30
 
-Current release: `0.9.0`
+Current release: `0.10.0`
 
 ## What We Have Achieved
 
@@ -21,27 +21,30 @@ Current release: `0.9.0`
 - Source-traceability rubric checks that require outputs to cite source paths or filenames.
 - A second completed example workspace for a research-brief workflow.
 - Live PyPI package, PyPI readiness checks, package build/render checks, and a manual Trusted Publishing workflow.
+- A copy-paste demo walkthrough linked from the docs homepage.
+- Deterministic rubric checks for required markdown table columns and minimum link/path reference counts.
+- A third completed example workspace for a documentation-refresh workflow.
 
 ## Roadmap Position
 
-The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, and two completed examples are all covered.
+The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path artifact checks, and three completed examples are all covered.
 
 The highest-value `Next` work is:
 
-- More example workspaces for common use cases.
-- Short demo or animated walkthrough for the docs site.
-- More deterministic artifact validators for common output formats.
+- More example workspaces for project planning and other common use cases.
+- Short recorded demo or animated walkthrough for the docs site.
+- More deterministic artifact validators for source inventories, calendars, and decision logs.
 - A dashboard prototype once the CLI vocabulary and example library settle.
 
 ## Beginner UX Assessment
 
 The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, fill the first brief, run doctor checks, validate structure, inspect completed examples, and copy a rubric pattern for artifact-specific review.
 
-It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no specialized validators for artifact types beyond rubrics, and no local dashboard for visual review queues.
+It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no specialized validators for source inventories/calendars/decision logs, and no local dashboard for visual review queues.
 
 ## Direction Options
 
-1. Example library: add documentation pipeline and project-planning examples.
+1. Example library: add a project-planning example.
 2. Review quality: add deterministic validators for source inventories, calendars, and decision logs.
 3. Demo polish: add a short screen recording or animated walkthrough.
 4. Dashboard prototype: build a read/write web UI over the same filesystem workspace.
@@ -49,4 +52,4 @@ It is closer to world-class beginner UX, but not there yet. The main gaps are no
 
 ## Recommendation
 
-For `0.10.0`, prioritize demo polish plus another common example workspace, then add deterministic validators for common artifact shapes before starting the dashboard.
+For `0.11.0`, prioritize source-inventory, calendar, and decision-log validators plus PyPI install verification guidance. After that, add a short recorded walkthrough, then consider the first dashboard prototype.

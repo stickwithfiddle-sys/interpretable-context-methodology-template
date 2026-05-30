@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="title desc">
+  <title id="title">icm review terminal screenshot</title>
+  <desc id="desc">Terminal output showing deterministic review rubric checks for table columns and path references.</desc>
+  <rect width="960" height="620" fill="#f5f7fa"/>
+  <rect x="44" y="44" width="872" height="532" fill="#151719" stroke="#2f363d" stroke-width="2"/>
+  <rect x="44" y="44" width="872" height="42" fill="#22272c"/>
+  <circle cx="70" cy="65" r="7" fill="#d94841"/>
+  <circle cx="94" cy="65" r="7" fill="#d9a441"/>
+  <circle cx="118" cy="65" r="7" fill="#3fb37f"/>
+  <text x="146" y="70" fill="#dce3e8" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16">terminal</text>
+  <text x="72" y="126" fill="#94d7ca" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18">$ icm review stages/01_discovery \</text>
+  <text x="72" y="158" fill="#94d7ca" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18">    --workspace examples/completed-documentation-refresh</text>
+  <text x="72" y="216" fill="#f1f5f4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">Reviewing stage: 01_discovery</text>
+  <text x="72" y="268" fill="#3fb37f" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18">PASS Review rubric loaded: references/discovery-report-rubric.md</text>
+  <text x="72" y="320" fill="#3fb37f" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18">PASS Rubric required table columns present:</text>
+  <text x="106" y="354" fill="#d7dee4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18">discovery-report.md includes Source and Used For</text>
+  <text x="72" y="406" fill="#3fb37f" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18">PASS Rubric link/path reference count met:</text>
+  <text x="106" y="440" fill="#d7dee4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18">discovery-report.md has 14/3 references</text>
+  <text x="72" y="506" fill="#f1f5f4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="19">Summary: 0 fail, 0 warn, 35 pass</text>
+  <text x="72" y="548" fill="#94d7ca" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18">Next: human reviews the output, then advances the stage.</text>
+</svg>

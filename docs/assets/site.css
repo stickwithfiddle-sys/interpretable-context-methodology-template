@@ -27,6 +27,15 @@ a {
   color: inherit;
 }
 
+p code,
+li code {
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+  background: #edf1f5;
+  color: var(--ink);
+  font: 0.95em ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
 .site-header {
   position: sticky;
   top: 0;

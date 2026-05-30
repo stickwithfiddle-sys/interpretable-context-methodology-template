@@ -42,6 +42,9 @@ jobs:
       - name: Validate research-brief example
         run: icm validate examples/completed-research-brief --strict
 
+      - name: Validate documentation-refresh example
+        run: icm validate examples/completed-documentation-refresh --strict
+
       - name: Smoke test CLI status
         run: icm status examples/completed-content-plan
 
@@ -57,11 +60,24 @@ jobs:
       - name: Smoke test research rubric review
         run: icm review stages/01_discovery --workspace examples/completed-research-brief
 
+      - name: Smoke test documentation validator review
+        run: icm review stages/01_discovery --workspace examples/completed-documentation-refresh
+
       - name: Smoke test CLI doctor
         run: icm doctor examples/completed-content-plan --strict
 
       - name: Smoke test research doctor
         run: icm doctor examples/completed-research-brief --strict
+
+      - name: Smoke test documentation doctor
+        run: icm doctor examples/completed-documentation-refresh --strict
+
+      - name: Run legacy validators
+        run: |
+          python tools/validate_icm_workspace.py templates/icm-workspace --strict
+          python examples/completed-content-plan/tools/validate_icm_workspace.py examples/completed-content-plan --strict
+          python examples/completed-research-brief/tools/validate_icm_workspace.py examples/completed-research-brief --strict
+          python examples/completed-documentation-refresh/tools/validate_icm_workspace.py examples/completed-documentation-refresh --strict
 
       - name: Build package distributions
         run: |

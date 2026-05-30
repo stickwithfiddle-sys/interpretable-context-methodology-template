@@ -17,6 +17,7 @@
         <a href="#start">Start</a>
         <a href="#existing">Existing Project</a>
         <a href="#doctor">Doctor</a>
+        <a href="#demo">Demo</a>
         <a href="#roadmap">Roadmap</a>
       </nav>
     </header>
@@ -58,7 +59,7 @@ icm doctor my-first-icm-workspace</code></pre>
           <p class="eyebrow">Adopt ICM inside a real project</p>
           <h2>Add ICM without overwriting your existing files.</h2>
           <p>
-            `icm init` copies only missing starter files into the target folder. Existing README, source files, config, and docs stay untouched.
+            <code>icm init</code> copies only missing starter files into the target folder. Existing README, source files, config, and docs stay untouched.
           </p>
           <div class="command-card">
             <div class="command-label">Existing project</div>
@@ -84,7 +85,7 @@ icm doctor</code></pre>
           <p class="eyebrow">Beginner-friendly diagnostics</p>
           <h2>Doctor explains the next repair, not just the failure.</h2>
           <p>
-            The doctor command checks structure, empty stage sections, undeclared outputs, missing config inputs, and broken handoffs after outputs are present. Review rubrics can also require source citations for important artifacts.
+            The doctor command checks structure, empty stage sections, undeclared outputs, missing config inputs, and broken handoffs after outputs are present. Review rubrics can also require source citations, table shapes, and path counts for important artifacts.
           </p>
           <ul class="check-list">
             <li>Structure validation with suggested fixes.</li>
@@ -95,15 +96,41 @@ icm doctor</code></pre>
         </div>
       </section>
 
+      <section class="split-band" id="demo">
+        <div>
+          <p class="eyebrow">Demo polish</p>
+          <h2>See a completed review before changing your own workflow.</h2>
+          <p>
+            The documentation-refresh example shows a plain markdown rubric checking a discovery report for traceability sources, expected table columns, and enough cited paths.
+          </p>
+          <div class="command-card">
+            <div class="command-label">Completed review</div>
+            <pre><code>git clone https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git
+cd interpretable-context-methodology-template
+python -m pip install -e ".[dev]"
+icm review stages/01_discovery --workspace examples/completed-documentation-refresh</code></pre>
+            <button class="copy-button" data-copy="git clone https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git&#10;cd interpretable-context-methodology-template&#10;python -m pip install -e &quot;.[dev]&quot;&#10;icm review stages/01_discovery --workspace examples/completed-documentation-refresh" aria-label="Copy completed review demo commands">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V7Z"></path><path d="M4 15V5a2 2 0 0 1 2-2h10"></path></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+        <figure class="screenshot">
+          <img src="assets/screenshot-review.svg" alt="Terminal screenshot showing icm review passing table-column and path-count rubric checks.">
+        </figure>
+      </section>
+
       <section class="links-band">
         <div class="section-heading">
           <p class="eyebrow">Read next</p>
           <h2>Docs, example workspace, and release notes.</h2>
         </div>
         <div class="link-grid">
+          <a href="demo.md">Demo walkthrough</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/first-workspace.md">First workspace tutorial</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-content-plan">Content-plan example</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-research-brief">Research-brief example</a>
+          <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-documentation-refresh">Documentation-refresh example</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/glossary.md">Glossary</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/review-rubrics.md">Review rubrics</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/source-traceability.md">Source traceability</a>
@@ -120,8 +147,8 @@ icm doctor</code></pre>
           <h2>CLI first, dashboard after the language stabilizes.</h2>
         </div>
         <ol class="roadmap">
-          <li><strong>Now:</strong> PyPI install, CLI onboarding, doctor checks, source traceability, examples, and docs.</li>
-          <li><strong>Next:</strong> demo polish, more artifact validators, and broader example coverage.</li>
+          <li><strong>Now:</strong> PyPI install, CLI onboarding, doctor checks, source traceability, table and path validators, three examples, and docs.</li>
+          <li><strong>Next:</strong> source-inventory, calendar, and decision-log validators plus release verification guidance.</li>
           <li><strong>Later:</strong> a dashboard over the same filesystem workspace.</li>
         </ol>
       </section>

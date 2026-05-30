@@ -6,6 +6,7 @@ from icm import cli
 REPO_ROOT = Path(__file__).resolve().parents[1]
 COMPLETED_EXAMPLE = REPO_ROOT / "examples" / "completed-content-plan"
 RESEARCH_EXAMPLE = REPO_ROOT / "examples" / "completed-research-brief"
+DOCS_EXAMPLE = REPO_ROOT / "examples" / "completed-documentation-refresh"
 
 
 def test_cli_new_validate_status_and_review(tmp_path: Path, capsys) -> None:
@@ -66,3 +67,12 @@ def test_cli_review_research_example_passes(capsys) -> None:
     output = capsys.readouterr().out
     assert "Review: 01_discovery" in output
     assert "Rubric required term present" in output
+
+
+def test_cli_review_documentation_example_passes(capsys) -> None:
+    assert cli.main(["review", "stages/01_discovery", "--workspace", str(DOCS_EXAMPLE)]) == 0
+
+    output = capsys.readouterr().out
+    assert "Review: 01_discovery" in output
+    assert "Rubric required table columns present" in output
+    assert "Rubric link/path reference count met" in output
