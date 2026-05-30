@@ -1,0 +1,13 @@
+This repository is an independent reusable template based on:
+
+Jake Van Clief and David McDermott. "Interpretable Context Methodology:
+Folder Structure as Agent Architecture." arXiv:2603.16021v2, 18 Mar. 2026.
+
+Paper: https://arxiv.org/html/2603.16021v2
+Original protocol repository listed in the paper:
+https://github.com/RinDig/Interpretable-Context-Methodology-ICM-
+
+The paper describes the ICM protocol as open source under the MIT license.
+This repository adapts the methodology into a model-neutral starter template;
+it is not an official ICM protocol repository unless later stated by the
+original authors.

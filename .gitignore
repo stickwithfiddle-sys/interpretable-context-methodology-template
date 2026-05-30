@@ -1,0 +1,10 @@
+
+# Ignore local/private AI tool instructions
+.github/instructions/codacy.instructions.md
+
+# Python and local scratch files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.icm-generated/
+.tmp/
