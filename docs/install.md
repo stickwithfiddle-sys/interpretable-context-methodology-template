@@ -27,7 +27,7 @@ icm new my-first-icm-workspace --name "My First ICM Workspace"
 Use this path when you want to test a specific repository tag before it reaches PyPI:
 
 ```bash
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.11.0
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.12.0
 icm --version
 ```
 
@@ -42,6 +42,12 @@ icm doctor
 ```
 
 If your project already has `AGENTS.md` or `CONTEXT.md`, `icm init` leaves them alone. `icm doctor` will tell you if those files need the ICM Stage Index or operating guidance merged in.
+
+If the project will use source inventories, release calendars, or decision logs, add starter files for the common artifact-shape validators:
+
+```bash
+icm init . --with-common-artifacts
+```
 
 ## From A Source Checkout
 

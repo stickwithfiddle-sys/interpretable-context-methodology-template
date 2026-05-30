@@ -50,12 +50,12 @@ The CLI now supports both adoption paths:
 
 ```bash
 icm new my-project
-icm init .
+icm init . --with-common-artifacts
 icm doctor
 icm review stages/01_discovery
 ```
 
-`icm new` is for a clean workspace. `icm init` is for an existing project and skips files that already exist. `icm doctor` checks both structure and content-quality issues such as empty required sections, missing config inputs, undeclared outputs, and broken handoffs after outputs are present. `icm review` can now load artifact-specific rubrics from stage references, including source-traceability checks, required table-column checks, link/path-count checks, and artifact-shape checks for source inventories, calendars, and decision logs.
+`icm new` is for a clean workspace. `icm init` is for an existing project and skips files that already exist. The `--with-common-artifacts` flag adds starter files for source inventories, release calendars, and decision logs. `icm doctor` checks both structure and content-quality issues such as empty required sections, missing config inputs, undeclared outputs, broken handoffs after outputs are present, and review-rubric failures on declared outputs. `icm review` can load artifact-specific rubrics from stage references, including source-traceability checks, required table-column checks, link/path-count checks, and artifact-shape checks for source inventories, calendars, and decision logs.
 
 The example library now covers content planning, research briefs, and documentation refreshes. The documentation-refresh example is the clearest demo of the review system because its discovery report must include a `Source Traceability` table, and its validation stage includes a source inventory, release calendar, and decision log checked by artifact-shape rubrics.
 
@@ -83,4 +83,4 @@ The dashboard should feel like a cockpit for the workspace, not a replacement fo
 
 ## Recommended Next Product Step
 
-Next, add a short recorded walkthrough, a project-planning example, and richer guidance for choosing rubric validators by workflow type. A dashboard should start only after the CLI commands, status model, example library, and review language feel stable.
+Next, add a project-planning example, a short recorded walkthrough, and richer guidance for choosing rubric validators by workflow type. A dashboard should start only after the CLI commands, status model, example library, and review language feel stable.

@@ -64,9 +64,9 @@ icm doctor my-first-icm-workspace</code></pre>
           <div class="command-card">
             <div class="command-label">Existing project</div>
             <pre><code>cd my-existing-project
-icm init . --name "My Existing Project"
+icm init . --name "My Existing Project" --with-common-artifacts
 icm doctor</code></pre>
-            <button class="copy-button" data-copy="cd my-existing-project&#10;icm init . --name &quot;My Existing Project&quot;&#10;icm doctor" aria-label="Copy init commands">
+            <button class="copy-button" data-copy="cd my-existing-project&#10;icm init . --name &quot;My Existing Project&quot; --with-common-artifacts&#10;icm doctor" aria-label="Copy init commands">
               <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V7Z"></path><path d="M4 15V5a2 2 0 0 1 2-2h10"></path></svg>
               <span>Copy</span>
             </button>
@@ -85,12 +85,13 @@ icm doctor</code></pre>
           <p class="eyebrow">Beginner-friendly diagnostics</p>
           <h2>Doctor explains the next repair, not just the failure.</h2>
           <p>
-            The doctor command checks structure, empty stage sections, undeclared outputs, missing config inputs, and broken handoffs after outputs are present. Review rubrics can also require source citations, table shapes, path counts, and common artifact shapes for important outputs.
+            The doctor command checks structure, empty stage sections, undeclared outputs, missing config inputs, broken handoffs after outputs are present, and rubric failures on declared outputs. Review rubrics can also require source citations, table shapes, path counts, and common artifact shapes for important outputs.
           </p>
           <ul class="check-list">
             <li>Structure validation with suggested fixes.</li>
             <li>Content checks for stage contracts and intake readiness.</li>
             <li>Traceability checks for outputs that must cite their sources.</li>
+            <li>Starter files for source inventories, release calendars, and decision logs.</li>
             <li>Stage summary that points to the next action.</li>
           </ul>
         </div>
@@ -136,6 +137,7 @@ icm review stages/01_discovery --workspace examples/completed-documentation-refr
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/source-traceability.md">Source traceability</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/pypi-readiness.md">PyPI readiness</a>
           <a href="pypi-upgrade.html">PyPI upgrade checks</a>
+          <a href="release-ready-workspace.html">Release-ready workspace</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/product-direction.md">Product direction</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/releases">Releases</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template">GitHub repository</a>
@@ -148,8 +150,8 @@ icm review stages/01_discovery --workspace examples/completed-documentation-refr
           <h2>CLI first, dashboard after the language stabilizes.</h2>
         </div>
         <ol class="roadmap">
-          <li><strong>Now:</strong> PyPI install, CLI onboarding, doctor checks, source traceability, table/path validators, artifact-shape validators, examples, and docs.</li>
-          <li><strong>Next:</strong> a short recorded walkthrough, a project-planning example, and dashboard readiness work.</li>
+          <li><strong>Now:</strong> PyPI install, CLI onboarding, doctor checks, source traceability, table/path validators, artifact-shape validators, common artifact starters, examples, and docs.</li>
+          <li><strong>Next:</strong> a project-planning example, a short recorded walkthrough, and workflow-specific rubric guidance.</li>
           <li><strong>Later:</strong> a dashboard over the same filesystem workspace.</li>
         </ol>
       </section>

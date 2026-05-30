@@ -18,6 +18,29 @@ TEXT_SUFFIXES = {".md", ".txt", ".json", ".yaml", ".yml", ".py", ".ps1", ".gitig
 STAGE_NAME_PATTERN = re.compile(r"^\d{2}_[a-z0-9][a-z0-9_-]*$")
 REQUIRED_STAGE_HEADINGS = ("Inputs", "Process", "Outputs", "Review Gate", "Verify")
 REQUIRED_ROOT_DIRECTORIES = ("_config", "_templates", "shared", "stages")
+COMMON_ARTIFACT_STARTERS = {
+    "shared/source-inventory.md": """# Source Inventory
+
+Use this optional starter when a stage needs a reviewable list of source material.
+
+| Source | Type | Status | Used For |
+| --- | --- | --- | --- |
+""",
+    "shared/release-calendar.md": """# Release Calendar
+
+Use this optional starter when a stage needs dated milestones, tasks, or release steps.
+
+| Date | Milestone | Owner | Status |
+| --- | --- | --- | --- |
+""",
+    "shared/decision-log.md": """# Decision Log
+
+Record decisions that should influence future stage runs.
+
+| Date | Decision | Status | Rationale |
+| --- | --- | --- | --- |
+""",
+}
 
 
 class ResourcePath(Protocol):
@@ -36,6 +59,8 @@ class ResourcePath(Protocol):
 class WorkspaceCreation:
     target: Path
     project_name: str
+    created_common_artifacts: tuple[str, ...] = ()
+    skipped_common_artifacts: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -44,6 +69,8 @@ class WorkspaceInitialization:
     project_name: str
     created_files: tuple[str, ...]
     skipped_files: tuple[str, ...]
+    created_common_artifacts: tuple[str, ...] = ()
+    skipped_common_artifacts: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -272,7 +299,24 @@ def replace_tokens(target: Path, replacements: dict[str, str]) -> None:
         replace_tokens_in_file(file_path, replacements)
 
 
-def create_workspace(target: Path, name: str | None = None) -> WorkspaceCreation:
+def scaffold_common_artifacts(target: Path, replacements: dict[str, str]) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    created_files: list[str] = []
+    skipped_files: list[str] = []
+    for relative_label, template in COMMON_ARTIFACT_STARTERS.items():
+        destination = target / relative_label
+        if destination.exists():
+            skipped_files.append(relative_label)
+            continue
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        text = template
+        for token, replacement in replacements.items():
+            text = text.replace(token, replacement)
+        destination.write_text(text, encoding="utf-8")
+        created_files.append(relative_label)
+    return tuple(sorted(created_files)), tuple(sorted(skipped_files))
+
+
+def create_workspace(target: Path, name: str | None = None, include_common_artifacts: bool = False) -> WorkspaceCreation:
     resolved_target = target.expanduser().resolve()
     project_name = name or resolved_target.name.replace("-", " ").replace("_", " ").title()
     replacements = {
@@ -284,10 +328,19 @@ def create_workspace(target: Path, name: str | None = None) -> WorkspaceCreation
     ensure_empty_target(resolved_target)
     copy_template(resolved_target)
     replace_tokens(resolved_target, replacements)
-    return WorkspaceCreation(target=resolved_target, project_name=project_name)
+    created_artifacts: tuple[str, ...] = ()
+    skipped_artifacts: tuple[str, ...] = ()
+    if include_common_artifacts:
+        created_artifacts, skipped_artifacts = scaffold_common_artifacts(resolved_target, replacements)
+    return WorkspaceCreation(
+        target=resolved_target,
+        project_name=project_name,
+        created_common_artifacts=created_artifacts,
+        skipped_common_artifacts=skipped_artifacts,
+    )
 
 
-def initialize_workspace(target: Path, name: str | None = None) -> WorkspaceInitialization:
+def initialize_workspace(target: Path, name: str | None = None, include_common_artifacts: bool = False) -> WorkspaceInitialization:
     resolved_target = target.expanduser().resolve()
     if resolved_target.exists() and not resolved_target.is_dir():
         raise ValueError(f"Target is not a directory: {resolved_target}")
@@ -323,11 +376,19 @@ def initialize_workspace(target: Path, name: str | None = None) -> WorkspaceInit
         validator_destination.write_bytes(validator_bytes())
         created_files.append(validator_relative.as_posix())
 
+    created_artifacts: tuple[str, ...] = ()
+    skipped_artifacts: tuple[str, ...] = ()
+    if include_common_artifacts:
+        created_artifacts, skipped_artifacts = scaffold_common_artifacts(resolved_target, replacements)
+        created_files.extend(created_artifacts)
+
     return WorkspaceInitialization(
         target=resolved_target,
         project_name=project_name,
         created_files=tuple(sorted(created_files)),
         skipped_files=tuple(sorted(skipped_files)),
+        created_common_artifacts=created_artifacts,
+        skipped_common_artifacts=skipped_artifacts,
     )
 
 
@@ -1166,6 +1227,11 @@ def doctor_workspace(workspace_root: Path) -> DoctorResult:
             output_path = resolve_contract_path(stage_directory, str(Path(location) / output_name))
             if output_path.exists() and output_path.stat().st_size == 0:
                 findings.append(DoctorFinding("FAIL", f"Declared output is empty: {stage_label}/output/{output_name}"))
+            elif output_path.exists():
+                output_text = output_path.read_text(encoding="utf-8", errors="replace")
+                for review_finding in apply_review_rubrics(stage_directory, output_name, output_text):
+                    if review_finding.level in {"FAIL", "WARN"}:
+                        findings.append(DoctorFinding(review_finding.level, review_finding.message))
 
         for output_name in sorted(set(existing_output_files(stage_directory)) - declared_output_names):
             findings.append(DoctorFinding("WARN", f"Output file is not declared in the contract: {stage_label}/output/{output_name}"))
@@ -1238,13 +1304,13 @@ def suggest_fix(message: str) -> str:
     if "Rubric link/path reference count too low" in message:
         return "Add more file paths, source links, or cited artifacts to the output, or lower the rubric count if it is too strict."
     if "Rubric artifact shape unknown" in message:
-        return "Use a supported artifact shape such as source-inventory, calendar, or decision-log."
+        return "Use a supported artifact shape in the rubric: source-inventory, calendar, or decision-log."
     if "Rubric source-inventory artifact shape invalid" in message:
-        return "Add a source inventory table with Source, Type, Status, and Used For columns, including at least one source path or URL."
+        return "Add a source inventory table with Source, Type, Status, and Used For columns, including at least one source path or URL. Use icm init --with-common-artifacts for a starter file."
     if "Rubric calendar artifact shape invalid" in message:
-        return "Add a calendar table with Date, Event or Milestone, Owner, and Status columns. Use YYYY-MM-DD dates."
+        return "Add a calendar table with Date, Event or Milestone, Owner, and Status columns. Use YYYY-MM-DD dates. Use icm init --with-common-artifacts for a starter file."
     if "Rubric decision-log artifact shape invalid" in message:
-        return "Add a decision-log table with Date, Decision, Status, and Rationale or Reason columns. Use YYYY-MM-DD dates."
+        return "Add a decision-log table with Date, Decision, Status, and Rationale or Reason columns. Use YYYY-MM-DD dates. Use icm init --with-common-artifacts for a starter file."
     if "Rubric forbidden term found" in message:
         return "Remove the forbidden term or explain the exception by updating the review rubric."
     if "Project brief is missing" in message:

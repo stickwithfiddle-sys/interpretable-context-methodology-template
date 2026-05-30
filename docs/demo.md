@@ -14,11 +14,13 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install icm-workspace-template
 icm --version
-icm new my-first-icm-workspace --name "My First ICM Workspace"
+icm new my-first-icm-workspace --name "My First ICM Workspace" --with-common-artifacts
 icm doctor my-first-icm-workspace
 ```
 
 The first `doctor` run should explain that the intake brief needs content before downstream stages run. That is expected. ICM is checking that the workspace is usable and telling you what to fill in first.
+
+The `--with-common-artifacts` flag adds starter files for `shared/source-inventory.md`, `shared/release-calendar.md`, and the shared decision log. They are optional, but they make the common artifact-shape validators easier to try.
 
 ## Completed Review Demo
 
@@ -76,4 +78,5 @@ The rubric requires the discovery report to include a traceability table with `S
 - [First workspace tutorial](first-workspace.md)
 - [Review rubrics](review-rubrics.md)
 - [Source traceability](source-traceability.md)
+- [Release-ready workspace](release-ready-workspace.md)
 - [Documentation-refresh example](https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-documentation-refresh)

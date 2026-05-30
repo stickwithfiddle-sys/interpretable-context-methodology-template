@@ -34,7 +34,7 @@ python -m icm validate examples/completed-documentation-refresh --strict
 rm -rf /tmp/icm-existing-smoke
 mkdir -p /tmp/icm-existing-smoke
 printf '# Existing\n' > /tmp/icm-existing-smoke/README.md
-python -m icm init /tmp/icm-existing-smoke --name "Existing Smoke"
+python -m icm init /tmp/icm-existing-smoke --name "Existing Smoke" --with-common-artifacts
 python -m icm validate /tmp/icm-existing-smoke --strict
 python -m icm status examples/completed-content-plan
 python -m icm next examples/completed-content-plan
@@ -61,6 +61,7 @@ Check:
 - `CHANGELOG.md` names the user-facing changes.
 - Any new command has help text.
 - Any new workflow behavior appears in a doc or example.
+- Release-impacting workspace changes are checked against docs/release-ready-workspace.md.
 - The completed examples still validate.
 - Pytest covers the expected CLI and workspace behavior.
 - The docs homepage still references existing local assets.
@@ -78,8 +79,10 @@ python -m venv .tmp/install-venv
 rm -rf /tmp/icm-install-smoke
 cd /tmp
 /path/to/repo/.tmp/install-venv/bin/icm new /tmp/icm-install-smoke --name "Install Smoke"
-/path/to/repo/.tmp/install-venv/bin/icm init /tmp/icm-install-smoke --name "Install Smoke"
+/path/to/repo/.tmp/install-venv/bin/icm init /tmp/icm-install-smoke --name "Install Smoke" --with-common-artifacts
 /path/to/repo/.tmp/install-venv/bin/icm validate /tmp/icm-install-smoke --strict
+test -f /tmp/icm-install-smoke/shared/source-inventory.md
+test -f /tmp/icm-install-smoke/shared/release-calendar.md
 python /tmp/icm-install-smoke/tools/validate_icm_workspace.py /tmp/icm-install-smoke --strict
 ```
 

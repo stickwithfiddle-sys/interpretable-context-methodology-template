@@ -111,6 +111,14 @@ OK: workspace passed validation with 0 warning(s)
 
 This check does not judge whether the content is brilliant. It checks whether the folder structure, stage contracts, and handoff folders are present.
 
+Optional: if your first workspace will track source material, dated milestones, or durable decisions, add the common artifact starters:
+
+```bash
+python -m icm init . --with-common-artifacts
+```
+
+This creates starter files under `shared/` without overwriting existing files.
+
 ## Step 4: Run One Stage
 
 Ask your agent:

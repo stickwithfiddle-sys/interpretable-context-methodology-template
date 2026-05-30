@@ -12,6 +12,20 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.12.0] - 2026-05-30
+
+### Added
+
+- Added `--with-common-artifacts` to `icm new` and `icm init` for starter source inventory, release calendar, and decision-log files.
+- Added release-ready workspace documentation that ties together CLI version checks, validation, doctor, review, changelog updates, and PyPI upgrade verification.
+- Added tests for common artifact scaffolding and doctor-surfaced artifact-shape failures.
+
+### Changed
+
+- `icm doctor` now reports review-rubric failures for existing declared outputs, including invalid source-inventory, calendar, and decision-log shapes.
+- The generated shared decision log now uses Date, Decision, Status, and Rationale columns so it matches the deterministic decision-log validator.
+- README, docs site, install docs, demo docs, review-rubric docs, roadmap, product direction, and revision audit now reflect the v0.12.0 adoption improvements.
+
 ## [0.11.0] - 2026-05-30
 
 ### Added
@@ -156,7 +170,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.8.0...v0.9.0

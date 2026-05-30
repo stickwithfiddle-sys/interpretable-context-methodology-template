@@ -39,6 +39,20 @@ def test_cli_init_preserves_existing_project_files(tmp_path: Path, capsys) -> No
     assert (target / "stages" / "00_intake" / "CONTEXT.md").is_file()
 
 
+def test_cli_init_can_add_common_artifact_starters(tmp_path: Path, capsys) -> None:
+    target = tmp_path / "existing"
+    target.mkdir()
+
+    assert cli.main(["init", str(target), "--name", "Existing", "--with-common-artifacts"]) == 0
+    output = capsys.readouterr().out
+
+    assert "Common artifact starters" in output
+    assert "shared/source-inventory.md" in output
+    assert "shared/release-calendar.md" in output
+    assert (target / "shared" / "source-inventory.md").is_file()
+    assert (target / "shared" / "release-calendar.md").is_file()
+
+
 def test_cli_doctor_reports_content_checks(tmp_path: Path, capsys) -> None:
     target = tmp_path / "doctor-demo"
     cli.main(["new", str(target), "--name", "Doctor Demo"])

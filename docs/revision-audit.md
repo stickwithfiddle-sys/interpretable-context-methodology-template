@@ -2,7 +2,7 @@
 
 Last updated: 2026-05-30
 
-Current release: `0.11.0`
+Current release: `0.12.0`
 
 ## What We Have Achieved
 
@@ -26,10 +26,13 @@ Current release: `0.11.0`
 - A third completed example workspace for a documentation-refresh workflow.
 - Deterministic artifact-shape rubric checks for source inventories, calendars, and decision logs.
 - Beginner-facing PyPI upgrade and install verification documentation.
+- Optional common artifact starter files through `icm new/init --with-common-artifacts`.
+- `icm doctor` now surfaces review-rubric failures for existing declared outputs.
+- Release-ready workspace documentation tying together validation, review, changelog updates, and PyPI upgrade checks.
 
 ## Roadmap Position
 
-The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path checks, source-inventory/calendar/decision-log checks, and three completed examples are all covered.
+The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path checks, source-inventory/calendar/decision-log checks, common artifact starters, doctor-surfaced rubric failures, release-ready docs, and three completed examples are all covered.
 
 The highest-value `Next` work is:
 
@@ -40,7 +43,7 @@ The highest-value `Next` work is:
 
 ## Beginner UX Assessment
 
-The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, fill the first brief, run doctor checks, validate structure, inspect completed examples, and copy a rubric pattern for artifact-specific review.
+The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, add common artifact starters, fill the first brief, run doctor checks, validate structure, inspect completed examples, and copy a rubric pattern for artifact-specific review.
 
 It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no project-planning example, and no local dashboard for visual review queues.
 
@@ -54,4 +57,4 @@ It is closer to world-class beginner UX, but not there yet. The main gaps are no
 
 ## Recommendation
 
-For `0.12.0`, prioritize a project-planning example plus a short recorded walkthrough. After that, consider the first dashboard prototype if the review vocabulary still feels stable.
+For `0.13.0`, prioritize a project-planning example plus workflow-specific rubric guidance. After that, add a short recorded walkthrough and consider the first dashboard prototype if the review vocabulary still feels stable.

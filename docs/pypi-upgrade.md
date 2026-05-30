@@ -16,7 +16,7 @@ Then smoke test the installed package outside this repository:
 
 ```bash
 rm -rf /tmp/icm-upgrade-smoke
-icm new /tmp/icm-upgrade-smoke --name "Upgrade Smoke"
+icm new /tmp/icm-upgrade-smoke --name "Upgrade Smoke" --with-common-artifacts
 icm validate /tmp/icm-upgrade-smoke --strict
 python /tmp/icm-upgrade-smoke/tools/validate_icm_workspace.py /tmp/icm-upgrade-smoke --strict
 ```
@@ -41,7 +41,7 @@ Then run the same smoke test:
 
 ```bash
 rm -rf /tmp/icm-upgrade-smoke
-icm new /tmp/icm-upgrade-smoke --name "Upgrade Smoke"
+icm new /tmp/icm-upgrade-smoke --name "Upgrade Smoke" --with-common-artifacts
 icm validate /tmp/icm-upgrade-smoke --strict
 ```
 

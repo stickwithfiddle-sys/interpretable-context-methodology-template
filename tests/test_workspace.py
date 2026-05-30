@@ -29,6 +29,26 @@ def test_create_workspace_from_source_template_preserves_beginner_assets(tmp_pat
     assert workspace.validate_workspace(target).passed(strict=True)
 
 
+def test_create_workspace_can_scaffold_common_artifacts(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+
+    created = workspace.create_workspace(target, name="Demo Project", include_common_artifacts=True)
+
+    assert "shared/source-inventory.md" in created.created_common_artifacts
+    assert "shared/release-calendar.md" in created.created_common_artifacts
+    assert "shared/decision-log.md" in created.skipped_common_artifacts
+    assert "| Source | Type | Status | Used For |" in (target / "shared" / "source-inventory.md").read_text(
+        encoding="utf-8"
+    )
+    assert "| Date | Milestone | Owner | Status |" in (target / "shared" / "release-calendar.md").read_text(
+        encoding="utf-8"
+    )
+    assert "| Date | Decision | Status | Rationale |" in (target / "shared" / "decision-log.md").read_text(
+        encoding="utf-8"
+    )
+    assert workspace.validate_workspace(target).passed(strict=True)
+
+
 def test_create_workspace_from_packaged_resources_preserves_beginner_assets(
     tmp_path: Path, monkeypatch
 ) -> None:
@@ -58,6 +78,22 @@ def test_initialize_workspace_preserves_existing_files(tmp_path: Path) -> None:
     assert readme_path.read_text(encoding="utf-8") == "# Existing Project\n"
     assert (target / "stages" / "00_intake" / "CONTEXT.md").is_file()
     assert (target / "tools" / "validate_icm_workspace.py").is_file()
+    assert workspace.validate_workspace(target).passed(strict=True)
+
+
+def test_initialize_workspace_can_scaffold_common_artifacts(tmp_path: Path) -> None:
+    target = tmp_path / "existing-project"
+    target.mkdir()
+
+    initialized = workspace.initialize_workspace(target, name="Existing Project", include_common_artifacts=True)
+
+    assert "shared/source-inventory.md" in initialized.created_files
+    assert "shared/release-calendar.md" in initialized.created_files
+    assert "shared/source-inventory.md" in initialized.created_common_artifacts
+    assert "shared/release-calendar.md" in initialized.created_common_artifacts
+    assert "shared/decision-log.md" in initialized.skipped_common_artifacts
+    assert (target / "shared" / "source-inventory.md").is_file()
+    assert (target / "shared" / "release-calendar.md").is_file()
     assert workspace.validate_workspace(target).passed(strict=True)
 
 
@@ -515,6 +551,50 @@ Demo criteria.
 
     assert not review.passed()
     assert any("Rubric calendar artifact shape invalid" in finding.message for finding in review.errors)
+
+
+def test_doctor_reports_rubric_shape_failures_with_fix(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+    workspace.create_workspace(target, name="Demo")
+    brief_path = target / "stages" / "00_intake" / "output" / "project-brief.md"
+    brief_path.write_text(
+        """# Project Brief
+
+| Date | Event | Owner | Status |
+| --- | --- | --- | --- |
+| Soon | Draft docs update | Hobo | Planned |
+
+## Desired Outcome
+
+Demo outcome.
+
+## Audience Or Users
+
+Demo audience.
+
+## Success Criteria
+
+Demo criteria.
+""",
+        encoding="utf-8",
+    )
+    rubric_path = target / "stages" / "00_intake" / "references" / "project-brief-rubric.md"
+    rubric_path.write_text(
+        """# Project Brief Rubric
+
+## Required Artifact Shapes
+
+- calendar
+""",
+        encoding="utf-8",
+    )
+
+    doctor = workspace.doctor_workspace(target)
+
+    assert not doctor.passed()
+    failure = next(finding for finding in doctor.failures if "Rubric calendar artifact shape invalid" in finding.message)
+    assert "YYYY-MM-DD" in workspace.suggest_fix(failure.message)
+    assert "--with-common-artifacts" in workspace.suggest_fix(failure.message)
 
 
 def test_research_example_validates_and_review_rubric_passes() -> None:

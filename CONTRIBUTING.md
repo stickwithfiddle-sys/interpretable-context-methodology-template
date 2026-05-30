@@ -49,7 +49,7 @@ python -m icm validate templates/icm-workspace --strict
 python -m icm validate examples/completed-content-plan --strict
 python -m icm validate examples/completed-research-brief --strict
 python -m icm validate examples/completed-documentation-refresh --strict
-python -m icm init /tmp/icm-existing-smoke --name "Existing Smoke"
+python -m icm init /tmp/icm-existing-smoke --name "Existing Smoke" --with-common-artifacts
 python -m icm status examples/completed-content-plan
 python -m icm next examples/completed-content-plan
 python -m icm explain stages/01_discovery --workspace examples/completed-content-plan
@@ -92,6 +92,7 @@ python -m twine check dist/*
 - Release metadata passes `python tools/check_release_readiness.py`.
 - Tests pass locally with `python -m pytest`.
 - The docs homepage passes `python tools/check_docs_site.py` when visual docs change.
+- Release-impacting changes are checked against `docs/release-ready-workspace.md`.
 
 When changing `templates/icm-workspace`, mirror it into `icm/templates/icm-workspace` and run:
 

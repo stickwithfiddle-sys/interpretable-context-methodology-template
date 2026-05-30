@@ -40,6 +40,12 @@ Expected output:
 OK: workspace passed validation with 0 warning(s)
 ```
 
+If you already know your workflow needs source inventories, release calendars, or decision logs, use this instead of the plain `icm new` command:
+
+```bash
+icm new my-first-icm-workspace --name "My First ICM Workspace" --with-common-artifacts
+```
+
 On Windows PowerShell, use backslashes if you prefer:
 
 ```powershell
@@ -104,6 +110,7 @@ Start with these files:
 | [docs/glossary.md](docs/glossary.md) | Plain-language definitions of ICM terms |
 | [docs/install.md](docs/install.md) | GitHub, virtualenv, and local install options |
 | [docs/pypi-upgrade.md](docs/pypi-upgrade.md) | Beginner upgrade and install verification commands |
+| [docs/release-ready-workspace.md](docs/release-ready-workspace.md) | Release-ready workspace checks for validation, review, changelog, and package upgrades |
 | [docs/index.html](docs/index.html) | GitHub Pages visual docs homepage |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
 | [examples/completed-research-brief](examples/completed-research-brief) | Completed research-brief example with review rubrics |
@@ -124,7 +131,7 @@ The product path is the `icm` CLI:
 
 ```bash
 python -m icm new ../demo --name "Demo"
-python -m icm init ../existing-project --name "Existing Project"
+python -m icm init ../existing-project --name "Existing Project" --with-common-artifacts
 python -m icm validate ../demo --strict
 python -m icm status ../demo
 python -m icm next ../demo
@@ -137,7 +144,7 @@ After installing in a virtual environment with `python -m pip install -e ".[dev]
 
 ```bash
 icm new ../demo --name "Demo"
-icm init ../existing-project --name "Existing Project"
+icm init ../existing-project --name "Existing Project" --with-common-artifacts
 icm validate ../demo --strict
 icm status ../demo
 icm next ../demo
@@ -179,6 +186,7 @@ docs/
   glossary.md               Plain-language terms
   install.md                Install options and package smoke checks
   pypi-upgrade.md           Beginner upgrade and install verification commands
+  release-ready-workspace.md Validation, review, changelog, and upgrade checks before release
   product-direction.md      UX and product roadmap
   pypi-readiness.md         PyPI package publishing checklist
   release-process.md        GitHub and versioning workflow
@@ -234,6 +242,8 @@ Rubric decision-log artifact shape valid in decision-log.md
 
 See [docs/review-rubrics.md](docs/review-rubrics.md) for the full rubric format.
 
+Use `icm new --with-common-artifacts` or `icm init --with-common-artifacts` when you want starter files for `shared/source-inventory.md`, `shared/release-calendar.md`, and `shared/decision-log.md`.
+
 ## Common Mistakes
 
 | Mistake | Better Move |
@@ -255,7 +265,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.11.0`.
+Current package version: `0.12.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 

@@ -68,6 +68,8 @@ icm review stages/01_discovery
 icm review stages/01_discovery/output/discovery-report.md
 ```
 
+`icm doctor` also reports rubric failures for existing declared outputs, so shape problems can appear in the general health check before release.
+
 Required sections match markdown headings at any level. Required and forbidden terms are matched case-insensitively against the output text.
 
 Required sources are matched against the output text by path or filename. For example, `../00_intake/output/project-brief.md` passes when the output cites either that path or `project-brief.md`.
@@ -87,6 +89,14 @@ Required artifact shapes check common markdown artifact formats. Use `## Require
 | `decision-log` | A markdown table with Date, Decision, Status, and Rationale or Reason columns; dates must use `YYYY-MM-DD` |
 
 Use `## Required Artifact Validators` or `## Required Artifact Types` if either heading fits your team better; they behave the same as `## Required Artifact Shapes`.
+
+To add starter files for these common shapes to a workspace, run:
+
+```bash
+icm init . --with-common-artifacts
+```
+
+That creates `shared/source-inventory.md` and `shared/release-calendar.md` when missing, and keeps the shared decision log in the validator-friendly table shape.
 
 Example PASS lines:
 

@@ -23,9 +23,26 @@ from .workspace import (
 )
 
 
-def print_creation_next_steps(target: Path, project_name: str) -> None:
+def print_common_artifacts(created: tuple[str, ...], skipped: tuple[str, ...]) -> None:
+    if not created and not skipped:
+        return
+    print()
+    print("Common artifact starters:")
+    for file_name in created:
+        print(f"  - {file_name}")
+    for file_name in skipped:
+        print(f"  - {file_name} (already available)")
+
+
+def print_creation_next_steps(
+    target: Path,
+    project_name: str,
+    created_common_artifacts: tuple[str, ...] = (),
+    skipped_common_artifacts: tuple[str, ...] = (),
+) -> None:
     print(f"Created ICM workspace: {target}")
     print(f"Project name: {project_name}")
+    print_common_artifacts(created_common_artifacts, skipped_common_artifacts)
     print()
     print("Next steps:")
     print(f"  1. cd \"{target}\"")
@@ -38,17 +55,30 @@ def print_creation_next_steps(target: Path, project_name: str) -> None:
 
 def cmd_new(args: argparse.Namespace) -> int:
     try:
-        created = create_workspace(Path(args.target), name=args.name)
+        created = create_workspace(
+            Path(args.target),
+            name=args.name,
+            include_common_artifacts=args.with_common_artifacts,
+        )
     except (FileNotFoundError, ValueError) as error:
         print(f"ERROR {error}", file=sys.stderr)
         return 1
-    print_creation_next_steps(created.target, created.project_name)
+    print_creation_next_steps(
+        created.target,
+        created.project_name,
+        created.created_common_artifacts,
+        created.skipped_common_artifacts,
+    )
     return 0
 
 
 def cmd_init(args: argparse.Namespace) -> int:
     try:
-        initialized = initialize_workspace(Path(args.target), name=args.name)
+        initialized = initialize_workspace(
+            Path(args.target),
+            name=args.name,
+            include_common_artifacts=args.with_common_artifacts,
+        )
     except (FileNotFoundError, ValueError) as error:
         print(f"ERROR {error}", file=sys.stderr)
         return 1
@@ -62,6 +92,7 @@ def cmd_init(args: argparse.Namespace) -> int:
             print(f"  - {file_name}")
         if len(initialized.skipped_files) > 8:
             print(f"  - ...and {len(initialized.skipped_files) - 8} more")
+    print_common_artifacts(initialized.created_common_artifacts, initialized.skipped_common_artifacts)
     print()
     print("Next steps:")
     print("  1. Run icm doctor")
@@ -302,11 +333,21 @@ def build_parser() -> argparse.ArgumentParser:
     new_parser = subparsers.add_parser("new", help="Create a new ICM workspace")
     new_parser.add_argument("target", help="Directory to create. It must be empty if it already exists.")
     new_parser.add_argument("--name", help="Human-readable project name. Defaults to the target directory name.")
+    new_parser.add_argument(
+        "--with-common-artifacts",
+        action="store_true",
+        help="Add starter source inventory, release calendar, and decision log files under shared/.",
+    )
     new_parser.set_defaults(func=cmd_new)
 
     init_parser = subparsers.add_parser("init", help="Add ICM files to an existing project without overwriting files")
     init_parser.add_argument("target", nargs="?", default=".", help="Project directory to initialize. Defaults to the current directory.")
     init_parser.add_argument("--name", help="Human-readable project name. Defaults to the target directory name.")
+    init_parser.add_argument(
+        "--with-common-artifacts",
+        action="store_true",
+        help="Add starter source inventory, release calendar, and decision log files under shared/.",
+    )
     init_parser.set_defaults(func=cmd_init)
 
     validate_parser = subparsers.add_parser("validate", help="Validate an ICM workspace")

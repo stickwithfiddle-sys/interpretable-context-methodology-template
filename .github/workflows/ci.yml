@@ -101,10 +101,12 @@ jobs:
           rm -rf icm-install-smoke
           /tmp/icm-wheel-venv/bin/icm --version
           /tmp/icm-wheel-venv/bin/icm new icm-install-smoke --name "Install Smoke"
-          /tmp/icm-wheel-venv/bin/icm init icm-install-smoke --name "Install Smoke"
+          /tmp/icm-wheel-venv/bin/icm init icm-install-smoke --name "Install Smoke" --with-common-artifacts
           /tmp/icm-wheel-venv/bin/icm validate icm-install-smoke --strict
           /tmp/icm-wheel-venv/bin/icm status icm-install-smoke
           test -f icm-install-smoke/.gitignore
           test -f icm-install-smoke/.github/prompts/run-icm-stage.prompt.md
+          test -f icm-install-smoke/shared/source-inventory.md
+          test -f icm-install-smoke/shared/release-calendar.md
           test -f icm-install-smoke/stages/01_discovery/output/.gitkeep
           python icm-install-smoke/tools/validate_icm_workspace.py icm-install-smoke --strict
