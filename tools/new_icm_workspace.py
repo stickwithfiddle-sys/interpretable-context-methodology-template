@@ -87,10 +87,14 @@ def main() -> int:
 
     print(f"Created ICM workspace: {target}")
     print(f"Project name: {project_name}")
+    print()
     print("Next steps:")
-    print("  1. Open the new folder in VS Code.")
-    print("  2. Fill stages/00_intake/output/project-brief.md.")
-    print("  3. Run python tools/validate_icm_workspace.py . --strict")
+    print(f"  1. cd \"{target}\"")
+    print("  2. Fill stages/00_intake/output/project-brief.md")
+    print("  3. Ask your agent:")
+    print("     Read AGENTS.md and CONTEXT.md, then run stages/00_intake.")
+    print("     Write only the declared outputs, run Verify, and stop at the Review Gate.")
+    print("  4. Run python tools/validate_icm_workspace.py . --strict")
     return 0
 
 

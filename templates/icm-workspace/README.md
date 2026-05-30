@@ -2,22 +2,48 @@
 
 This is an Interpretable Context Methodology workspace created on {{CREATED_DATE}}.
 
-The workspace uses folders, markdown contracts, and local scripts as the agent orchestration layer. Start at `AGENTS.md`, then read `CONTEXT.md`, then run stages in numbered order.
+The workspace uses folders, markdown contracts, and local scripts as the agent orchestration layer.
 
-## Run The Builder
+## Start Here
 
-1. Fill `stages/00_intake/output/project-brief.md`.
-2. Run one stage at a time.
-3. Review and edit each stage's `output/` files before continuing.
-4. Update `_config/` or stage `references/` when repeated output edits reveal a source-level improvement.
+1. Fill in `stages/00_intake/output/project-brief.md`.
+2. Ask your agent to run `stages/00_intake`.
+3. Review the output before moving to `stages/01_discovery`.
+4. Continue one numbered stage at a time.
+
+Paste this to your agent:
+
+```text
+Read AGENTS.md and CONTEXT.md, then run stages/00_intake.
+Load only the inputs declared in that stage's CONTEXT.md.
+Write only the declared outputs, run Verify, and stop at the Review Gate.
+```
 
 ## Validate
 
-```powershell
+```bash
 python tools/validate_icm_workspace.py . --strict
 ```
 
+Expected output:
+
+```text
+OK: workspace passed validation with 0 warning(s)
+```
+
 ## Layer Map
+
+```mermaid
+flowchart TD
+    L0["Layer 0: AGENTS.md"]
+    L1["Layer 1: CONTEXT.md"]
+    L2["Layer 2: stages/NN_slug/CONTEXT.md"]
+    L3["Layer 3: _config/, shared/, references/"]
+    L4["Layer 4: stages/NN_slug/output/"]
+    L0 --> L1 --> L2
+    L2 --> L3
+    L2 --> L4
+```
 
 | Layer | Location | Purpose |
 | --- | --- | --- |
@@ -26,3 +52,12 @@ python tools/validate_icm_workspace.py . --strict
 | 2 | `stages/*/CONTEXT.md` | Stage-specific contracts |
 | 3 | `_config/`, `shared/`, `stages/*/references/` | Stable reference material |
 | 4 | `stages/*/output/` | Per-run artifacts and handoffs |
+
+## Source-Level Improvement
+
+If you keep editing the same kind of issue in `output/`, move that fix upstream:
+
+- Stage behavior: `stages/NN_slug/CONTEXT.md`
+- Stable rules: `_config/*.md`
+- Stage examples or rubrics: `stages/NN_slug/references/*.md`
+- Cross-stage decisions: `shared/*.md`

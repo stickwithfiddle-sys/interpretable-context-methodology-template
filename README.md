@@ -1,36 +1,91 @@
 # Interpretable Context Methodology (ICM) Reusable Template
 
-This repository turns the paper [Interpretable Context Methodology: Folder Structure as Agent Architecture](https://arxiv.org/html/2603.16021v2) into a reusable starter kit for new projects.
+Beginner-friendly starter kit for building filesystem-based AI agent workflows with [Interpretable Context Methodology](https://arxiv.org/html/2603.16021v2).
 
-ICM is useful when a workflow is sequential, reviewable, and repeatable: one stage produces a plain-text artifact, a human can inspect or edit it, and the next stage reads that artifact as input. The folder structure becomes the orchestration layer. Markdown files define agent behavior. Small scripts handle deterministic mechanical checks.
+Think of ICM as Trello meets Makefile meets agent prompts: each numbered folder is a step in the workflow, each `CONTEXT.md` file says what that step does, and each `output/` folder is a human-reviewable handoff.
 
-## Status
+## Start Here
 
-Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
+If you only run one command, run this:
 
-Maintained by Hobo.
-
-## Quick Start
-
-Create a new ICM workspace from the template:
-
-```powershell
-python tools/new_icm_workspace.py ..\my-new-project --name "My New Project"
+```bash
+python tools/new_icm_workspace.py ../my-first-icm-workspace --name "My First ICM Workspace"
 ```
 
-Validate the template itself:
+Then open the new folder and fill in:
 
-```powershell
-python tools/validate_icm_workspace.py templates\icm-workspace --strict
+```text
+stages/00_intake/output/project-brief.md
 ```
 
-After creating a project workspace:
+Ask your coding agent:
 
-1. Open the new folder.
-2. Fill in `stages/00_intake/output/project-brief.md`.
-3. Ask your agent to run `stages/00_intake`, then review the output before moving on.
-4. Continue through each numbered stage, editing outputs at review gates.
-5. When a repeated edit pattern appears, update the stage contract or reference file so future runs improve at the source.
+```text
+Read AGENTS.md and CONTEXT.md, then run stages/00_intake.
+Write only the declared outputs, run the Verify checks, and stop at the Review Gate.
+```
+
+Finally, validate the workspace structure:
+
+```bash
+python tools/validate_icm_workspace.py ../my-first-icm-workspace --strict
+```
+
+Expected output:
+
+```text
+OK: workspace passed validation with 0 warning(s)
+```
+
+On Windows PowerShell, use backslashes if you prefer:
+
+```powershell
+python tools\new_icm_workspace.py ..\my-first-icm-workspace --name "My First ICM Workspace"
+python tools\validate_icm_workspace.py ..\my-first-icm-workspace --strict
+```
+
+## Why This Exists
+
+Most agent workflows become hard to inspect once the logic lives inside a chat thread, framework state, or hidden prompt chain. ICM keeps the workflow visible:
+
+- Stages are folders.
+- Agent instructions are markdown.
+- Inputs and outputs are plain files.
+- Humans review artifacts between steps.
+- Repeated fixes move upstream into reusable source files.
+
+This is useful for research synthesis, planning, content production, documentation systems, policy workflows, analysis pipelines, and any project where each intermediate artifact should be readable before the next step runs.
+
+## Five-Layer Mental Model
+
+```mermaid
+flowchart TD
+    L0["Layer 0: AGENTS.md<br/>Workspace identity and operating rules"]
+    L1["Layer 1: CONTEXT.md<br/>Routing and stage index"]
+    L2["Layer 2: stages/NN_slug/CONTEXT.md<br/>One stage contract"]
+    L3["Layer 3: _config/, shared/, references/<br/>Stable rules and reusable context"]
+    L4["Layer 4: output/<br/>Working artifacts and handoffs"]
+
+    L0 --> L1 --> L2
+    L2 --> L3
+    L2 --> L4
+    L4 --> NEXT["Next numbered stage"]
+```
+
+The most important habit: do not ask the agent to load everything. Ask it to follow the current stage contract.
+
+## Learn By Example
+
+Start with these files:
+
+| File | Use |
+| --- | --- |
+| [docs/first-workspace.md](docs/first-workspace.md) | Step-by-step first run tutorial |
+| [docs/glossary.md](docs/glossary.md) | Plain-language definitions of ICM terms |
+| [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
+| [docs/product-direction.md](docs/product-direction.md) | UX/product roadmap, including Hermes Agent-inspired ideas |
+| [docs/research-summary.md](docs/research-summary.md) | Practical summary of the ICM paper |
+| [docs/template-design.md](docs/template-design.md) | Design decisions behind this starter kit |
 
 ## What Is Included
 
@@ -43,10 +98,15 @@ templates/icm-workspace/
   shared/                   Cross-stage notes, decisions, backlog, and glossary
   stages/                   Layer 2 stage contracts and Layer 4 output folders
   .github/prompts/          Optional VS Code prompt files for running/reviewing stages
+examples/
+  completed-content-plan/   Filled example workspace for a small content workflow
 tools/
   new_icm_workspace.py      Copies the template into a new project folder
   validate_icm_workspace.py Checks stage naming, contracts, and handoff folders
 docs/
+  first-workspace.md        Beginner tutorial
+  glossary.md               Plain-language terms
+  product-direction.md      UX and product roadmap
   research-summary.md       Practical findings extracted from the paper
   template-design.md        Design decisions and adaptation notes
 ```
@@ -64,11 +124,28 @@ The included template is a workspace-builder. Its output is a project-specific I
 | `04_questionnaire` | Produce setup questions and reference-material prompts | `setup-questionnaire.md` |
 | `05_validation` | Dry-run the workflow and report gaps before use | `validation-report.md` |
 
+## Common Mistakes
+
+| Mistake | Better Move |
+| --- | --- |
+| Asking the agent to "do the whole project" | Ask it to run one numbered stage and stop at the review gate |
+| Treating `output/` files as disposable | Review and edit them; they are the audit trail |
+| Putting project rules in a chat message | Put stable rules in `_config/`, `shared/`, or `references/` |
+| Adding a stage for every tiny task | Add a stage only when there is a real handoff, context boundary, or review point |
+| Fixing the same output issue repeatedly | Update the stage `CONTEXT.md` or reference file so future runs improve |
+| Loading the whole repo for every step | Load only the files listed in the current stage's Inputs table |
+
 ## When To Use ICM
 
-Use it for project planning, research synthesis, content production, analysis workflows, deliverable pipelines, documentation systems, and other work where intermediate artifacts should be readable and editable.
+Use ICM when a workflow is sequential, reviewable, and repeatable: one stage produces a plain-text artifact, a human can inspect or edit it, and the next stage reads that artifact as input.
 
 Use a conventional framework instead when you need real-time multi-agent collaboration, high-concurrency service infrastructure, automated branching based on model decisions, or tight message-passing loops.
+
+## Status
+
+Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
+
+Maintained by Hobo.
 
 ## Research Basis
 
