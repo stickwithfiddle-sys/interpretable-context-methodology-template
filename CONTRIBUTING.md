@@ -41,6 +41,7 @@ python -m pip install -e .
 Run these before opening or merging a pull request:
 
 ```bash
+python tools/check_packaged_assets.py
 python -m icm validate templates/icm-workspace --strict
 python -m icm validate examples/completed-content-plan --strict
 python -m icm status examples/completed-content-plan
@@ -66,6 +67,13 @@ python examples/completed-content-plan/tools/validate_icm_workspace.py examples/
 - Repeated advice belongs in `_config/`, `shared/`, or `references/`, not only in prose.
 - `CHANGELOG.md` has an entry under `Unreleased` or the release version.
 - Version numbers are updated when preparing a release.
+- Package-embedded assets match `templates/icm-workspace`.
+
+When changing `templates/icm-workspace`, mirror it into `icm/templates/icm-workspace` and run:
+
+```bash
+python tools/check_packaged_assets.py
+```
 
 ## Versioning
 

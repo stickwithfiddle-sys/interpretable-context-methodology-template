@@ -5,16 +5,31 @@ from __future__ import annotations
 import datetime as dt
 import re
 import shutil
+from importlib import resources
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Protocol
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE_ROOT = REPO_ROOT / "templates" / "icm-workspace"
+LEGACY_VALIDATOR = REPO_ROOT / "tools" / "validate_icm_workspace.py"
 TEXT_SUFFIXES = {".md", ".txt", ".json", ".yaml", ".yml", ".py", ".ps1", ".gitignore"}
 STAGE_NAME_PATTERN = re.compile(r"^\d{2}_[a-z0-9][a-z0-9_-]*$")
 REQUIRED_STAGE_HEADINGS = ("Inputs", "Process", "Outputs", "Review Gate", "Verify")
 REQUIRED_ROOT_DIRECTORIES = ("_config", "_templates", "shared", "stages")
+
+
+class ResourcePath(Protocol):
+    name: str
+
+    def is_dir(self) -> bool: ...
+
+    def is_file(self) -> bool: ...
+
+    def iterdir(self): ...
+
+    def read_bytes(self) -> bytes: ...
 
 
 @dataclass(frozen=True)
@@ -113,11 +128,40 @@ def ensure_empty_target(target: Path) -> None:
     target.mkdir(parents=True, exist_ok=True)
 
 
+def copy_resource_tree(source: ResourcePath, target: Path) -> None:
+    if source.is_dir():
+        target.mkdir(parents=True, exist_ok=True)
+        for child in source.iterdir():
+            if child.name == "__pycache__" or child.name.endswith(".pyc"):
+                continue
+            copy_resource_tree(child, target / child.name)
+        return
+
+    if source.is_file():
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(source.read_bytes())
+
+
+def packaged_template_root() -> ResourcePath:
+    return resources.files("icm").joinpath("templates", "icm-workspace")
+
+
+def packaged_validator() -> ResourcePath:
+    return resources.files("icm").joinpath("legacy_tools", "validate_icm_workspace.py")
+
+
 def copy_template(target: Path) -> None:
-    shutil.copytree(TEMPLATE_ROOT, target, dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+    if TEMPLATE_ROOT.exists():
+        shutil.copytree(TEMPLATE_ROOT, target, dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+    else:
+        copy_resource_tree(packaged_template_root(), target)
+
     target_tools = target / "tools"
     target_tools.mkdir(exist_ok=True)
-    shutil.copy2(REPO_ROOT / "tools" / "validate_icm_workspace.py", target_tools / "validate_icm_workspace.py")
+    if LEGACY_VALIDATOR.exists():
+        shutil.copy2(LEGACY_VALIDATOR, target_tools / "validate_icm_workspace.py")
+    else:
+        (target_tools / "validate_icm_workspace.py").write_bytes(packaged_validator().read_bytes())
 
 
 def replace_tokens(target: Path, replacements: dict[str, str]) -> None:
@@ -136,9 +180,6 @@ def replace_tokens(target: Path, replacements: dict[str, str]) -> None:
 
 
 def create_workspace(target: Path, name: str | None = None) -> WorkspaceCreation:
-    if not TEMPLATE_ROOT.exists():
-        raise FileNotFoundError(f"Template folder not found: {TEMPLATE_ROOT}")
-
     resolved_target = target.expanduser().resolve()
     project_name = name or resolved_target.name.replace("-", " ").replace("_", " ").title()
     replacements = {

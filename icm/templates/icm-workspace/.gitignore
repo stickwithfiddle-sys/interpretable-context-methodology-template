@@ -1,0 +1,10 @@
+# Python cache and local scratch files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.icm-tmp/
+
+# Keep stage outputs by default because they are the audit trail.
+# Uncomment these lines if you want ephemeral outputs instead.
+# stages/*/output/*
+# !stages/*/output/.gitkeep

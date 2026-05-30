@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "icm-workspace-template"
-version = "0.4.0"
+version = "0.5.0"
 description = "CLI and reusable template for Interpretable Context Methodology workspaces"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -43,3 +43,12 @@ icm = "icm.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["icm*"]
+
+[tool.setuptools.package-data]
+icm = [
+  "templates/icm-workspace/**/*",
+  "templates/icm-workspace/.gitignore",
+  "templates/icm-workspace/.github/prompts/*.md",
+  "templates/icm-workspace/stages/*/output/.gitkeep",
+  "legacy_tools/*.py"
+]

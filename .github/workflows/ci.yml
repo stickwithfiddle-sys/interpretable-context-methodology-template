@@ -21,6 +21,9 @@ jobs:
       - name: Install package
         run: python -m pip install -e .
 
+      - name: Check packaged assets
+        run: python tools/check_packaged_assets.py
+
       - name: Validate template
         run: icm validate templates/icm-workspace --strict
 
@@ -41,3 +44,24 @@ jobs:
 
       - name: Smoke test CLI doctor
         run: icm doctor examples/completed-content-plan --strict
+
+      - name: Build wheel
+        run: python -m pip wheel . -w dist --no-deps
+
+      - name: Install wheel into clean venv
+        run: |
+          python -m venv /tmp/icm-wheel-venv
+          /tmp/icm-wheel-venv/bin/python -m pip install dist/*.whl
+
+      - name: Smoke test installed wheel outside checkout
+        working-directory: /tmp
+        run: |
+          rm -rf icm-install-smoke
+          /tmp/icm-wheel-venv/bin/icm --version
+          /tmp/icm-wheel-venv/bin/icm new icm-install-smoke --name "Install Smoke"
+          /tmp/icm-wheel-venv/bin/icm validate icm-install-smoke --strict
+          /tmp/icm-wheel-venv/bin/icm status icm-install-smoke
+          test -f icm-install-smoke/.gitignore
+          test -f icm-install-smoke/.github/prompts/run-icm-stage.prompt.md
+          test -f icm-install-smoke/stages/01_discovery/output/.gitkeep
+          python icm-install-smoke/tools/validate_icm_workspace.py icm-install-smoke --strict

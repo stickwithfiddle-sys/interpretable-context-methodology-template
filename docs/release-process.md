@@ -30,6 +30,7 @@ python -m icm explain stages/01_discovery --workspace examples/completed-content
 python -m icm review stages/01_discovery --workspace examples/completed-content-plan
 python -m icm doctor examples/completed-content-plan --strict
 python tools/validate_icm_workspace.py templates/icm-workspace --strict
+python tools/check_packaged_assets.py
 ```
 
 Check:
@@ -39,6 +40,21 @@ Check:
 - Any new command has help text.
 - Any new workflow behavior appears in a doc or example.
 - The completed example still validates.
+- The wheel builds and `icm new` works outside the source checkout.
+
+## Installed Package Smoke Test
+
+```bash
+rm -rf .tmp/wheelhouse .tmp/install-venv
+python -m pip wheel . -w .tmp/wheelhouse --no-deps
+python -m venv .tmp/install-venv
+.tmp/install-venv/bin/python -m pip install .tmp/wheelhouse/*.whl
+rm -rf /tmp/icm-install-smoke
+cd /tmp
+/path/to/repo/.tmp/install-venv/bin/icm new /tmp/icm-install-smoke --name "Install Smoke"
+/path/to/repo/.tmp/install-venv/bin/icm validate /tmp/icm-install-smoke --strict
+python /tmp/icm-install-smoke/tools/validate_icm_workspace.py /tmp/icm-install-smoke --strict
+```
 
 ## Release Checklist
 

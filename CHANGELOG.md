@@ -12,6 +12,19 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.5.0] - 2026-05-30
+
+### Added
+
+- Embedded the ICM workspace template and fallback validator inside the Python package.
+- Added `tools/check_packaged_assets.py` to keep source and package-embedded assets synchronized.
+- Added CI wheel-build and installed-package smoke tests that run outside the source checkout.
+- Added install documentation for GitHub, virtualenv, and local development flows.
+
+### Changed
+
+- `icm new` now works from an installed wheel, not only from an editable source checkout.
+
 ## [0.4.0] - 2026-05-30
 
 ### Added
@@ -54,7 +67,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.1.0...v0.2.0

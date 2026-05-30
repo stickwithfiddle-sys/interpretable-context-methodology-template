@@ -6,7 +6,7 @@ Think of ICM as Trello meets Makefile meets agent prompts: each numbered folder 
 
 ## Start Here
 
-If you only run one command, run this:
+From a source checkout, run:
 
 ```bash
 python -m icm new ../my-first-icm-workspace --name "My First ICM Workspace"
@@ -53,6 +53,8 @@ python -m pip install -e .
 icm status examples/completed-content-plan
 ```
 
+To install from GitHub instead of cloning first, see [docs/install.md](docs/install.md).
+
 ## Why This Exists
 
 Most agent workflows become hard to inspect once the logic lives inside a chat thread, framework state, or hidden prompt chain. ICM keeps the workflow visible:
@@ -91,6 +93,7 @@ Start with these files:
 | --- | --- |
 | [docs/first-workspace.md](docs/first-workspace.md) | Step-by-step first run tutorial |
 | [docs/glossary.md](docs/glossary.md) | Plain-language definitions of ICM terms |
+| [docs/install.md](docs/install.md) | GitHub, virtualenv, and local install options |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
 | [docs/product-direction.md](docs/product-direction.md) | UX/product roadmap, including Hermes Agent-inspired ideas |
 | [docs/release-process.md](docs/release-process.md) | Versioning, release, and GitHub workflow checklist |
@@ -144,6 +147,7 @@ icm/
 docs/
   first-workspace.md        Beginner tutorial
   glossary.md               Plain-language terms
+  install.md                Install options and package smoke checks
   product-direction.md      UX and product roadmap
   release-process.md        GitHub and versioning workflow
   research-summary.md       Practical findings extracted from the paper
@@ -184,7 +188,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.4.0`.
+Current package version: `0.5.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 

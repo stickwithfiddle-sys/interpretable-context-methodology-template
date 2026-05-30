@@ -16,6 +16,7 @@ What changed?
 - [ ] Example workspace updated if useful for beginners
 - [ ] `CHANGELOG.md` updated
 - [ ] Version updated if this is a release PR
+- [ ] `python tools/check_packaged_assets.py`
 - [ ] `python -m icm validate templates/icm-workspace --strict`
 - [ ] `python -m icm validate examples/completed-content-plan --strict`
 - [ ] `python -m icm status examples/completed-content-plan`
