@@ -19,6 +19,7 @@ Read the outputs in order:
 2. Compare it to `stages/01_discovery/references/discovery-report-rubric.md`.
 3. Run `icm review stages/01_discovery`.
 4. Notice the PASS lines for required table columns and link/path references.
+5. Run `icm review stages/05_validation` to see source-inventory, calendar, and decision-log artifact-shape checks.
 
 Paste this to your agent:
 
@@ -65,6 +66,7 @@ This example extends that pattern with:
 
 - `Required Table Columns`
 - `Required Link Or Path Count`
+- `Required Artifact Shapes`
 
 ## Layer Map
 

@@ -103,10 +103,11 @@ Start with these files:
 | [docs/demo.md](docs/demo.md) | Copy-paste demo for first install and completed review checks |
 | [docs/glossary.md](docs/glossary.md) | Plain-language definitions of ICM terms |
 | [docs/install.md](docs/install.md) | GitHub, virtualenv, and local install options |
+| [docs/pypi-upgrade.md](docs/pypi-upgrade.md) | Beginner upgrade and install verification commands |
 | [docs/index.html](docs/index.html) | GitHub Pages visual docs homepage |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
 | [examples/completed-research-brief](examples/completed-research-brief) | Completed research-brief example with review rubrics |
-| [examples/completed-documentation-refresh](examples/completed-documentation-refresh) | Completed documentation-refresh example with table and path-count rubric checks |
+| [examples/completed-documentation-refresh](examples/completed-documentation-refresh) | Completed documentation-refresh example with table, path-count, and artifact-shape rubric checks |
 | [docs/dashboard-direction.md](docs/dashboard-direction.md) | Dashboard direction and readiness criteria |
 | [docs/product-direction.md](docs/product-direction.md) | UX/product roadmap, including Hermes Agent-inspired ideas |
 | [docs/revision-audit.md](docs/revision-audit.md) | Current product audit, UX assessment, and next direction options |
@@ -177,6 +178,7 @@ docs/
   dashboard-direction.md    Dashboard readiness notes
   glossary.md               Plain-language terms
   install.md                Install options and package smoke checks
+  pypi-upgrade.md           Beginner upgrade and install verification commands
   product-direction.md      UX and product roadmap
   pypi-readiness.md         PyPI package publishing checklist
   release-process.md        GitHub and versioning workflow
@@ -201,7 +203,7 @@ The included template is a workspace-builder. Its output is a project-specific I
 
 ## Deterministic Review Rubrics
 
-`icm review` can load markdown rubrics from a stage `references/` folder. Rubrics can require artifact sections, terms, source citations, table columns, link/path counts, and forbidden placeholder text.
+`icm review` can load markdown rubrics from a stage `references/` folder. Rubrics can require artifact sections, terms, source citations, table columns, link/path counts, common artifact shapes, and forbidden placeholder text.
 
 The completed documentation-refresh example demonstrates the newest checks:
 
@@ -214,6 +216,20 @@ Look for PASS lines such as:
 ```text
 Rubric required table columns present in discovery-report.md: Source, Used For
 Rubric link/path reference count met in discovery-report.md: 14/3
+```
+
+The same example also demonstrates common artifact-shape validators:
+
+```bash
+icm review stages/05_validation --workspace examples/completed-documentation-refresh
+```
+
+Look for PASS lines such as:
+
+```text
+Rubric source-inventory artifact shape valid in source-inventory.md
+Rubric calendar artifact shape valid in release-calendar.md
+Rubric decision-log artifact shape valid in decision-log.md
 ```
 
 See [docs/review-rubrics.md](docs/review-rubrics.md) for the full rubric format.
@@ -239,7 +255,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.10.0`.
+Current package version: `0.11.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 

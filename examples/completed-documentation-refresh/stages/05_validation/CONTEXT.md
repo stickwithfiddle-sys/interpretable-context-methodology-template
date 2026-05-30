@@ -27,6 +27,9 @@ Validate the proposed project-specific ICM workspace before it is used for real 
 | File | Location | Purpose |
 | --- | --- | --- |
 | `validation-report.md` | `output/` | Readiness report and fix list |
+| `source-inventory.md` | `output/` | Example source inventory artifact for deterministic review |
+| `release-calendar.md` | `output/` | Example release calendar artifact for deterministic review |
+| `decision-log.md` | `output/` | Example decision log artifact for deterministic review |
 
 ## Review Gate
 
@@ -35,5 +38,6 @@ Before using the generated project workspace, a human should resolve blocker fin
 ## Verify
 
 - Confirm `output/validation-report.md` exists.
+- Confirm the source inventory, release calendar, and decision log outputs pass their artifact-shape rubrics.
 - Confirm each finding names the source file or stage it affects.
 - Confirm the report includes a go/no-go recommendation.

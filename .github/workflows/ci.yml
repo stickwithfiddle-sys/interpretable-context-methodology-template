@@ -63,6 +63,9 @@ jobs:
       - name: Smoke test documentation validator review
         run: icm review stages/01_discovery --workspace examples/completed-documentation-refresh
 
+      - name: Smoke test documentation artifact-shape review
+        run: icm review stages/05_validation --workspace examples/completed-documentation-refresh
+
       - name: Smoke test CLI doctor
         run: icm doctor examples/completed-content-plan --strict
 

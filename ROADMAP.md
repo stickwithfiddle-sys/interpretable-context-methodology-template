@@ -14,16 +14,18 @@ This roadmap keeps product work visible without turning the README into a backlo
 - Support artifact-specific `icm review` rubrics.
 - Support source-traceability checks in `icm review` rubrics.
 - Support deterministic table-column and link/path-count checks in `icm review` rubrics.
+- Support source-inventory, calendar, and decision-log artifact-shape checks in `icm review` rubrics.
 - Keep package metadata, build checks, and Trusted Publishing workflow ready for PyPI.
 - Maintain at least three completed example workspaces, including content planning, research briefs, and documentation refreshes.
 - Keep a copy-paste demo path visible from the docs homepage.
+- Keep beginner-facing PyPI upgrade and install verification docs available.
 
 ## Next
 
 - Add examples for project planning workflows.
 - Add a short demo recording or animated walkthrough for the docs site.
-- Add deterministic validators for common artifact types such as calendars, source inventories, and decision logs.
-- Add release verification docs for installing from PyPI in new environments.
+- Add richer docs for choosing rubric validators by workflow type.
+- Add dashboard readiness notes for visualizing review queues and artifact-shape failures.
 
 ## Later
 

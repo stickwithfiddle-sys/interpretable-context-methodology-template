@@ -2,7 +2,7 @@
 
 Review rubrics let a stage define deterministic artifact checks that run during `icm review`.
 
-Use a rubric when an output needs more than "the file exists and has content." A rubric can require specific headings, important terms, source citations, table columns, link/path counts, and reject placeholder or forbidden text.
+Use a rubric when an output needs more than "the file exists and has content." A rubric can require specific headings, important terms, source citations, table columns, link/path counts, common artifact shapes, and reject placeholder or forbidden text.
 
 ## Where Rubrics Live
 
@@ -49,6 +49,10 @@ stages/01_discovery/references/discovery-report-rubric.md
 
 - 3
 
+## Required Artifact Shapes
+
+- source-inventory
+
 ## Forbidden Terms
 
 - TBD
@@ -74,11 +78,24 @@ Required table columns look for one markdown table whose header row contains eve
 
 Required link/path count checks the number of distinct markdown links and inline-code file or URL references in the output. Use `## Minimum Link Or Path Count` or `## Required Path Count` if either phrase fits your team better.
 
+Required artifact shapes check common markdown artifact formats. Use `## Required Artifact Shapes` with one or more of:
+
+| Shape | Required Pattern |
+| --- | --- |
+| `source-inventory` | A markdown table with Source, Type, Status, and Used For columns, plus at least one source path, URL, or link |
+| `calendar` | A markdown table with Date, Event or Milestone, Owner, and Status columns; dates must use `YYYY-MM-DD` |
+| `decision-log` | A markdown table with Date, Decision, Status, and Rationale or Reason columns; dates must use `YYYY-MM-DD` |
+
+Use `## Required Artifact Validators` or `## Required Artifact Types` if either heading fits your team better; they behave the same as `## Required Artifact Shapes`.
+
 Example PASS lines:
 
 ```text
 PASS Rubric required table columns present in discovery-report.md: Source, Used For
 PASS Rubric link/path reference count met in discovery-report.md: 14/3
+PASS Rubric source-inventory artifact shape valid in source-inventory.md
+PASS Rubric calendar artifact shape valid in release-calendar.md
+PASS Rubric decision-log artifact shape valid in decision-log.md
 ```
 
 ## Source Traceability Pattern
@@ -109,6 +126,33 @@ When the traceability table is part of the contract, add both checks to the rubr
 - 3
 ```
 
+## Common Artifact Shape Examples
+
+Source inventory:
+
+```markdown
+| Source | Type | Status | Used For |
+| --- | --- | --- | --- |
+| `README.md` | Beginner entry point | Current | First-run instructions |
+| `docs/install.md` | Install guide | Current | PyPI commands |
+```
+
+Calendar:
+
+```markdown
+| Date | Milestone | Owner | Status |
+| --- | --- | --- | --- |
+| 2026-06-01 | Review upgrade docs | Hobo | Planned |
+```
+
+Decision log:
+
+```markdown
+| Date | Decision | Status | Rationale |
+| --- | --- | --- | --- |
+| 2026-06-01 | Keep CLI-first release path | Accepted | Beginners need a trustworthy install path |
+```
+
 ## Good Rubric Habits
 
 - Keep rubric items concrete and easy to verify.
@@ -117,5 +161,6 @@ When the traceability table is part of the contract, add both checks to the rubr
 - Use required sources when an artifact should cite the inputs, references, or prior decisions it relied on.
 - Use required table columns when a human reviewer expects a consistent artifact shape.
 - Use link/path counts as a lightweight guardrail for inventories, traceability tables, or research notes.
+- Use required artifact shapes for source inventories, calendars, and decision logs that should stay machine-checkable.
 - Use forbidden terms for placeholders, banned claims, or known failure modes.
 - Keep subjective quality judgment in the Review Gate until it can be made deterministic.

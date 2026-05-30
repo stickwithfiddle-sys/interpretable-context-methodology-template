@@ -12,6 +12,19 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.11.0] - 2026-05-30
+
+### Added
+
+- Added `Required Artifact Shapes` rubric checks for source inventories, calendars, and decision logs.
+- Added artifact-shape fixture outputs and rubrics to the completed documentation-refresh example.
+- Added beginner-facing PyPI upgrade and install verification documentation.
+
+### Changed
+
+- Review-rubric docs now explain common artifact-shape validators and examples.
+- Roadmap, product direction, revision audit, README, docs site, and release checklists now reflect the v0.11.0 validator work.
+
 ### Fixed
 
 - Fixed the GitHub Pages homepage link for the demo walkthrough so it opens the generated HTML page.
@@ -143,7 +156,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.7.0...v0.8.0

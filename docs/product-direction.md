@@ -55,9 +55,9 @@ icm doctor
 icm review stages/01_discovery
 ```
 
-`icm new` is for a clean workspace. `icm init` is for an existing project and skips files that already exist. `icm doctor` checks both structure and content-quality issues such as empty required sections, missing config inputs, undeclared outputs, and broken handoffs after outputs are present. `icm review` can now load artifact-specific rubrics from stage references, including source-traceability checks, required table-column checks, and link/path-count checks for outputs that must cite their inputs.
+`icm new` is for a clean workspace. `icm init` is for an existing project and skips files that already exist. `icm doctor` checks both structure and content-quality issues such as empty required sections, missing config inputs, undeclared outputs, and broken handoffs after outputs are present. `icm review` can now load artifact-specific rubrics from stage references, including source-traceability checks, required table-column checks, link/path-count checks, and artifact-shape checks for source inventories, calendars, and decision logs.
 
-The example library now covers content planning, research briefs, and documentation refreshes. The documentation-refresh example is the clearest demo of the new artifact-shape checks because its discovery report must include a `Source Traceability` table with `Source` and `Used For` columns.
+The example library now covers content planning, research briefs, and documentation refreshes. The documentation-refresh example is the clearest demo of the review system because its discovery report must include a `Source Traceability` table, and its validation stage includes a source inventory, release calendar, and decision log checked by artifact-shape rubrics.
 
 ## Dashboard Concept
 
@@ -83,4 +83,4 @@ The dashboard should feel like a cockpit for the workspace, not a replacement fo
 
 ## Recommended Next Product Step
 
-Next, add more specific validators for source inventories, calendars, and decision logs, then add a short recorded walkthrough. A dashboard should start only after the CLI commands, status model, example library, and review language feel stable.
+Next, add a short recorded walkthrough, a project-planning example, and richer guidance for choosing rubric validators by workflow type. A dashboard should start only after the CLI commands, status model, example library, and review language feel stable.

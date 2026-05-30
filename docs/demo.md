@@ -46,10 +46,27 @@ PASS Rubric required table columns present in discovery-report.md: Source, Used 
 PASS Rubric link/path reference count met in discovery-report.md: 14/3
 ```
 
+Then review the validation stage to see common artifact-shape checks:
+
+```bash
+icm review stages/05_validation --workspace examples/completed-documentation-refresh
+```
+
+Look for:
+
+```text
+PASS Rubric source-inventory artifact shape valid in source-inventory.md
+PASS Rubric calendar artifact shape valid in release-calendar.md
+PASS Rubric decision-log artifact shape valid in decision-log.md
+```
+
 Those lines come from:
 
 ```text
 examples/completed-documentation-refresh/stages/01_discovery/references/discovery-report-rubric.md
+examples/completed-documentation-refresh/stages/05_validation/references/source-inventory-rubric.md
+examples/completed-documentation-refresh/stages/05_validation/references/release-calendar-rubric.md
+examples/completed-documentation-refresh/stages/05_validation/references/decision-log-rubric.md
 ```
 
 The rubric requires the discovery report to include a traceability table with `Source` and `Used For` columns, plus at least three link or path references.

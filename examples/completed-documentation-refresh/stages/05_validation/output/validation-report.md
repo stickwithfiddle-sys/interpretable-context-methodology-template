@@ -16,6 +16,7 @@
 | Required table columns are enforceable | Pass | Discovery rubric uses `Required Table Columns` |
 | Minimum cited path count is enforceable | Pass | Discovery rubric uses `Required Link Or Path Count` |
 | Required source paths are enforceable | Pass | Discovery rubric cites intake, question bank, and quality gates |
+| Common artifact shapes are enforceable | Pass | Validation rubrics use `Required Artifact Shapes` |
 | Placeholder text is rejected | Pass | Discovery rubric forbids `TBD` and `lorem ipsum` |
 
 ## Risks
@@ -28,7 +29,6 @@
 
 ## Open Decisions
 
-- Decide whether external links count toward path-count validators.
 - Decide whether screenshots should be required before a release or checked after command text changes.
 - Decide whether documentation refresh should publish a generated source inventory in the repo.
 

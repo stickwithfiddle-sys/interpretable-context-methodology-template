@@ -29,6 +29,7 @@ What changed?
 - [ ] `python -m icm review stages/01_discovery --workspace examples/completed-content-plan`
 - [ ] `python -m icm review stages/01_discovery --workspace examples/completed-research-brief`
 - [ ] `python -m icm review stages/01_discovery --workspace examples/completed-documentation-refresh`
+- [ ] `python -m icm review stages/05_validation --workspace examples/completed-documentation-refresh`
 - [ ] `python -m icm doctor examples/completed-content-plan --strict`
 - [ ] `python -m icm doctor examples/completed-research-brief --strict`
 - [ ] `python -m icm doctor examples/completed-documentation-refresh --strict`

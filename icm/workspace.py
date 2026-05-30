@@ -74,6 +74,13 @@ class TableRow:
 
 
 @dataclass(frozen=True)
+class MarkdownTable:
+    headers: tuple[str, ...]
+    raw_headers: tuple[str, ...]
+    rows: tuple[tuple[str, ...], ...]
+
+
+@dataclass(frozen=True)
 class StageStatus:
     name: str
     path: Path
@@ -99,6 +106,7 @@ class ReviewRubric:
     required_sources: tuple[str, ...]
     required_table_columns: tuple[str, ...]
     minimum_link_or_path_count: int | None
+    required_artifact_shapes: tuple[str, ...]
     forbidden_terms: tuple[str, ...]
 
 
@@ -501,6 +509,11 @@ def parse_review_rubric(rubric_path: Path) -> ReviewRubric:
         or parse_first_integer(extract_section(markdown, "Minimum Link Or Path Count"))
         or parse_first_integer(extract_section(markdown, "Required Path Count"))
     )
+    required_artifact_shapes = (
+        parse_bullet_items(extract_section(markdown, "Required Artifact Shapes"))
+        + parse_bullet_items(extract_section(markdown, "Required Artifact Validators"))
+        + parse_bullet_items(extract_section(markdown, "Required Artifact Types"))
+    )
     forbidden_terms = (
         parse_bullet_items(extract_section(markdown, "Forbidden Terms"))
         + parse_bullet_items(extract_section(markdown, "Must Not Include"))
@@ -512,6 +525,7 @@ def parse_review_rubric(rubric_path: Path) -> ReviewRubric:
         required_sources=required_sources,
         required_table_columns=required_table_columns,
         minimum_link_or_path_count=minimum_link_or_path_count,
+        required_artifact_shapes=required_artifact_shapes,
         forbidden_terms=forbidden_terms,
     )
 
@@ -565,23 +579,43 @@ def is_table_separator(cells: tuple[str, ...]) -> bool:
     return all(not cell.replace("-", "").replace(":", "").strip() for cell in cells)
 
 
+def markdown_tables(markdown: str) -> tuple[MarkdownTable, ...]:
+    tables: list[MarkdownTable] = []
+    lines = markdown.splitlines()
+    index = 0
+
+    while index < len(lines) - 1:
+        header_cells = split_raw_markdown_table_row(lines[index])
+        separator_cells = split_raw_markdown_table_row(lines[index + 1])
+        if header_cells is None or separator_cells is None or not is_table_separator(separator_cells):
+            index += 1
+            continue
+
+        headers = tuple(normalize_table_column(cell) for cell in header_cells)
+        row_cells: list[tuple[str, ...]] = []
+        index += 2
+        while index < len(lines):
+            cells = split_raw_markdown_table_row(lines[index])
+            if cells is None:
+                break
+            if not is_table_separator(cells):
+                row_cells.append(cells)
+            index += 1
+
+        tables.append(
+            MarkdownTable(
+                headers=headers,
+                raw_headers=header_cells,
+                rows=tuple(row_cells),
+            )
+        )
+        index += 1
+
+    return tuple(tables)
+
+
 def markdown_table_headers(markdown: str) -> tuple[tuple[str, ...], ...]:
-    headers: list[tuple[str, ...]] = []
-    current_header: tuple[str, ...] | None = None
-
-    for line in markdown.splitlines():
-        cells = split_raw_markdown_table_row(line)
-        if cells is None:
-            current_header = None
-            continue
-        if is_table_separator(cells):
-            continue
-        if current_header is None:
-            current_header = tuple(normalize_table_column(cell) for cell in cells if normalize_table_column(cell))
-            if current_header:
-                headers.append(current_header)
-
-    return tuple(headers)
+    return tuple(table.headers for table in markdown_tables(markdown))
 
 
 def has_table_with_columns(markdown: str, required_columns: tuple[str, ...]) -> bool:
@@ -614,6 +648,112 @@ def count_link_or_path_references(markdown: str) -> int:
         if looks_like_path_or_url(target):
             references.add(target)
     return len(references)
+
+
+def normalize_artifact_shape(shape: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", shape.strip().lower()).strip("-")
+
+
+def table_column_index(table: MarkdownTable, aliases: set[str]) -> int | None:
+    normalized_aliases = {normalize_table_column(alias) for alias in aliases}
+    for index, header in enumerate(table.headers):
+        if header in normalized_aliases:
+            return index
+    return None
+
+
+def table_has_column_aliases(table: MarkdownTable, aliases_by_column: tuple[set[str], ...]) -> bool:
+    return all(table_column_index(table, aliases) is not None for aliases in aliases_by_column)
+
+
+def table_column_values(table: MarkdownTable, aliases: set[str]) -> tuple[str, ...]:
+    index = table_column_index(table, aliases)
+    if index is None:
+        return ()
+    values: list[str] = []
+    for row in table.rows:
+        if index < len(row):
+            values.append(unquote_markdown_cell(row[index]))
+    return tuple(values)
+
+
+def contains_iso_date(value: str) -> bool:
+    match = re.search(r"\b\d{4}-\d{2}-\d{2}\b", value)
+    if not match:
+        return False
+    try:
+        dt.date.fromisoformat(match.group(0))
+    except ValueError:
+        return False
+    return True
+
+
+def validate_source_inventory_shape(markdown: str) -> str | None:
+    required_columns = (
+        {"source", "path", "file", "url", "link"},
+        {"type", "kind", "category"},
+        {"status", "state"},
+        {"used for", "purpose", "use", "notes"},
+    )
+    for table in markdown_tables(markdown):
+        if not table_has_column_aliases(table, required_columns):
+            continue
+        source_values = table_column_values(table, required_columns[0])
+        if any(looks_like_path_or_url(value) for value in source_values):
+            return None
+        return "source inventory table has no file path, URL, or link in its source column"
+    return "requires a markdown table with Source, Type, Status, and Used For columns"
+
+
+def validate_calendar_shape(markdown: str) -> str | None:
+    required_columns = (
+        {"date", "due date", "target date", "deadline"},
+        {"event", "milestone", "task", "item"},
+        {"owner", "responsible", "lead"},
+        {"status", "state"},
+    )
+    for table in markdown_tables(markdown):
+        if not table_has_column_aliases(table, required_columns):
+            continue
+        date_values = tuple(value for value in table_column_values(table, required_columns[0]) if value.strip())
+        if not date_values:
+            return "calendar table has no date values"
+        invalid_dates = tuple(value for value in date_values if not contains_iso_date(value))
+        if invalid_dates:
+            return f"calendar dates must use YYYY-MM-DD format: {', '.join(invalid_dates[:3])}"
+        return None
+    return "requires a markdown table with Date, Event or Milestone, Owner, and Status columns"
+
+
+def validate_decision_log_shape(markdown: str) -> str | None:
+    required_columns = (
+        {"date", "decided on", "decision date"},
+        {"decision", "choice"},
+        {"status", "state"},
+        {"rationale", "reason", "why"},
+    )
+    for table in markdown_tables(markdown):
+        if not table_has_column_aliases(table, required_columns):
+            continue
+        date_values = tuple(value for value in table_column_values(table, required_columns[0]) if value.strip())
+        decision_values = tuple(value for value in table_column_values(table, required_columns[1]) if value.strip())
+        if not decision_values:
+            return "decision log table has no decision values"
+        invalid_dates = tuple(value for value in date_values if not contains_iso_date(value))
+        if invalid_dates:
+            return f"decision log dates must use YYYY-MM-DD format: {', '.join(invalid_dates[:3])}"
+        return None
+    return "requires a markdown table with Date, Decision, Status, and Rationale or Reason columns"
+
+
+ARTIFACT_SHAPE_VALIDATORS = {
+    "source-inventory": validate_source_inventory_shape,
+    "source-inventories": validate_source_inventory_shape,
+    "calendar": validate_calendar_shape,
+    "schedule": validate_calendar_shape,
+    "decision-log": validate_decision_log_shape,
+    "decision-log-entry": validate_decision_log_shape,
+}
 
 
 def apply_review_rubrics(stage_path: Path, output_name: str, output_text: str) -> tuple[ReviewFinding, ...]:
@@ -664,6 +804,18 @@ def apply_review_rubrics(stage_path: Path, output_name: str, output_text: str) -
                         f"Rubric link/path reference count too low in {output_name}: {reference_count}/{rubric.minimum_link_or_path_count}",
                     )
                 )
+
+        for artifact_shape in rubric.required_artifact_shapes:
+            shape_key = normalize_artifact_shape(artifact_shape)
+            validator = ARTIFACT_SHAPE_VALIDATORS.get(shape_key)
+            if validator is None:
+                findings.append(ReviewFinding("FAIL", f"Rubric artifact shape unknown in {output_name}: {artifact_shape}"))
+                continue
+            problem = validator(output_text)
+            if problem is None:
+                findings.append(ReviewFinding("PASS", f"Rubric {shape_key} artifact shape valid in {output_name}"))
+            else:
+                findings.append(ReviewFinding("FAIL", f"Rubric {shape_key} artifact shape invalid in {output_name}: {problem}"))
 
         for term in rubric.forbidden_terms:
             if term.lower() in output_text_lower:
@@ -1085,6 +1237,14 @@ def suggest_fix(message: str) -> str:
         return "Add a markdown table with the required columns, or update the stage rubric if the artifact uses a different structure."
     if "Rubric link/path reference count too low" in message:
         return "Add more file paths, source links, or cited artifacts to the output, or lower the rubric count if it is too strict."
+    if "Rubric artifact shape unknown" in message:
+        return "Use a supported artifact shape such as source-inventory, calendar, or decision-log."
+    if "Rubric source-inventory artifact shape invalid" in message:
+        return "Add a source inventory table with Source, Type, Status, and Used For columns, including at least one source path or URL."
+    if "Rubric calendar artifact shape invalid" in message:
+        return "Add a calendar table with Date, Event or Milestone, Owner, and Status columns. Use YYYY-MM-DD dates."
+    if "Rubric decision-log artifact shape invalid" in message:
+        return "Add a decision-log table with Date, Decision, Status, and Rationale or Reason columns. Use YYYY-MM-DD dates."
     if "Rubric forbidden term found" in message:
         return "Remove the forbidden term or explain the exception by updating the review rubric."
     if "Project brief is missing" in message:

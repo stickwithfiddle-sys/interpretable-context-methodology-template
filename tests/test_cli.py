@@ -76,3 +76,11 @@ def test_cli_review_documentation_example_passes(capsys) -> None:
     assert "Review: 01_discovery" in output
     assert "Rubric required table columns present" in output
     assert "Rubric link/path reference count met" in output
+
+    assert cli.main(["review", "stages/05_validation", "--workspace", str(DOCS_EXAMPLE)]) == 0
+
+    output = capsys.readouterr().out
+    assert "Review: 05_validation" in output
+    assert "Rubric source-inventory artifact shape valid" in output
+    assert "Rubric calendar artifact shape valid" in output
+    assert "Rubric decision-log artifact shape valid" in output

@@ -2,7 +2,7 @@
 
 Last updated: 2026-05-30
 
-Current release: `0.10.0`
+Current release: `0.11.0`
 
 ## What We Have Achieved
 
@@ -24,32 +24,34 @@ Current release: `0.10.0`
 - A copy-paste demo walkthrough linked from the docs homepage.
 - Deterministic rubric checks for required markdown table columns and minimum link/path reference counts.
 - A third completed example workspace for a documentation-refresh workflow.
+- Deterministic artifact-shape rubric checks for source inventories, calendars, and decision logs.
+- Beginner-facing PyPI upgrade and install verification documentation.
 
 ## Roadmap Position
 
-The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path artifact checks, and three completed examples are all covered.
+The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path checks, source-inventory/calendar/decision-log checks, and three completed examples are all covered.
 
 The highest-value `Next` work is:
 
 - More example workspaces for project planning and other common use cases.
 - Short recorded demo or animated walkthrough for the docs site.
-- More deterministic artifact validators for source inventories, calendars, and decision logs.
+- More workflow-specific rubric guidance for beginners.
 - A dashboard prototype once the CLI vocabulary and example library settle.
 
 ## Beginner UX Assessment
 
 The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, fill the first brief, run doctor checks, validate structure, inspect completed examples, and copy a rubric pattern for artifact-specific review.
 
-It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no specialized validators for source inventories/calendars/decision logs, and no local dashboard for visual review queues.
+It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no project-planning example, and no local dashboard for visual review queues.
 
 ## Direction Options
 
 1. Example library: add a project-planning example.
-2. Review quality: add deterministic validators for source inventories, calendars, and decision logs.
+2. Review quality: add more workflow-specific rubric guidance and examples.
 3. Demo polish: add a short screen recording or animated walkthrough.
 4. Dashboard prototype: build a read/write web UI over the same filesystem workspace.
 5. Distribution polish: add release verification docs and upgrade guidance.
 
 ## Recommendation
 
-For `0.11.0`, prioritize source-inventory, calendar, and decision-log validators plus PyPI install verification guidance. After that, add a short recorded walkthrough, then consider the first dashboard prototype.
+For `0.12.0`, prioritize a project-planning example plus a short recorded walkthrough. After that, consider the first dashboard prototype if the review vocabulary still feels stable.

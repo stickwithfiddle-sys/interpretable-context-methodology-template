@@ -27,7 +27,7 @@ icm new my-first-icm-workspace --name "My First ICM Workspace"
 Use this path when you want to test a specific repository tag before it reaches PyPI:
 
 ```bash
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.10.0
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.11.0
 icm --version
 ```
 
@@ -55,6 +55,8 @@ python -m icm new ../my-first-icm-workspace --name "My First ICM Workspace"
 ## PyPI Status
 
 The package is live on PyPI as [`icm-workspace-template`](https://pypi.org/project/icm-workspace-template/).
+
+For upgrade commands and a clean smoke test, see [pypi-upgrade.md](pypi-upgrade.md).
 
 See [pypi-readiness.md](pypi-readiness.md) for the package checks and Trusted Publishing setup.
 

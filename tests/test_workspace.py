@@ -347,6 +347,176 @@ Demo criteria.
     assert any("Rubric link/path reference count too low" in finding.message for finding in review.errors)
 
 
+def test_review_passes_required_source_inventory_shape(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+    workspace.create_workspace(target, name="Demo")
+    brief_path = target / "stages" / "00_intake" / "output" / "project-brief.md"
+    brief_path.write_text(
+        """# Project Brief
+
+| Source | Type | Status | Used For |
+| --- | --- | --- | --- |
+| `README.md` | Guide | Current | Beginner entry point |
+| `docs/install.md` | Install doc | Current | Install commands |
+
+## Desired Outcome
+
+Demo outcome.
+
+## Audience Or Users
+
+Demo audience.
+
+## Success Criteria
+
+Demo criteria.
+""",
+        encoding="utf-8",
+    )
+    rubric_path = target / "stages" / "00_intake" / "references" / "project-brief-rubric.md"
+    rubric_path.write_text(
+        """# Project Brief Rubric
+
+## Required Artifact Shapes
+
+- source-inventory
+""",
+        encoding="utf-8",
+    )
+
+    review = workspace.review_stage(target, "00_intake")
+
+    assert review.passed(strict=True)
+    assert any("Rubric source-inventory artifact shape valid" in finding.message for finding in review.passes)
+
+
+def test_review_passes_required_calendar_shape(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+    workspace.create_workspace(target, name="Demo")
+    brief_path = target / "stages" / "00_intake" / "output" / "project-brief.md"
+    brief_path.write_text(
+        """# Project Brief
+
+| Date | Milestone | Owner | Status |
+| --- | --- | --- | --- |
+| 2026-06-01 | Draft docs update | Hobo | Planned |
+| 2026-06-03 | Review install path | Hobo | Planned |
+
+## Desired Outcome
+
+Demo outcome.
+
+## Audience Or Users
+
+Demo audience.
+
+## Success Criteria
+
+Demo criteria.
+""",
+        encoding="utf-8",
+    )
+    rubric_path = target / "stages" / "00_intake" / "references" / "project-brief-rubric.md"
+    rubric_path.write_text(
+        """# Project Brief Rubric
+
+## Required Artifact Shapes
+
+- calendar
+""",
+        encoding="utf-8",
+    )
+
+    review = workspace.review_stage(target, "00_intake")
+
+    assert review.passed(strict=True)
+    assert any("Rubric calendar artifact shape valid" in finding.message for finding in review.passes)
+
+
+def test_review_passes_required_decision_log_shape(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+    workspace.create_workspace(target, name="Demo")
+    brief_path = target / "stages" / "00_intake" / "output" / "project-brief.md"
+    brief_path.write_text(
+        """# Project Brief
+
+| Date | Decision | Status | Rationale |
+| --- | --- | --- | --- |
+| 2026-06-01 | Keep CLI-first release path | Accepted | Beginners need install trust before dashboard work |
+
+## Desired Outcome
+
+Demo outcome.
+
+## Audience Or Users
+
+Demo audience.
+
+## Success Criteria
+
+Demo criteria.
+""",
+        encoding="utf-8",
+    )
+    rubric_path = target / "stages" / "00_intake" / "references" / "project-brief-rubric.md"
+    rubric_path.write_text(
+        """# Project Brief Rubric
+
+## Required Artifact Shapes
+
+- decision-log
+""",
+        encoding="utf-8",
+    )
+
+    review = workspace.review_stage(target, "00_intake")
+
+    assert review.passed(strict=True)
+    assert any("Rubric decision-log artifact shape valid" in finding.message for finding in review.passes)
+
+
+def test_review_fails_when_calendar_shape_has_bad_date(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+    workspace.create_workspace(target, name="Demo")
+    brief_path = target / "stages" / "00_intake" / "output" / "project-brief.md"
+    brief_path.write_text(
+        """# Project Brief
+
+| Date | Event | Owner | Status |
+| --- | --- | --- | --- |
+| Soon | Draft docs update | Hobo | Planned |
+
+## Desired Outcome
+
+Demo outcome.
+
+## Audience Or Users
+
+Demo audience.
+
+## Success Criteria
+
+Demo criteria.
+""",
+        encoding="utf-8",
+    )
+    rubric_path = target / "stages" / "00_intake" / "references" / "project-brief-rubric.md"
+    rubric_path.write_text(
+        """# Project Brief Rubric
+
+## Required Artifact Shapes
+
+- calendar
+""",
+        encoding="utf-8",
+    )
+
+    review = workspace.review_stage(target, "00_intake")
+
+    assert not review.passed()
+    assert any("Rubric calendar artifact shape invalid" in finding.message for finding in review.errors)
+
+
 def test_research_example_validates_and_review_rubric_passes() -> None:
     assert workspace.validate_workspace(RESEARCH_EXAMPLE).passed(strict=True)
 
@@ -360,11 +530,16 @@ def test_research_example_validates_and_review_rubric_passes() -> None:
 def test_documentation_example_validates_and_review_validators_pass() -> None:
     assert workspace.validate_workspace(DOCS_EXAMPLE).passed(strict=True)
 
-    review = workspace.review_stage(DOCS_EXAMPLE, "stages/01_discovery")
+    discovery_review = workspace.review_stage(DOCS_EXAMPLE, "stages/01_discovery")
+    validation_review = workspace.review_stage(DOCS_EXAMPLE, "stages/05_validation")
 
-    assert review.passed(strict=True)
-    assert any("Rubric required table columns present" in finding.message for finding in review.passes)
-    assert any("Rubric link/path reference count met" in finding.message for finding in review.passes)
+    assert discovery_review.passed(strict=True)
+    assert validation_review.passed(strict=True)
+    assert any("Rubric required table columns present" in finding.message for finding in discovery_review.passes)
+    assert any("Rubric link/path reference count met" in finding.message for finding in discovery_review.passes)
+    assert any("Rubric source-inventory artifact shape valid" in finding.message for finding in validation_review.passes)
+    assert any("Rubric calendar artifact shape valid" in finding.message for finding in validation_review.passes)
+    assert any("Rubric decision-log artifact shape valid" in finding.message for finding in validation_review.passes)
 
 
 def test_review_unfinished_intake_fails(tmp_path: Path) -> None:
