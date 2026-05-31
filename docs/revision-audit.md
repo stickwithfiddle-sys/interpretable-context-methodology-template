@@ -2,7 +2,7 @@
 
 Last updated: 2026-05-31
 
-Current release: `0.17.0`
+Current release: `0.18.0`
 
 ## What We Have Achieved
 
@@ -39,25 +39,26 @@ Current release: `0.17.0`
 - Plain-file human acceptance marker through `shared/acceptance-log.md` and `icm accept`.
 - Dashboard and CLI JSON now distinguish machine-passing outputs from human-accepted handoffs.
 - End-to-end playtest guide with a complete project idea.
+- Dashboard review queue command affordances for copying `icm review` and `icm accept` commands.
 
 ## Roadmap Position
 
-The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path checks, source-inventory/calendar/decision-log checks, common artifact starters, doctor-surfaced rubric failures, release-ready docs, workflow-specific rubric guidance, dashboard-readiness notes, machine-readable CLI output, plain-file human acceptance, a read-only local dashboard, and four completed examples are all covered.
+The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path checks, source-inventory/calendar/decision-log checks, common artifact starters, doctor-surfaced rubric failures, release-ready docs, workflow-specific rubric guidance, dashboard-readiness notes, machine-readable CLI output, plain-file human acceptance, a read-only local dashboard with copyable review and acceptance commands, and four completed examples are all covered.
 
 The highest-value `Next` work is:
 
-- Dashboard affordances for copying review and acceptance commands.
+- Clearer dashboard source-file previews for review failures and acceptance-log entries.
 - More workflow-specific examples for policy/process and lightweight release planning if demand appears.
 
 ## Beginner UX Assessment
 
-The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, add common artifact starters, follow the first-10-minutes guide, run the complete e2e playtest idea, fill the first brief, run doctor checks, validate structure, inspect completed examples, choose a rubric pattern by workflow type, expose the same state as JSON for local tooling, accept reviewed handoffs in a markdown log, and open a read-only dashboard for stage and review status.
+The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, add common artifact starters, follow the first-10-minutes guide, run the complete e2e playtest idea, fill the first brief, run doctor checks, validate structure, inspect completed examples, choose a rubric pattern by workflow type, expose the same state as JSON for local tooling, accept reviewed handoffs in a markdown log, and open a read-only dashboard for stage and review status with copyable terminal commands.
 
-It is closer to world-class beginner UX, but not there yet. The main gaps are no command-copy affordances inside the dashboard, no read/write dashboard flow, and no animated or recorded demo embedded directly in the docs site.
+It is closer to world-class beginner UX, but not there yet. The main gaps are limited source-file preview depth inside the dashboard, no read/write dashboard flow, and no animated or recorded demo embedded directly in the docs site.
 
 ## Direction Options
 
-1. Dashboard command affordances: make review and acceptance commands easy to copy from the browser.
+1. Dashboard source previews: show the exact source rows, rubric files, and acceptance-log entries behind each review item.
 2. Read/write dashboard path: decide which edits can safely happen in the browser.
 3. Demo polish: add an animated or recorded walkthrough embedded in the docs site.
 4. Example library: add policy/process or release-planning examples if demand appears.
@@ -65,4 +66,4 @@ It is closer to world-class beginner UX, but not there yet. The main gaps are no
 
 ## Recommendation
 
-For `0.18.0`, prioritize dashboard command affordances for review and acceptance. The dashboard should still avoid hidden state and should keep `shared/acceptance-log.md` visible.
+For `0.19.0`, prioritize clearer dashboard source previews for review failures and acceptance-log entries. The dashboard should still avoid hidden state and should keep `shared/acceptance-log.md` visible.

@@ -99,3 +99,4 @@ Do not start with:
 - The dashboard can be closed and the workspace still works through the CLI.
 - The first prototype works against `examples/completed-documentation-refresh` and `examples/completed-project-plan`.
 - The dashboard does not mark a handoff accepted without a row in `shared/acceptance-log.md`.
+- Review and acceptance actions are copyable terminal commands, not hidden browser state.

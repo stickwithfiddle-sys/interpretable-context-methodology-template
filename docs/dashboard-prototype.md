@@ -20,8 +20,9 @@ icm dashboard examples/completed-project-plan --no-open
 - Workspace health findings from `icm doctor --json`.
 - Source links back to workspace markdown files.
 - The exact CLI commands that produced the dashboard data.
+- Copy buttons for review, acceptance, and JSON source commands.
 
-The prototype does not write workflow state, edit files, mark handoffs accepted, or use a database. It shows acceptance that was recorded by `icm accept` or by directly editing `shared/acceptance-log.md`. Close the browser or stop the server and the workspace still works through the same CLI commands.
+The prototype does not write workflow state, edit files, mark handoffs accepted, or use a database. It gives you copyable terminal commands for review and acceptance, then shows acceptance that was recorded by `icm accept` or by directly editing `shared/acceptance-log.md`. Close the browser or stop the server and the workspace still works through the same CLI commands.
 
 ## Useful Examples
 
@@ -62,4 +63,4 @@ icm doctor . --json
 
 That keeps the browser view honest. If the dashboard and terminal disagree, the terminal JSON is the contract to debug first.
 
-The dashboard labels review-passing outputs as `machine passing` until a human records acceptance. Accepted handoffs come from [handoff-acceptance.md](handoff-acceptance.md).
+The dashboard labels review-passing outputs as `machine passing` until a human records acceptance. Accepted handoffs come from [handoff-acceptance.md](handoff-acceptance.md). The review queue shows copyable `icm review ...` and `icm accept ...` commands so the browser remains read-only while the filesystem remains authoritative.

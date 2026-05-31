@@ -64,6 +64,7 @@ def test_dashboard_prototype_doc_names_read_only_contract() -> None:
     assert "icm accept stages/01_discovery --workspace . --json" in text
     assert "icm doctor . --json" in text
     assert "does not write workflow state" in text
+    assert "Copy buttons" in text
 
 
 def test_handoff_acceptance_doc_names_plain_file_source_of_truth() -> None:

@@ -92,12 +92,17 @@ def collect_dashboard_payload(workspace: Path, cli_runner: CliJsonRunner = run_c
         stage_path = str(stage.get("path", ""))
         if not stage_path:
             continue
-        reviews.append(
-            cli_runner(
-                ["review", stage_path, "--workspace", path_text(workspace_root), "--json"],
-                workspace_root,
-            )
+        review = cli_runner(
+            ["review", stage_path, "--workspace", path_text(workspace_root), "--json"],
+            workspace_root,
         )
+        review["commands"] = {
+            "review": command_text(["review", stage_path, "--workspace", path_text(workspace_root)]),
+            "review_json": command_text(["review", stage_path, "--workspace", path_text(workspace_root), "--json"]),
+            "accept": command_text(["accept", stage_path, "--workspace", path_text(workspace_root)]),
+            "accept_json": command_text(["accept", stage_path, "--workspace", path_text(workspace_root), "--json"]),
+        }
+        reviews.append(review)
 
     review_fails = sum(int(review.get("summary", {}).get("fail", 0)) for review in reviews)
     review_warnings = sum(int(review.get("summary", {}).get("warn", 0)) for review in reviews)
@@ -307,7 +312,7 @@ DASHBOARD_HTML = """<!doctype html>
         line-height: 1.35;
         overflow-wrap: anywhere;
       }
-      .stage-list, .review-list, .finding-list, .command-list {
+      .stage-list, .review-list, .finding-list, .command-list, .review-actions {
         display: grid;
         gap: 10px;
       }
@@ -374,6 +379,16 @@ DASHBOARD_HTML = """<!doctype html>
         background: #fbfdfd;
         padding: 12px;
       }
+      .review-actions {
+        margin-top: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .command-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        align-items: center;
+      }
       .review-top, .finding-top {
         display: flex;
         align-items: center;
@@ -400,6 +415,13 @@ DASHBOARD_HTML = """<!doctype html>
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         font-weight: 650;
       }
+      .copy-command {
+        min-height: 30px;
+        padding: 0 10px;
+        color: var(--blue);
+        font-size: 12px;
+        white-space: nowrap;
+      }
       .status-line {
         color: var(--muted);
         font-size: 13px;
@@ -407,7 +429,7 @@ DASHBOARD_HTML = """<!doctype html>
         overflow-wrap: anywhere;
       }
       @media (max-width: 900px) {
-        .layout, .topbar, .stage-row {
+        .layout, .topbar, .stage-row, .review-actions {
           grid-template-columns: 1fr;
         }
         .actions, .source-links {
@@ -526,6 +548,12 @@ DASHBOARD_HTML = """<!doctype html>
       };
       const pill = (label, cls) => `<span class="pill ${escapeHtml(cls || "info").toLowerCase()}">${escapeHtml(label)}</span>`;
       const stateLabel = (state) => String(state || "unknown").replaceAll("_", " ");
+      const copyCommandButton = (command, label) => command
+        ? `<button class="copy-command" type="button" data-copy="${escapeHtml(command)}" aria-label="Copy ${escapeHtml(label)} command">Copy ${escapeHtml(label)}</button>`
+        : "";
+      const commandRow = (command, label) => command
+        ? `<div class="command-row"><code class="command-chip">${escapeHtml(command)}</code>${copyCommandButton(command, label)}</div>`
+        : "";
 
       function renderMetrics(payload) {
         const summary = payload.summary || {};
@@ -594,6 +622,11 @@ DASHBOARD_HTML = """<!doctype html>
         }
         byId("review-list").innerHTML = reviews.map((review) => {
           const summary = review.summary || {};
+          const commands = review.commands || {};
+          const outputs = ((review.acceptance || {}).outputs || []);
+          const acceptedCount = outputs.filter((output) => output.accepted).length;
+          const totalCount = outputs.length;
+          const needsAcceptance = totalCount > 0 && acceptedCount < totalCount && review.passed;
           return `
             <article class="review-item">
               <div class="review-top">
@@ -606,7 +639,11 @@ DASHBOARD_HTML = """<!doctype html>
                 ${pill(`${summary.pass ?? 0} pass`, "pass")}
               </div>
               <p class="review-meta">${escapeHtml(review.command || "")}</p>
-              <p class="review-meta">Human acceptance: ${escapeHtml(((review.acceptance || {}).outputs || []).filter((output) => output.accepted).length)} / ${escapeHtml(((review.acceptance || {}).outputs || []).length)} outputs accepted</p>
+              <p class="review-meta">Human acceptance: ${escapeHtml(acceptedCount)} / ${escapeHtml(totalCount)} outputs accepted</p>
+              <div class="review-actions">
+                ${commandRow(commands.review || review.command, "review")}
+                ${needsAcceptance ? commandRow(commands.accept, "accept") : ""}
+              </div>
               <div class="source-links">
                 ${sourceLink(`${review.stage_path}/CONTEXT.md`, "CONTEXT.md")}
                 ${review.output_path ? sourceLink(review.output_path, review.output_path.split("/").pop()) : ""}
@@ -642,11 +679,25 @@ DASHBOARD_HTML = """<!doctype html>
         const commands = [
           (payload.status || {}).command,
           (payload.doctor || {}).command,
-          ...(payload.reviews || []).map((review) => review.command)
+          ...(payload.reviews || []).map((review) => (review.commands || {}).review_json || review.command)
         ].filter(Boolean);
         byId("command-list").innerHTML = commands.map((command) =>
-          `<code class="command-chip">${escapeHtml(command)}</code>`
+          commandRow(command, "command")
         ).join("");
+      }
+
+      async function copyCommand(button) {
+        const label = button.textContent;
+        try {
+          await navigator.clipboard.writeText(button.dataset.copy || "");
+          button.textContent = "Copied";
+        } catch (error) {
+          button.textContent = "Copy failed";
+        } finally {
+          window.setTimeout(() => {
+            button.textContent = label;
+          }, 1200);
+        }
       }
 
       async function loadDashboard() {
@@ -667,6 +718,10 @@ DASHBOARD_HTML = """<!doctype html>
       }
 
       byId("refresh").addEventListener("click", loadDashboard);
+      document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-copy]");
+        if (button) copyCommand(button);
+      });
       loadDashboard();
     </script>
   </body>

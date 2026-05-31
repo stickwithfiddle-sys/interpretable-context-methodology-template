@@ -71,6 +71,8 @@ Want to see a completed review before creating your own workflow? Start with the
 
 Planning a real initiative? The [completed project-plan example](examples/completed-project-plan) shows how to validate source inventories, project calendars, and decision logs.
 
+Prefer a browser view while keeping the terminal in control? `icm dashboard` shows stage state, review findings, acceptance state, and copyable review/accept commands without storing hidden state.
+
 ## Why This Exists
 
 Most agent workflows become hard to inspect once the logic lives inside a chat thread, framework state, or hidden prompt chain. ICM keeps the workflow visible:
@@ -303,7 +305,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.17.0`.
+Current package version: `0.18.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 

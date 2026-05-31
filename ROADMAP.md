@@ -30,11 +30,12 @@ This roadmap keeps product work visible without turning the README into a backlo
 - Provide a read-only local dashboard prototype through `icm dashboard`.
 - Keep the plain-file human acceptance marker in `shared/acceptance-log.md`.
 - Show accepted vs machine-passing handoffs in CLI JSON and the dashboard.
+- Provide dashboard affordances for copying review and acceptance commands.
 
 ## Next
 
-- Add dashboard affordances for copying review and acceptance commands.
 - Add workflow-specific examples for policy/process and lightweight release planning if demand appears.
+- Add clearer dashboard source-file previews for review failures and acceptance-log entries.
 
 ## Later
 

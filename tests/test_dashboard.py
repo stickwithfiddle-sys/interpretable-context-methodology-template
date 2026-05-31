@@ -77,6 +77,8 @@ def test_dashboard_payload_uses_cli_json_contract(tmp_path: Path) -> None:
     assert [call[0] for call in calls] == ["status", "doctor", "review"]
     assert calls[2][1] == "stages/00_intake"
     assert payload["reviews"][0]["stage"] == "00_intake"
+    assert payload["reviews"][0]["commands"]["review"] == f"icm review stages/00_intake --workspace {tmp_path.resolve().as_posix()}"
+    assert payload["reviews"][0]["commands"]["accept"] == f"icm accept stages/00_intake --workspace {tmp_path.resolve().as_posix()}"
 
 
 def test_dashboard_serves_workspace_json(tmp_path: Path) -> None:
@@ -128,3 +130,6 @@ def test_dashboard_html_contains_runtime_contract() -> None:
     assert "Read-only" in html
     assert "machine passing" in html
     assert "Human acceptance" in html
+    assert "copyCommandButton" in html
+    assert "commandRow" in html
+    assert "data-copy" in html
