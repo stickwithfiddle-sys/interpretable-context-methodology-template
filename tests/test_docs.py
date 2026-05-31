@@ -23,7 +23,18 @@ def test_dashboard_readiness_names_cli_json_contract() -> None:
     assert "icm status --json" in text
     assert "icm review stages/01_discovery --workspace . --json" in text
     assert "icm doctor . --json" in text
+    assert "[json-output.md](json-output.md)" in text
     assert "human still accepts the handoff" in text
+
+
+def test_json_output_doc_names_dashboard_contract() -> None:
+    text = (DOCS / "json-output.md").read_text(encoding="utf-8")
+
+    assert "icm status examples/completed-content-plan --json" in text
+    assert "icm review stages/01_discovery --workspace examples/completed-content-plan --json" in text
+    assert "icm doctor examples/completed-content-plan --json" in text
+    assert '"next_action"' in text
+    assert '"suggested_fix": null' in text
 
 
 def test_docs_homepage_links_walkthrough_and_dashboard_readiness() -> None:
@@ -31,4 +42,5 @@ def test_docs_homepage_links_walkthrough_and_dashboard_readiness() -> None:
 
     assert "assets/walkthrough-10-minute.svg" in text
     assert "first-10-minutes.html" in text
+    assert "json-output.html" in text
     assert "dashboard-readiness.html" in text

@@ -24,7 +24,7 @@ icm --version
 Expected version for this release:
 
 ```text
-icm 0.14.0
+icm 0.15.0
 ```
 
 ## Minute 1: Create A Workspace

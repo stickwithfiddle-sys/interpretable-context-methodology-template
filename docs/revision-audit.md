@@ -2,7 +2,7 @@
 
 Last updated: 2026-05-31
 
-Current release: `0.14.0`
+Current release: `0.15.0`
 
 ## What We Have Achieved
 
@@ -33,31 +33,32 @@ Current release: `0.14.0`
 - Workflow-specific rubric guidance for choosing validators by use case.
 - A first-10-minutes beginner walkthrough linked from the docs homepage.
 - A dashboard-readiness spec for review queues, artifact-shape failures, doctor findings, and human acceptance.
+- Machine-readable `--json` output for `icm status`, `icm review`, and `icm doctor`.
+- GitHub Actions workflows updated to Node 24-native action versions without the temporary force env.
 
 ## Roadmap Position
 
-The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path checks, source-inventory/calendar/decision-log checks, common artifact starters, doctor-surfaced rubric failures, release-ready docs, workflow-specific rubric guidance, dashboard-readiness notes, and four completed examples are all covered.
+The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path checks, source-inventory/calendar/decision-log checks, common artifact starters, doctor-surfaced rubric failures, release-ready docs, workflow-specific rubric guidance, dashboard-readiness notes, machine-readable CLI output, and four completed examples are all covered.
 
 The highest-value `Next` work is:
 
-- Machine-readable CLI output for `icm status`, `icm review`, and `icm doctor`.
 - A read-only local dashboard prototype that shells out to the CLI.
 - More workflow-specific examples for policy/process and lightweight release planning if demand appears.
 
 ## Beginner UX Assessment
 
-The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, add common artifact starters, follow the first-10-minutes guide, fill the first brief, run doctor checks, validate structure, inspect completed examples, and choose a rubric pattern by workflow type.
+The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, add common artifact starters, follow the first-10-minutes guide, fill the first brief, run doctor checks, validate structure, inspect completed examples, choose a rubric pattern by workflow type, and expose the same state as JSON for local tooling.
 
-It is closer to world-class beginner UX, but not there yet. The main gaps are no machine-readable CLI output for UI surfaces, no local dashboard for visual review queues, and no animated or recorded demo embedded directly in the docs site.
+It is closer to world-class beginner UX, but not there yet. The main gaps are no local dashboard for visual review queues, no human acceptance marker in the workspace model, and no animated or recorded demo embedded directly in the docs site.
 
 ## Direction Options
 
-1. JSON CLI contract: add `--json` output for status, review, and doctor.
-2. Dashboard prototype: build a read-only local UI over the same filesystem workspace.
+1. Dashboard prototype: build a read-only local UI over the same filesystem workspace.
+2. Human acceptance marker: define how reviewed handoffs are accepted without hiding markdown.
 3. Demo polish: add an animated or recorded walkthrough embedded in the docs site.
 4. Example library: add policy/process or release-planning examples if demand appears.
 5. Distribution polish: keep PyPI install, upgrade, and verification docs current.
 
 ## Recommendation
 
-For `0.15.0`, prioritize machine-readable CLI output for `icm status`, `icm review`, and `icm doctor`. That creates the cleanest path to a dashboard without inventing a second source of truth.
+For `0.16.0`, prioritize a read-only local dashboard prototype that shells out to the CLI and renders `status`, `review`, and `doctor` JSON without writing new workflow state.

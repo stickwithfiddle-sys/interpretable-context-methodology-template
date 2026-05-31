@@ -4,7 +4,7 @@ The dashboard should be a visual layer over the same filesystem workspace. It sh
 
 ## Readiness Summary
 
-ICM is ready for a dashboard prototype when the UI can answer four questions from local files and CLI checks:
+ICM is ready for a dashboard prototype because the UI can answer four questions from local files and CLI checks:
 
 | Question | Source Of Truth |
 | --- | --- |
@@ -13,7 +13,7 @@ ICM is ready for a dashboard prototype when the UI can answer four questions fro
 | What needs human review? | Declared output files and `icm review` findings |
 | What needs repair before continuing? | `icm doctor` findings and suggested fixes |
 
-The current CLI vocabulary is stable enough for a read-only prototype. A read/write dashboard should wait until machine-readable command output exists.
+The current CLI vocabulary and JSON output are stable enough for a read-only prototype. A read/write dashboard should wait until the dashboard has proven the review queue and repair UX.
 
 ## MVP Views
 
@@ -53,9 +53,9 @@ Common artifact-shape failures should become direct repair prompts:
 
 The dashboard should show the exact markdown row or section that needs repair whenever possible.
 
-## Data Contract Needed Before Read/Write UI
+## Current Data Contract
 
-Before building a full dashboard, add machine-readable command output for:
+Use machine-readable command output for dashboard integrations:
 
 ```bash
 icm status --json
@@ -63,7 +63,7 @@ icm review stages/01_discovery --workspace . --json
 icm doctor . --json
 ```
 
-Each JSON response should include:
+Each JSON response includes:
 
 | Field | Purpose |
 | --- | --- |
@@ -74,7 +74,7 @@ Each JSON response should include:
 | `suggested_fix` | Beginner-facing repair text when available |
 | `command` | CLI command that produced the result |
 
-This keeps the dashboard honest: the UI displays the same facts the CLI knows.
+See [json-output.md](json-output.md) for command examples and response shapes. This keeps the dashboard honest: the UI displays the same facts the CLI knows.
 
 ## Prototype Boundary
 

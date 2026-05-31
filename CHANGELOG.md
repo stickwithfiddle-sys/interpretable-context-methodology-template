@@ -12,6 +12,19 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.15.0] - 2026-05-31
+
+### Added
+
+- Added `--json` output for `icm status`, `icm review`, and `icm doctor` for dashboard and editor integrations.
+- Added JSON output documentation and tests for the machine-readable command contract.
+- Added CI smoke coverage for JSON status, review, and doctor output.
+
+### Changed
+
+- Updated GitHub Actions to Node 24-native action versions and removed the temporary Node 24 force environment.
+- README, docs site, dashboard readiness notes, roadmap, product direction, and revision audit now reflect the JSON data contract.
+
 ## [0.14.0] - 2026-05-31
 
 ### Added
@@ -195,7 +208,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.14.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.11.0...v0.12.0

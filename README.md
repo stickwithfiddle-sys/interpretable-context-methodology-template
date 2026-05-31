@@ -115,6 +115,7 @@ Start with these files:
 | [docs/pypi-upgrade.md](docs/pypi-upgrade.md) | Beginner upgrade and install verification commands |
 | [docs/release-ready-workspace.md](docs/release-ready-workspace.md) | Release-ready workspace checks for validation, review, changelog, and package upgrades |
 | [docs/workflow-rubrics.md](docs/workflow-rubrics.md) | Pick rubric checks by workflow type |
+| [docs/json-output.md](docs/json-output.md) | Machine-readable CLI output for dashboards and integrations |
 | [docs/index.html](docs/index.html) | GitHub Pages visual docs homepage |
 | [docs/dashboard-readiness.md](docs/dashboard-readiness.md) | Dashboard-readiness checklist for review queues and artifact-shape failures |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
@@ -144,6 +145,9 @@ python -m icm next ../demo
 python -m icm explain stages/01_discovery --workspace ../demo
 python -m icm review stages/01_discovery --workspace ../demo
 python -m icm doctor ../demo
+python -m icm status ../demo --json
+python -m icm review stages/01_discovery --workspace ../demo --json
+python -m icm doctor ../demo --json
 ```
 
 After installing in a virtual environment with `python -m pip install -e ".[dev]"`, the same commands are available as:
@@ -157,6 +161,9 @@ icm next ../demo
 icm explain stages/01_discovery --workspace ../demo
 icm review stages/01_discovery --workspace ../demo
 icm doctor ../demo
+icm status ../demo --json
+icm review stages/01_discovery --workspace ../demo --json
+icm doctor ../demo --json
 ```
 
 ## What Is Included
@@ -197,6 +204,7 @@ docs/
   pypi-upgrade.md           Beginner upgrade and install verification commands
   release-ready-workspace.md Validation, review, changelog, and upgrade checks before release
   workflow-rubrics.md       Rubric choices by workflow type
+  json-output.md            Machine-readable CLI response shapes
   product-direction.md      UX and product roadmap
   pypi-readiness.md         PyPI package publishing checklist
   release-process.md        GitHub and versioning workflow
@@ -281,7 +289,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.14.0`.
+Current package version: `0.15.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 

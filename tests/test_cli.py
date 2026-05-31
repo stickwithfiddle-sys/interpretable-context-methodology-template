@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from icm import cli
@@ -24,6 +25,29 @@ def test_cli_new_validate_status_and_review(tmp_path: Path, capsys) -> None:
 
     assert cli.main(["review", "00_intake", "--workspace", str(target)]) == 1
     assert "Project brief is missing" in capsys.readouterr().out
+
+
+def test_cli_json_outputs_are_machine_readable(capsys) -> None:
+    assert cli.main(["status", str(COMPLETED_EXAMPLE), "--json"]) == 0
+    status_payload = json.loads(capsys.readouterr().out)
+    assert status_payload["passed"] is True
+    assert status_payload["next_action"]["type"] == "review_or_restart"
+    assert status_payload["stages"][0]["name"] == "00_intake"
+    assert status_payload["stages"][0]["path"] == "stages/00_intake"
+
+    assert cli.main(["review", "stages/01_discovery", "--workspace", str(COMPLETED_EXAMPLE), "--json"]) == 0
+    review_payload = json.loads(capsys.readouterr().out)
+    assert review_payload["passed"] is True
+    assert review_payload["stage"] == "01_discovery"
+    assert review_payload["summary"]["fail"] == 0
+    assert review_payload["findings"][0]["level"] == "PASS"
+
+    assert cli.main(["doctor", str(COMPLETED_EXAMPLE), "--json"]) == 0
+    doctor_payload = json.loads(capsys.readouterr().out)
+    assert doctor_payload["passed"] is True
+    assert doctor_payload["structure"]["passed"] is True
+    assert doctor_payload["content"]["passed"] is True
+    assert doctor_payload["next_action"]["type"] == "review_or_restart"
 
 
 def test_cli_init_preserves_existing_project_files(tmp_path: Path, capsys) -> None:

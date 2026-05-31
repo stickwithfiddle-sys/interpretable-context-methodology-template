@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -32,6 +33,128 @@ def print_common_artifacts(created: tuple[str, ...], skipped: tuple[str, ...]) -
         print(f"  - {file_name}")
     for file_name in skipped:
         print(f"  - {file_name} (already available)")
+
+
+def path_text(path: Path) -> str:
+    return path.as_posix()
+
+
+def relative_path_text(path: Path, root: Path) -> str:
+    try:
+        return path.relative_to(root).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def print_json(payload: dict) -> None:
+    print(json.dumps(payload, indent=2, sort_keys=True))
+
+
+def stage_status_to_json(status, workspace_root: Path) -> dict:
+    return {
+        "name": status.name,
+        "path": relative_path_text(status.path, workspace_root),
+        "purpose": status.purpose,
+        "state": status.state,
+        "note": status.note,
+        "declared_outputs": list(status.declared_outputs),
+        "existing_outputs": list(status.existing_outputs),
+        "missing_outputs": list(status.missing_outputs),
+    }
+
+
+def next_action_to_json(workspace_root: Path, statuses: list) -> dict:
+    recommended = next_stage(statuses)
+    if not statuses:
+        return {
+            "type": "run_doctor",
+            "message": "No stages found. Run icm doctor for setup checks.",
+        }
+    if recommended is None:
+        return {
+            "type": "review_or_restart",
+            "message": "All declared outputs are present. Review the latest output or start a new run.",
+        }
+    relative_stage = relative_path_text(recommended.path, workspace_root)
+    if recommended.state == "needs_input":
+        intake_path = recommended.path / "output" / "project-brief.md"
+        return {
+            "type": "fill_intake",
+            "stage": recommended.name,
+            "path": relative_path_text(intake_path, workspace_root),
+            "message": f"Fill or review {relative_stage}/output/project-brief.md.",
+        }
+    return {
+        "type": "run_or_repair_stage",
+        "stage": recommended.name,
+        "path": relative_stage,
+        "message": f"Run or repair {relative_stage}.",
+    }
+
+
+def review_finding_to_json(finding) -> dict:
+    suggested_fix_text = None if finding.level == "PASS" else suggest_fix(finding.message)
+    return {
+        "level": finding.level,
+        "message": finding.message,
+        "suggested_fix": suggested_fix_text,
+    }
+
+
+def validation_finding_to_json(level: str, message: str) -> dict:
+    return {
+        "level": level,
+        "message": message,
+        "suggested_fix": suggest_fix(message),
+    }
+
+
+def review_to_json_payload(workspace_root: Path, target: str, review, strict: bool) -> dict:
+    return {
+        "command": f"icm review {target} --workspace {path_text(workspace_root)} --json",
+        "workspace": path_text(workspace_root),
+        "target": target,
+        "stage": review.stage_name,
+        "stage_path": relative_path_text(review.stage_path, workspace_root),
+        "output_path": relative_path_text(review.output_path, workspace_root) if review.output_path is not None else None,
+        "strict": strict,
+        "passed": review.passed(strict=strict),
+        "summary": {
+            "fail": len(review.errors),
+            "warn": len(review.warnings),
+            "pass": len(review.passes),
+        },
+        "findings": [review_finding_to_json(finding) for finding in review.findings],
+        "next_actions": [suggest_fix(finding.message) for finding in (*review.errors, *review.warnings)],
+    }
+
+
+def doctor_to_json_payload(workspace_root: Path, validation_result, doctor_result, statuses: list, strict: bool) -> dict:
+    validation_findings = [
+        *(validation_finding_to_json("WARN", warning) for warning in validation_result.warnings),
+        *(validation_finding_to_json("FAIL", error) for error in validation_result.errors),
+    ]
+    content_findings = [review_finding_to_json(finding) for finding in doctor_result.findings]
+    return {
+        "command": f"icm doctor {path_text(workspace_root)} --json",
+        "workspace": path_text(workspace_root),
+        "strict": strict,
+        "passed": validation_result.passed(strict=strict) and doctor_result.passed(strict=strict),
+        "structure": {
+            "passed": validation_result.passed(strict=False),
+            "strict_passed": validation_result.passed(strict=strict),
+            "errors": list(validation_result.errors),
+            "warnings": list(validation_result.warnings),
+            "findings": validation_findings,
+        },
+        "content": {
+            "passed": doctor_result.passed(strict=False),
+            "strict_passed": doctor_result.passed(strict=strict),
+            "findings": content_findings,
+        },
+        "stages": [stage_status_to_json(status, workspace_root) for status in statuses],
+        "next_action": next_action_to_json(workspace_root, statuses),
+    }
 
 
 def print_creation_next_steps(
@@ -123,6 +246,17 @@ def format_outputs(outputs: tuple[str, ...], missing: tuple[str, ...]) -> str:
 def cmd_status(args: argparse.Namespace) -> int:
     workspace_root = Path(args.workspace).expanduser().resolve()
     statuses = workspace_statuses(workspace_root)
+    if args.json:
+        payload = {
+            "command": f"icm status {path_text(workspace_root)} --json",
+            "workspace": path_text(workspace_root),
+            "passed": bool(statuses),
+            "stages": [stage_status_to_json(status, workspace_root) for status in statuses],
+            "next_action": next_action_to_json(workspace_root, statuses),
+        }
+        print_json(payload)
+        return 0 if statuses else 1
+
     if not statuses:
         print(f"No stages found in {workspace_root}")
         print("Run icm doctor for setup checks.")
@@ -236,10 +370,17 @@ def cmd_explain(args: argparse.Namespace) -> int:
 
 def cmd_doctor(args: argparse.Namespace) -> int:
     workspace_root = Path(args.workspace).expanduser().resolve()
+    result = validate_workspace(workspace_root)
+    doctor = doctor_workspace(workspace_root)
+    statuses = workspace_statuses(workspace_root)
+
+    if args.json:
+        print_json(doctor_to_json_payload(workspace_root, result, doctor, statuses, args.strict))
+        return 1 if result.exit_code(strict=args.strict) or doctor.exit_code(strict=args.strict) else 0
+
     print(f"ICM doctor: {workspace_root}")
     print()
 
-    result = validate_workspace(workspace_root)
     if result.passed(strict=False):
         print("Structure: OK")
     else:
@@ -259,7 +400,6 @@ def cmd_doctor(args: argparse.Namespace) -> int:
             print(f"- {error}")
             print(f"  Fix: {suggest_fix(error)}")
 
-    doctor = doctor_workspace(workspace_root)
     print()
     if doctor.findings:
         print("Content checks: needs attention")
@@ -269,7 +409,6 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     else:
         print("Content checks: OK")
 
-    statuses = workspace_statuses(workspace_root)
     if statuses:
         print()
         print("Stage summary:")
@@ -297,8 +436,31 @@ def cmd_review(args: argparse.Namespace) -> int:
     try:
         review = review_stage(workspace_root, args.target)
     except FileNotFoundError as error:
+        if args.json:
+            print_json(
+                {
+                    "command": f"icm review {args.target} --workspace {path_text(workspace_root)} --json",
+                    "workspace": path_text(workspace_root),
+                    "target": args.target,
+                    "passed": False,
+                    "summary": {"fail": 1, "warn": 0, "pass": 0},
+                    "findings": [
+                        {
+                            "level": "FAIL",
+                            "message": str(error),
+                            "suggested_fix": suggest_fix(str(error)),
+                        }
+                    ],
+                    "next_actions": [suggest_fix(str(error))],
+                }
+            )
+            return 1
         print(f"ERROR {error}", file=sys.stderr)
         return 1
+
+    if args.json:
+        print_json(review_to_json_payload(workspace_root, args.target, review, args.strict))
+        return review.exit_code(strict=args.strict)
 
     print(f"Review: {review.stage_name}")
     print(f"Stage path: {review.stage_path}")
@@ -357,6 +519,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     status_parser = subparsers.add_parser("status", help="Show stage and output status")
     status_parser.add_argument("workspace", nargs="?", default=".", help="Path to the workspace. Defaults to the current directory.")
+    status_parser.add_argument("--json", action="store_true", help="Print machine-readable JSON for dashboard integrations.")
     status_parser.set_defaults(func=cmd_status)
 
     next_parser = subparsers.add_parser("next", help="Print the next recommended action")
@@ -371,12 +534,14 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_parser = subparsers.add_parser("doctor", help="Diagnose workspace health and likely next action")
     doctor_parser.add_argument("workspace", nargs="?", default=".", help="Path to the workspace. Defaults to the current directory.")
     doctor_parser.add_argument("--strict", action="store_true", help="Return failure when warnings exist.")
+    doctor_parser.add_argument("--json", action="store_true", help="Print machine-readable JSON for dashboard integrations.")
     doctor_parser.set_defaults(func=cmd_doctor)
 
     review_parser = subparsers.add_parser("review", help="Review a stage output against its contract")
     review_parser.add_argument("target", help="Stage name/path or output file path to review.")
     review_parser.add_argument("--workspace", default=".", help="Workspace root. Defaults to the current directory.")
     review_parser.add_argument("--strict", action="store_true", help="Return failure when warnings exist.")
+    review_parser.add_argument("--json", action="store_true", help="Print machine-readable JSON for dashboard integrations.")
     review_parser.set_defaults(func=cmd_review)
 
     return parser

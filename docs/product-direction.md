@@ -38,6 +38,9 @@ icm next
 icm explain stages/01_discovery
 icm review stages/01_discovery
 icm doctor
+icm status --json
+icm review stages/01_discovery --json
+icm doctor --json
 ```
 
 4. Better validator messages with suggested fixes.
@@ -53,6 +56,7 @@ icm new my-project
 icm init . --with-common-artifacts
 icm doctor
 icm review stages/01_discovery
+icm status --json
 ```
 
 `icm new` is for a clean workspace. `icm init` is for an existing project and skips files that already exist. The `--with-common-artifacts` flag adds starter files for source inventories, release calendars, and decision logs. `icm doctor` checks both structure and content-quality issues such as empty required sections, missing config inputs, undeclared outputs, broken handoffs after outputs are present, and review-rubric failures on declared outputs. `icm review` can load artifact-specific rubrics from stage references, including source-traceability checks, required table-column checks, link/path-count checks, and artifact-shape checks for source inventories, calendars, and decision logs.
@@ -74,7 +78,7 @@ A dashboard could become the product layer after the CLI and examples are strong
 
 The dashboard should feel like a cockpit for the workspace, not a replacement for the workspace.
 
-The dashboard-readiness spec in `docs/dashboard-readiness.md` narrows the first prototype to local files, review queues, artifact-shape failures, doctor findings, and explicit human acceptance. The next technical unlock is machine-readable CLI output for `status`, `review`, and `doctor`.
+The dashboard-readiness spec in `docs/dashboard-readiness.md` narrows the first prototype to local files, review queues, artifact-shape failures, doctor findings, and explicit human acceptance. The JSON contract in `docs/json-output.md` now gives a dashboard stable `status`, `review`, and `doctor` data without inventing a second source of truth.
 
 ## Product Risks
 
@@ -85,4 +89,4 @@ The dashboard-readiness spec in `docs/dashboard-readiness.md` narrows the first 
 
 ## Recommended Next Product Step
 
-Next, add machine-readable CLI output for `icm status`, `icm review`, and `icm doctor`, then build a read-only local dashboard prototype over the same filesystem workspace. A read/write dashboard should wait until the JSON contract is stable.
+Next, build a read-only local dashboard prototype over the same filesystem workspace. A read/write dashboard should wait until the JSON contract has proven itself against real review queues.

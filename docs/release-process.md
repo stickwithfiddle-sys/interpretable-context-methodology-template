@@ -38,15 +38,18 @@ printf '# Existing\n' > /tmp/icm-existing-smoke/README.md
 python -m icm init /tmp/icm-existing-smoke --name "Existing Smoke" --with-common-artifacts
 python -m icm validate /tmp/icm-existing-smoke --strict
 python -m icm status examples/completed-content-plan
+python -m icm status examples/completed-content-plan --json
 python -m icm next examples/completed-content-plan
 python -m icm explain stages/01_discovery --workspace examples/completed-content-plan
 python -m icm review stages/01_discovery --workspace examples/completed-content-plan
+python -m icm review stages/01_discovery --workspace examples/completed-content-plan --json
 python -m icm review stages/01_discovery --workspace examples/completed-research-brief
 python -m icm review stages/01_discovery --workspace examples/completed-documentation-refresh
 python -m icm review stages/05_validation --workspace examples/completed-documentation-refresh
 python -m icm review stages/01_discovery --workspace examples/completed-project-plan
 python -m icm review stages/05_validation --workspace examples/completed-project-plan
 python -m icm doctor examples/completed-content-plan --strict
+python -m icm doctor examples/completed-content-plan --json
 python -m icm doctor examples/completed-research-brief --strict
 python -m icm doctor examples/completed-documentation-refresh --strict
 python -m icm doctor examples/completed-project-plan --strict
@@ -86,6 +89,7 @@ cd /tmp
 /path/to/repo/.tmp/install-venv/bin/icm new /tmp/icm-install-smoke --name "Install Smoke"
 /path/to/repo/.tmp/install-venv/bin/icm init /tmp/icm-install-smoke --name "Install Smoke" --with-common-artifacts
 /path/to/repo/.tmp/install-venv/bin/icm validate /tmp/icm-install-smoke --strict
+/path/to/repo/.tmp/install-venv/bin/icm status /tmp/icm-install-smoke --json
 test -f /tmp/icm-install-smoke/shared/source-inventory.md
 test -f /tmp/icm-install-smoke/shared/release-calendar.md
 python /tmp/icm-install-smoke/tools/validate_icm_workspace.py /tmp/icm-install-smoke --strict

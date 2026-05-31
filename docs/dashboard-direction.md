@@ -15,7 +15,7 @@ Build a dashboard prototype after these are true:
 - At least three example workspaces show different real use cases.
 - Review checks can distinguish structure problems from artifact-quality problems.
 - The docs site explains the core flow without relying on a live demo.
-- The CLI can expose status, review, and doctor findings in a machine-readable form.
+- The CLI exposes status, review, and doctor findings in a machine-readable form.
 
 ## MVP Shape
 

@@ -26,10 +26,10 @@ This roadmap keeps product work visible without turning the README into a backlo
 - Maintain a completed project-planning example with source-inventory, calendar, and decision-log checks.
 - Keep workflow-specific rubric guidance available for beginners.
 - Keep dashboard-readiness criteria visible before building the dashboard.
+- Expose machine-readable `--json` output for `icm status`, `icm review`, and `icm doctor`.
 
 ## Next
 
-- Add machine-readable CLI output for `icm status`, `icm review`, and `icm doctor`.
 - Add a read-only local dashboard prototype that shells out to the CLI.
 - Add workflow-specific examples for policy/process and lightweight release planning if demand appears.
 

@@ -15,9 +15,6 @@ on:
 permissions:
   contents: read
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     name: Build distributions
@@ -26,15 +23,15 @@ jobs:
       - name: Require a release tag
         run: |
           if [ "${GITHUB_REF_TYPE}" != "tag" ]; then
-            echo "Publish workflow must be run from a version tag, for example v0.14.0."
+            echo "Publish workflow must be run from a version tag, for example v0.15.0."
             exit 1
           fi
 
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.11"
 
@@ -51,7 +48,7 @@ jobs:
         run: python -m twine check dist/*
 
       - name: Upload distributions
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: python-distributions
           path: dist/*
@@ -68,7 +65,7 @@ jobs:
       id-token: write
     steps:
       - name: Download distributions
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8.0.1
         with:
           name: python-distributions
           path: dist
@@ -89,7 +86,7 @@ jobs:
       id-token: write
     steps:
       - name: Download distributions
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8.0.1
         with:
           name: python-distributions
           path: dist

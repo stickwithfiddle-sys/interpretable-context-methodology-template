@@ -95,6 +95,7 @@ The rubric requires the discovery report to include a traceability table with `S
 - [First 10 minutes](first-10-minutes.md)
 - [Review rubrics](review-rubrics.md)
 - [Workflow rubric guide](workflow-rubrics.md)
+- [JSON output](json-output.md)
 - [Source traceability](source-traceability.md)
 - [Release-ready workspace](release-ready-workspace.md)
 - [Documentation-refresh example](https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-documentation-refresh)
