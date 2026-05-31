@@ -62,6 +62,20 @@ PASS Rubric calendar artifact shape valid in release-calendar.md
 PASS Rubric decision-log artifact shape valid in decision-log.md
 ```
 
+For a project-planning version of the same pattern, run:
+
+```bash
+icm review stages/05_validation --workspace examples/completed-project-plan
+```
+
+Look for:
+
+```text
+PASS Rubric source-inventory artifact shape valid in source-inventory.md
+PASS Rubric calendar artifact shape valid in project-calendar.md
+PASS Rubric decision-log artifact shape valid in decision-log.md
+```
+
 Those lines come from:
 
 ```text
@@ -77,6 +91,8 @@ The rubric requires the discovery report to include a traceability table with `S
 
 - [First workspace tutorial](first-workspace.md)
 - [Review rubrics](review-rubrics.md)
+- [Workflow rubric guide](workflow-rubrics.md)
 - [Source traceability](source-traceability.md)
 - [Release-ready workspace](release-ready-workspace.md)
 - [Documentation-refresh example](https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-documentation-refresh)
+- [Project-plan example](https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-project-plan)

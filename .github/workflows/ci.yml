@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   smoke:
     runs-on: ubuntu-latest
@@ -45,6 +48,9 @@ jobs:
       - name: Validate documentation-refresh example
         run: icm validate examples/completed-documentation-refresh --strict
 
+      - name: Validate project-plan example
+        run: icm validate examples/completed-project-plan --strict
+
       - name: Smoke test CLI status
         run: icm status examples/completed-content-plan
 
@@ -66,6 +72,12 @@ jobs:
       - name: Smoke test documentation artifact-shape review
         run: icm review stages/05_validation --workspace examples/completed-documentation-refresh
 
+      - name: Smoke test project-plan discovery review
+        run: icm review stages/01_discovery --workspace examples/completed-project-plan
+
+      - name: Smoke test project-plan artifact-shape review
+        run: icm review stages/05_validation --workspace examples/completed-project-plan
+
       - name: Smoke test CLI doctor
         run: icm doctor examples/completed-content-plan --strict
 
@@ -75,12 +87,16 @@ jobs:
       - name: Smoke test documentation doctor
         run: icm doctor examples/completed-documentation-refresh --strict
 
+      - name: Smoke test project-plan doctor
+        run: icm doctor examples/completed-project-plan --strict
+
       - name: Run legacy validators
         run: |
           python tools/validate_icm_workspace.py templates/icm-workspace --strict
           python examples/completed-content-plan/tools/validate_icm_workspace.py examples/completed-content-plan --strict
           python examples/completed-research-brief/tools/validate_icm_workspace.py examples/completed-research-brief --strict
           python examples/completed-documentation-refresh/tools/validate_icm_workspace.py examples/completed-documentation-refresh --strict
+          python examples/completed-project-plan/tools/validate_icm_workspace.py examples/completed-project-plan --strict
 
       - name: Build package distributions
         run: |

@@ -20,6 +20,8 @@ icm validate /tmp/icm-upgrade-smoke --strict
 
 See [pypi-upgrade.md](pypi-upgrade.md) for pipx and virtual environment variants.
 
+For choosing review checks by workflow type, see [workflow-rubrics.md](workflow-rubrics.md).
+
 ## 2. Validate Structure
 
 Run this from the workspace root:

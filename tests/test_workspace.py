@@ -7,6 +7,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 COMPLETED_EXAMPLE = REPO_ROOT / "examples" / "completed-content-plan"
 RESEARCH_EXAMPLE = REPO_ROOT / "examples" / "completed-research-brief"
 DOCS_EXAMPLE = REPO_ROOT / "examples" / "completed-documentation-refresh"
+PROJECT_EXAMPLE = REPO_ROOT / "examples" / "completed-project-plan"
 
 
 def test_slugify_normalizes_names() -> None:
@@ -612,6 +613,21 @@ def test_documentation_example_validates_and_review_validators_pass() -> None:
 
     discovery_review = workspace.review_stage(DOCS_EXAMPLE, "stages/01_discovery")
     validation_review = workspace.review_stage(DOCS_EXAMPLE, "stages/05_validation")
+
+    assert discovery_review.passed(strict=True)
+    assert validation_review.passed(strict=True)
+    assert any("Rubric required table columns present" in finding.message for finding in discovery_review.passes)
+    assert any("Rubric link/path reference count met" in finding.message for finding in discovery_review.passes)
+    assert any("Rubric source-inventory artifact shape valid" in finding.message for finding in validation_review.passes)
+    assert any("Rubric calendar artifact shape valid" in finding.message for finding in validation_review.passes)
+    assert any("Rubric decision-log artifact shape valid" in finding.message for finding in validation_review.passes)
+
+
+def test_project_plan_example_validates_and_review_validators_pass() -> None:
+    assert workspace.validate_workspace(PROJECT_EXAMPLE).passed(strict=True)
+
+    discovery_review = workspace.review_stage(PROJECT_EXAMPLE, "stages/01_discovery")
+    validation_review = workspace.review_stage(PROJECT_EXAMPLE, "stages/05_validation")
 
     assert discovery_review.passed(strict=True)
     assert validation_review.passed(strict=True)

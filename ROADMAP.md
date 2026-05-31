@@ -22,13 +22,14 @@ This roadmap keeps product work visible without turning the README into a backlo
 - Keep a copy-paste demo path visible from the docs homepage.
 - Keep beginner-facing PyPI upgrade and install verification docs available.
 - Keep a release-ready workspace checklist available for validation, review, changelog, and upgrade checks.
+- Maintain a completed project-planning example with source-inventory, calendar, and decision-log checks.
+- Keep workflow-specific rubric guidance available for beginners.
 
 ## Next
 
-- Add examples for project planning workflows.
 - Add a short demo recording or animated walkthrough for the docs site.
-- Add richer docs for choosing rubric validators by workflow type.
 - Add dashboard readiness notes for visualizing review queues and artifact-shape failures.
+- Add workflow-specific examples for policy/process and lightweight release planning if demand appears.
 
 ## Later
 

@@ -15,6 +15,9 @@ on:
 permissions:
   contents: read
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     name: Build distributions
@@ -23,7 +26,7 @@ jobs:
       - name: Require a release tag
         run: |
           if [ "${GITHUB_REF_TYPE}" != "tag" ]; then
-            echo "Publish workflow must be run from a version tag, for example v0.12.0."
+            echo "Publish workflow must be run from a version tag, for example v0.13.0."
             exit 1
           fi
 

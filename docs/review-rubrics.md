@@ -4,6 +4,8 @@ Review rubrics let a stage define deterministic artifact checks that run during 
 
 Use a rubric when an output needs more than "the file exists and has content." A rubric can require specific headings, important terms, source citations, table columns, link/path counts, common artifact shapes, and reject placeholder or forbidden text.
 
+If you are choosing checks for a specific workflow type, start with [workflow-rubrics.md](workflow-rubrics.md).
+
 ## Where Rubrics Live
 
 Place a rubric in a stage `references/` folder:

@@ -7,6 +7,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 COMPLETED_EXAMPLE = REPO_ROOT / "examples" / "completed-content-plan"
 RESEARCH_EXAMPLE = REPO_ROOT / "examples" / "completed-research-brief"
 DOCS_EXAMPLE = REPO_ROOT / "examples" / "completed-documentation-refresh"
+PROJECT_EXAMPLE = REPO_ROOT / "examples" / "completed-project-plan"
 
 
 def test_cli_new_validate_status_and_review(tmp_path: Path, capsys) -> None:
@@ -92,6 +93,23 @@ def test_cli_review_documentation_example_passes(capsys) -> None:
     assert "Rubric link/path reference count met" in output
 
     assert cli.main(["review", "stages/05_validation", "--workspace", str(DOCS_EXAMPLE)]) == 0
+
+    output = capsys.readouterr().out
+    assert "Review: 05_validation" in output
+    assert "Rubric source-inventory artifact shape valid" in output
+    assert "Rubric calendar artifact shape valid" in output
+    assert "Rubric decision-log artifact shape valid" in output
+
+
+def test_cli_review_project_plan_example_passes(capsys) -> None:
+    assert cli.main(["review", "stages/01_discovery", "--workspace", str(PROJECT_EXAMPLE)]) == 0
+
+    output = capsys.readouterr().out
+    assert "Review: 01_discovery" in output
+    assert "Rubric required table columns present" in output
+    assert "Rubric link/path reference count met" in output
+
+    assert cli.main(["review", "stages/05_validation", "--workspace", str(PROJECT_EXAMPLE)]) == 0
 
     output = capsys.readouterr().out
     assert "Review: 05_validation" in output

@@ -12,6 +12,19 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.13.0] - 2026-05-30
+
+### Added
+
+- Added a completed project-planning example workspace with source inventory, project calendar, and decision-log artifact-shape checks.
+- Added workflow-specific rubric guidance for choosing validators by use case.
+- Added test and CI coverage for the completed project-planning example.
+
+### Changed
+
+- README, docs site, demo guide, roadmap, product direction, revision audit, and release checklists now reflect the project-planning example and workflow rubric guide.
+- GitHub Actions workflows now opt into Node 24 for JavaScript actions to address the Node 20 deprecation warning.
+
 ## [0.12.0] - 2026-05-30
 
 ### Added
@@ -170,7 +183,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.9.0...v0.10.0

@@ -69,6 +69,8 @@ For pipx, GitHub fallback, and local development install options, see [docs/inst
 
 Want to see a completed review before creating your own workflow? Start with the [demo walkthrough](docs/demo.md) and the completed documentation-refresh example.
 
+Planning a real initiative? The [completed project-plan example](examples/completed-project-plan) shows how to validate source inventories, project calendars, and decision logs.
+
 ## Why This Exists
 
 Most agent workflows become hard to inspect once the logic lives inside a chat thread, framework state, or hidden prompt chain. ICM keeps the workflow visible:
@@ -111,10 +113,12 @@ Start with these files:
 | [docs/install.md](docs/install.md) | GitHub, virtualenv, and local install options |
 | [docs/pypi-upgrade.md](docs/pypi-upgrade.md) | Beginner upgrade and install verification commands |
 | [docs/release-ready-workspace.md](docs/release-ready-workspace.md) | Release-ready workspace checks for validation, review, changelog, and package upgrades |
+| [docs/workflow-rubrics.md](docs/workflow-rubrics.md) | Pick rubric checks by workflow type |
 | [docs/index.html](docs/index.html) | GitHub Pages visual docs homepage |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
 | [examples/completed-research-brief](examples/completed-research-brief) | Completed research-brief example with review rubrics |
 | [examples/completed-documentation-refresh](examples/completed-documentation-refresh) | Completed documentation-refresh example with table, path-count, and artifact-shape rubric checks |
+| [examples/completed-project-plan](examples/completed-project-plan) | Completed project-planning example with source inventory, calendar, and decision-log checks |
 | [docs/dashboard-direction.md](docs/dashboard-direction.md) | Dashboard direction and readiness criteria |
 | [docs/product-direction.md](docs/product-direction.md) | UX/product roadmap, including Hermes Agent-inspired ideas |
 | [docs/revision-audit.md](docs/revision-audit.md) | Current product audit, UX assessment, and next direction options |
@@ -168,6 +172,7 @@ examples/
   completed-content-plan/   Filled example workspace for a small content workflow
   completed-research-brief/ Filled example workspace for a research brief workflow
   completed-documentation-refresh/ Filled example workspace for a documentation refresh workflow
+  completed-project-plan/   Filled example workspace for project planning
 tools/
   check_docs_site.py        Validates GitHub Pages homepage references
   check_release_readiness.py Checks version, metadata, docs, and publish workflow readiness
@@ -187,6 +192,7 @@ docs/
   install.md                Install options and package smoke checks
   pypi-upgrade.md           Beginner upgrade and install verification commands
   release-ready-workspace.md Validation, review, changelog, and upgrade checks before release
+  workflow-rubrics.md       Rubric choices by workflow type
   product-direction.md      UX and product roadmap
   pypi-readiness.md         PyPI package publishing checklist
   release-process.md        GitHub and versioning workflow
@@ -244,6 +250,12 @@ See [docs/review-rubrics.md](docs/review-rubrics.md) for the full rubric format.
 
 Use `icm new --with-common-artifacts` or `icm init --with-common-artifacts` when you want starter files for `shared/source-inventory.md`, `shared/release-calendar.md`, and `shared/decision-log.md`.
 
+For workflow-specific choices, see [docs/workflow-rubrics.md](docs/workflow-rubrics.md). The project-planning example is the quickest reference when you need a milestone calendar and decision log:
+
+```bash
+icm review stages/05_validation --workspace examples/completed-project-plan
+```
+
 ## Common Mistakes
 
 | Mistake | Better Move |
@@ -265,7 +277,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.12.0`.
+Current package version: `0.13.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 
