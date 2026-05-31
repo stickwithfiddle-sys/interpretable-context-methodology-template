@@ -19,13 +19,14 @@ The read-only prototype is ready because these are true:
 
 ## MVP Shape
 
-The first dashboard is local-first and read-only. A later dashboard can write to the current workspace folder after acceptance semantics are clear.
+The first dashboard is local-first and read-only. It shows acceptance from `shared/acceptance-log.md`. A later dashboard can write to the current workspace folder after command-copy and edit boundaries are clear.
 
 | View | Purpose |
 | --- | --- |
 | Workspace Overview | Show stages, current state, missing outputs, and likely next action |
 | Stage Detail | Show the stage contract, declared inputs, output files, and review gate |
 | Review Queue | List outputs that are ready for human review |
+| Acceptance State | Show machine-passing outputs separately from accepted handoffs |
 | Doctor Panel | Run structure and content checks with suggested fixes |
 | Artifact Shapes | Show source-inventory, calendar, and decision-log failures with the exact markdown table path |
 | Decision Log | Show cross-stage decisions without hiding the underlying markdown |
@@ -37,7 +38,7 @@ The first dashboard is local-first and read-only. A later dashboard can write to
 - The UI should never hide where an output lives on disk.
 - A user should be able to close the dashboard and keep working with only the CLI.
 - Dashboard actions should map to CLI verbs wherever possible.
-- Passing machine checks should not automatically mean a handoff is accepted.
+- Passing machine checks should not automatically mean a handoff is accepted; acceptance comes from `shared/acceptance-log.md`.
 
 ## Not Yet
 

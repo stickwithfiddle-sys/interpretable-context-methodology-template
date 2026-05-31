@@ -16,11 +16,12 @@ icm dashboard examples/completed-project-plan --no-open
 
 - Stage states from `icm status --json`.
 - Review queue findings from `icm review ... --json`.
+- Human acceptance from `shared/acceptance-log.md`.
 - Workspace health findings from `icm doctor --json`.
 - Source links back to workspace markdown files.
 - The exact CLI commands that produced the dashboard data.
 
-The prototype does not write workflow state, edit files, mark handoffs accepted, or use a database. Close the browser or stop the server and the workspace still works through the same CLI commands.
+The prototype does not write workflow state, edit files, mark handoffs accepted, or use a database. It shows acceptance that was recorded by `icm accept` or by directly editing `shared/acceptance-log.md`. Close the browser or stop the server and the workspace still works through the same CLI commands.
 
 ## Useful Examples
 
@@ -55,7 +56,10 @@ The dashboard consumes the same JSON contract documented in [json-output.md](jso
 ```bash
 icm status . --json
 icm review stages/01_discovery --workspace . --json
+icm accept stages/01_discovery --workspace . --json
 icm doctor . --json
 ```
 
 That keeps the browser view honest. If the dashboard and terminal disagree, the terminal JSON is the contract to debug first.
+
+The dashboard labels review-passing outputs as `machine passing` until a human records acceptance. Accepted handoffs come from [handoff-acceptance.md](handoff-acceptance.md).

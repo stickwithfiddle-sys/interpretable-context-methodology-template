@@ -31,9 +31,10 @@ def test_cli_json_outputs_are_machine_readable(capsys) -> None:
     assert cli.main(["status", str(COMPLETED_EXAMPLE), "--json"]) == 0
     status_payload = json.loads(capsys.readouterr().out)
     assert status_payload["passed"] is True
-    assert status_payload["next_action"]["type"] == "review_or_restart"
+    assert status_payload["next_action"]["type"] == "review_or_accept_handoff"
     assert status_payload["stages"][0]["name"] == "00_intake"
     assert status_payload["stages"][0]["path"] == "stages/00_intake"
+    assert status_payload["stages"][0]["accepted_outputs"] == []
 
     assert cli.main(["review", "stages/01_discovery", "--workspace", str(COMPLETED_EXAMPLE), "--json"]) == 0
     review_payload = json.loads(capsys.readouterr().out)
@@ -41,13 +42,65 @@ def test_cli_json_outputs_are_machine_readable(capsys) -> None:
     assert review_payload["stage"] == "01_discovery"
     assert review_payload["summary"]["fail"] == 0
     assert review_payload["findings"][0]["level"] == "PASS"
+    assert review_payload["acceptance"]["accepted"] is False
 
     assert cli.main(["doctor", str(COMPLETED_EXAMPLE), "--json"]) == 0
     doctor_payload = json.loads(capsys.readouterr().out)
     assert doctor_payload["passed"] is True
     assert doctor_payload["structure"]["passed"] is True
     assert doctor_payload["content"]["passed"] is True
-    assert doctor_payload["next_action"]["type"] == "review_or_restart"
+    assert doctor_payload["next_action"]["type"] == "review_or_accept_handoff"
+
+
+def test_cli_accept_marks_handoff_in_plain_file(tmp_path: Path, capsys) -> None:
+    target = tmp_path / "accept-demo"
+    assert cli.main(["new", str(target), "--name", "Accept Demo"]) == 0
+    capsys.readouterr()
+    (target / "stages" / "00_intake" / "output" / "project-brief.md").write_text(
+        """# Project Brief
+
+## Desired Outcome
+
+Create a tiny accepted handoff.
+
+## Audience Or Users
+
+The maintainer.
+
+## Success Criteria
+
+The accepted output appears in status JSON.
+""",
+        encoding="utf-8",
+    )
+
+    assert cli.main(["review", "stages/00_intake", "--workspace", str(target)]) == 0
+    assert "Human acceptance: 0/1 accepted" in capsys.readouterr().out
+
+    assert (
+        cli.main(
+            [
+                "accept",
+                "stages/00_intake",
+                "--workspace",
+                str(target),
+                "--reviewer",
+                "Hobo",
+                "--note",
+                "Ready for discovery.",
+                "--json",
+            ]
+        )
+        == 0
+    )
+    accept_payload = json.loads(capsys.readouterr().out)
+    assert accept_payload["entries"][0]["output"] == "stages/00_intake/output/project-brief.md"
+
+    assert cli.main(["status", str(target), "--json"]) == 0
+    status_payload = json.loads(capsys.readouterr().out)
+    assert status_payload["stages"][0]["state"] == "accepted"
+    assert status_payload["stages"][0]["accepted_outputs"] == ["project-brief.md"]
+    assert "Ready for discovery." in (target / "shared" / "acceptance-log.md").read_text(encoding="utf-8")
 
 
 def test_cli_init_preserves_existing_project_files(tmp_path: Path, capsys) -> None:

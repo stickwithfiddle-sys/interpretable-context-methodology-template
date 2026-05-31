@@ -20,6 +20,7 @@
         <a href="#doctor">Doctor</a>
         <a href="#demo">Demo</a>
         <a href="#dashboard">Dashboard</a>
+        <a href="#product-path">Next</a>
       </nav>
     </header>
 
@@ -55,7 +56,7 @@ icm doctor my-first-icm-workspace</code></pre>
           <p class="eyebrow">First 10 minutes</p>
           <h2>See the whole loop before reading the theory.</h2>
           <p>
-            The first-10-minutes guide gets a beginner from install to a validated workspace, one review gate, and the core habit: run one stage, inspect the output, then continue.
+            The first-10-minutes guide gets a beginner from install to a validated workspace, one review gate, human acceptance in a plain markdown log, and the core habit: run one stage, inspect the output, then continue.
           </p>
           <div class="command-card">
             <div class="command-label">Fast walkthrough</div>
@@ -128,7 +129,7 @@ icm doctor</code></pre>
           <p class="eyebrow">Demo polish</p>
           <h2>See a completed review before changing your own workflow.</h2>
           <p>
-            The documentation-refresh and project-planning examples show plain markdown rubrics checking traceability sources, table columns, cited paths, source inventories, calendars, and decision logs.
+            The documentation-refresh and project-planning examples show plain markdown rubrics checking traceability sources, table columns, cited paths, source inventories, calendars, and decision logs. The e2e playtest gives you a complete idea so you can try the full flow without inventing one first.
           </p>
           <div class="command-card">
             <div class="command-label">Completed review</div>
@@ -155,7 +156,7 @@ icm review stages/01_discovery --workspace examples/completed-documentation-refr
           <p class="eyebrow">Local dashboard</p>
           <h2>Inspect the same workspace through a read-only browser view.</h2>
           <p>
-            The dashboard renders stage status, review findings, doctor findings, source links, and the exact CLI JSON commands that produced the data.
+            The dashboard renders stage status, review findings, doctor findings, source links, human acceptance from <code>shared/acceptance-log.md</code>, and the exact CLI JSON commands that produced the data.
           </p>
           <div class="command-card">
             <div class="command-label">Read-only dashboard</div>
@@ -177,6 +178,7 @@ icm dashboard examples/completed-project-plan</code></pre>
         </div>
         <div class="link-grid">
           <a href="demo.html">Demo walkthrough</a>
+          <a href="e2e-playtest.html">E2E playtest</a>
           <a href="first-10-minutes.html">First 10 minutes</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/first-workspace.md">First workspace tutorial</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-content-plan">Content-plan example</a>
@@ -187,6 +189,7 @@ icm dashboard examples/completed-project-plan</code></pre>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/review-rubrics.md">Review rubrics</a>
           <a href="workflow-rubrics.html">Workflow rubric guide</a>
           <a href="json-output.html">JSON output</a>
+          <a href="handoff-acceptance.html">Handoff acceptance</a>
           <a href="dashboard-prototype.html">Dashboard prototype</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/source-traceability.md">Source traceability</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/pypi-readiness.md">PyPI readiness</a>
@@ -205,8 +208,8 @@ icm dashboard examples/completed-project-plan</code></pre>
           <h2>CLI contract first, dashboard on the same source of truth.</h2>
         </div>
         <ol class="roadmap">
-          <li><strong>Now:</strong> PyPI install, CLI onboarding, first-10-minutes walkthrough, doctor checks, source traceability, artifact validators, common artifact starters, JSON output, a read-only dashboard prototype, workflow-specific rubric guidance, examples, and docs.</li>
-          <li><strong>Next:</strong> define a human acceptance marker for reviewed handoffs without hiding markdown.</li>
+          <li><strong>Now:</strong> PyPI install, CLI onboarding, first-10-minutes walkthrough, doctor checks, source traceability, artifact validators, common artifact starters, JSON output, plain-file human acceptance, a read-only dashboard prototype, workflow-specific rubric guidance, examples, and docs.</li>
+          <li><strong>Next:</strong> add dashboard affordances for copying review and acceptance commands.</li>
           <li><strong>Later:</strong> a local-first read/write dashboard over the same filesystem workspace.</li>
         </ol>
         <p><a href="dashboard-readiness.html">Read the dashboard readiness spec</a></p>

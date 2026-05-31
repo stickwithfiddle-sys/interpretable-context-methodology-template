@@ -66,6 +66,45 @@ jobs:
       - name: Smoke test CLI review JSON
         run: icm review stages/01_discovery --workspace examples/completed-content-plan --json
 
+      - name: Smoke test CLI acceptance
+        run: |
+          rm -rf /tmp/icm-accept-smoke
+          icm new /tmp/icm-accept-smoke --name "Accept Smoke"
+          python - <<'PY'
+          from pathlib import Path
+
+          brief = Path("/tmp/icm-accept-smoke/stages/00_intake/output/project-brief.md")
+          brief.write_text(
+              "\n".join(
+                  [
+                      "# Project Brief",
+                      "",
+                      "## Desired Outcome",
+                      "",
+                      "Confirm that the acceptance command records a reviewed handoff in a plain markdown file.",
+                      "",
+                      "## Audience Or Users",
+                      "",
+                      "Maintainers reviewing the CI smoke workflow.",
+                      "",
+                      "## Success Criteria",
+                      "",
+                      "- The intake review passes.",
+                      "- The accept command appends to shared/acceptance-log.md.",
+                      "",
+                      "## Open Questions",
+                      "",
+                      "- None for this smoke test.",
+                  ]
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+          PY
+          icm review stages/00_intake --workspace /tmp/icm-accept-smoke
+          icm accept stages/00_intake --workspace /tmp/icm-accept-smoke --reviewer CI --note "Accepted in CI smoke." --json
+          icm status /tmp/icm-accept-smoke --json
+
       - name: Smoke test research rubric review
         run: icm review stages/01_discovery --workspace examples/completed-research-brief
 
@@ -140,6 +179,7 @@ jobs:
           /tmp/icm-wheel-venv/bin/icm status icm-install-smoke --json
           test -f icm-install-smoke/.gitignore
           test -f icm-install-smoke/.github/prompts/run-icm-stage.prompt.md
+          test -f icm-install-smoke/shared/acceptance-log.md
           test -f icm-install-smoke/shared/source-inventory.md
           test -f icm-install-smoke/shared/release-calendar.md
           test -f icm-install-smoke/stages/01_discovery/output/.gitkeep

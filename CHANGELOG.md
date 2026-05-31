@@ -12,6 +12,19 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.17.0] - 2026-05-31
+
+### Added
+
+- Added `shared/acceptance-log.md` as the plain-file source of truth for human-reviewed handoff acceptance.
+- Added `icm accept` with text and JSON output for recording accepted stage outputs without hidden state.
+- Added an end-to-end playtest guide with a complete project idea so beginners can experience the full workflow.
+
+### Changed
+
+- `icm status`, `icm review --json`, and the dashboard now distinguish machine-passing outputs from human-accepted handoffs.
+- Generated workspace docs, README, JSON contract docs, dashboard docs, roadmap, product direction, and revision audit now include the acceptance workflow.
+
 ## [0.16.0] - 2026-05-31
 
 ### Added
@@ -220,7 +233,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.16.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.17.0...HEAD
+[0.17.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.13.0...v0.14.0

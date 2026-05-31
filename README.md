@@ -109,6 +109,7 @@ Start with these files:
 | --- | --- |
 | [docs/first-workspace.md](docs/first-workspace.md) | Step-by-step first run tutorial |
 | [docs/first-10-minutes.md](docs/first-10-minutes.md) | Fast beginner walkthrough from install to first review loop |
+| [docs/e2e-playtest.md](docs/e2e-playtest.md) | Complete no-idea-needed playtest from brief to accepted handoffs |
 | [docs/demo.md](docs/demo.md) | Copy-paste demo for first install and completed review checks |
 | [docs/glossary.md](docs/glossary.md) | Plain-language definitions of ICM terms |
 | [docs/install.md](docs/install.md) | GitHub, virtualenv, and local install options |
@@ -116,6 +117,7 @@ Start with these files:
 | [docs/release-ready-workspace.md](docs/release-ready-workspace.md) | Release-ready workspace checks for validation, review, changelog, and package upgrades |
 | [docs/workflow-rubrics.md](docs/workflow-rubrics.md) | Pick rubric checks by workflow type |
 | [docs/json-output.md](docs/json-output.md) | Machine-readable CLI output for dashboards and integrations |
+| [docs/handoff-acceptance.md](docs/handoff-acceptance.md) | Plain-file human acceptance marker for reviewed handoffs |
 | [docs/dashboard-prototype.md](docs/dashboard-prototype.md) | Read-only local dashboard over the CLI JSON contract |
 | [docs/index.html](docs/index.html) | GitHub Pages visual docs homepage |
 | [docs/dashboard-readiness.md](docs/dashboard-readiness.md) | Dashboard-readiness checklist for review queues and artifact-shape failures |
@@ -145,9 +147,11 @@ python -m icm status ../demo
 python -m icm next ../demo
 python -m icm explain stages/01_discovery --workspace ../demo
 python -m icm review stages/01_discovery --workspace ../demo
+python -m icm accept stages/01_discovery --workspace ../demo --reviewer Hobo --note "Approved."
 python -m icm doctor ../demo
 python -m icm status ../demo --json
 python -m icm review stages/01_discovery --workspace ../demo --json
+python -m icm accept stages/01_discovery --workspace ../demo --reviewer Hobo --note "Approved." --json
 python -m icm doctor ../demo --json
 python -m icm dashboard ../demo
 ```
@@ -162,9 +166,11 @@ icm status ../demo
 icm next ../demo
 icm explain stages/01_discovery --workspace ../demo
 icm review stages/01_discovery --workspace ../demo
+icm accept stages/01_discovery --workspace ../demo --reviewer Hobo --note "Approved."
 icm doctor ../demo
 icm status ../demo --json
 icm review stages/01_discovery --workspace ../demo --json
+icm accept stages/01_discovery --workspace ../demo --reviewer Hobo --note "Approved." --json
 icm doctor ../demo --json
 icm dashboard ../demo
 ```
@@ -191,7 +197,7 @@ tools/
   new_icm_workspace.py      Copies the template into a new project folder
   validate_icm_workspace.py Checks stage naming, contracts, and handoff folders
 icm/
-  cli.py                    Product CLI for new, validate, status, next, explain, review, doctor, dashboard
+  cli.py                    Product CLI for new, validate, status, next, explain, review, accept, doctor, dashboard
   dashboard.py              Read-only local web dashboard over CLI JSON
 tests/
   test_cli.py               CLI behavior coverage
@@ -200,6 +206,7 @@ tests/
 docs/
   index.html                GitHub Pages visual docs homepage
   first-10-minutes.md       Fast beginner walkthrough from install to review
+  e2e-playtest.md           Complete no-idea-needed playtest
   demo.md                   Copy-paste demo walkthrough
   first-workspace.md        Beginner tutorial
   dashboard-direction.md    Dashboard readiness notes
@@ -211,6 +218,7 @@ docs/
   release-ready-workspace.md Validation, review, changelog, and upgrade checks before release
   workflow-rubrics.md       Rubric choices by workflow type
   json-output.md            Machine-readable CLI response shapes
+  handoff-acceptance.md     Human acceptance marker and commands
   product-direction.md      UX and product roadmap
   pypi-readiness.md         PyPI package publishing checklist
   release-process.md        GitHub and versioning workflow
@@ -295,7 +303,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.16.0`.
+Current package version: `0.17.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 

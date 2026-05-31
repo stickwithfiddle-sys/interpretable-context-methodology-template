@@ -10,7 +10,7 @@ ICM is ready for a dashboard prototype because the UI can answer four questions 
 | --- | --- |
 | What stage is active? | `icm status`, `icm next`, and `stages/*/CONTEXT.md` |
 | What should the agent read and write? | The current stage contract |
-| What needs human review? | Declared output files and `icm review` findings |
+| What needs human review? | Declared output files, `icm review` findings, and `shared/acceptance-log.md` |
 | What needs repair before continuing? | `icm doctor` findings and suggested fixes |
 
 The current CLI vocabulary and JSON output are stable enough for a read-only prototype. The first prototype now lives behind `icm dashboard`; a read/write dashboard should wait until the dashboard has proven the review queue and repair UX.
@@ -37,7 +37,7 @@ A dashboard review queue should be deterministic:
 5. Attach `icm review` results for that stage.
 6. Show a clear state: `not_started`, `needs_input`, `ready_for_review`, `blocked`, or `accepted`.
 
-For the first prototype, `accepted` can be inferred from a user-controlled note or decision-log entry. It should not be guessed from a passing review alone. A passing review means "machine checks passed"; a human still accepts the handoff.
+`accepted` comes from `shared/acceptance-log.md`. It should not be guessed from a passing review alone. A passing review means "machine checks passed"; a human still accepts the handoff.
 
 ## Artifact Failure UX
 
@@ -60,6 +60,7 @@ Use machine-readable command output for dashboard integrations:
 ```bash
 icm status --json
 icm review stages/01_discovery --workspace . --json
+icm accept stages/01_discovery --workspace . --json
 icm doctor . --json
 ```
 
@@ -73,6 +74,7 @@ Each JSON response includes:
 | `findings` | Fail, warn, and pass messages with source paths |
 | `suggested_fix` | Beginner-facing repair text when available |
 | `command` | CLI command that produced the result |
+| `acceptance` | Human acceptance state read from `shared/acceptance-log.md` |
 
 See [json-output.md](json-output.md) for command examples and response shapes. This keeps the dashboard honest: the UI displays the same facts the CLI knows.
 
@@ -96,4 +98,4 @@ Do not start with:
 - A failed review shows the rubric or contract that produced the failure.
 - The dashboard can be closed and the workspace still works through the CLI.
 - The first prototype works against `examples/completed-documentation-refresh` and `examples/completed-project-plan`.
-- The dashboard does not mark a handoff accepted without a human action.
+- The dashboard does not mark a handoff accepted without a row in `shared/acceptance-log.md`.

@@ -41,6 +41,8 @@ Record decisions that should influence future stage runs.
 | --- | --- | --- | --- |
 """,
 }
+ACCEPTANCE_LOG_RELATIVE_PATH = Path("shared") / "acceptance-log.md"
+ACCEPTED_STATUSES = {"accepted", "approved"}
 
 
 class ResourcePath(Protocol):
@@ -115,6 +117,8 @@ class StageStatus:
     declared_outputs: tuple[str, ...]
     existing_outputs: tuple[str, ...]
     missing_outputs: tuple[str, ...]
+    accepted_outputs: tuple[str, ...]
+    pending_acceptance_outputs: tuple[str, ...]
     state: str
     note: str
 
@@ -123,6 +127,16 @@ class StageStatus:
 class ReviewFinding:
     level: str
     message: str
+
+
+@dataclass(frozen=True)
+class AcceptanceEntry:
+    date: str
+    stage: str
+    output: str
+    reviewer: str
+    status: str
+    notes: str
 
 
 @dataclass(frozen=True)
@@ -186,6 +200,13 @@ class StageReview:
 
     def exit_code(self, strict: bool = False) -> int:
         return 0 if self.passed(strict=strict) else 1
+
+
+@dataclass(frozen=True)
+class AcceptanceResult:
+    log_path: Path
+    accepted_entries: tuple[AcceptanceEntry, ...]
+    review: StageReview
 
 
 def slugify(value: str) -> str:
@@ -919,6 +940,169 @@ def existing_output_files(stage_directory: Path) -> tuple[str, ...]:
     return tuple(sorted(path.name for path in output_dir.iterdir() if path.is_file() and path.name != ".gitkeep"))
 
 
+def relative_to_workspace(path: Path, workspace_root: Path) -> str:
+    try:
+        return path.resolve().relative_to(workspace_root.resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def acceptance_log_path(workspace_root: Path) -> Path:
+    return workspace_root.expanduser().resolve() / ACCEPTANCE_LOG_RELATIVE_PATH
+
+
+def acceptance_log_template() -> str:
+    return """# Acceptance Log
+
+Use this file to mark human-reviewed handoffs. A passing `icm review` means machine checks passed; an `Accepted` row means a human approved the handoff.
+
+| Date | Stage | Output | Reviewer | Status | Notes |
+| --- | --- | --- | --- | --- | --- |
+"""
+
+
+def ensure_acceptance_log(workspace_root: Path) -> Path:
+    log_path = acceptance_log_path(workspace_root)
+    if not log_path.exists():
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        log_path.write_text(acceptance_log_template(), encoding="utf-8")
+    return log_path
+
+
+def markdown_cell(value: str) -> str:
+    cleaned = " ".join(str(value).replace("|", "/").split())
+    return cleaned or "-"
+
+
+def parse_acceptance_log(workspace_root: Path) -> tuple[AcceptanceEntry, ...]:
+    log_path = acceptance_log_path(workspace_root)
+    if not log_path.exists():
+        return ()
+
+    markdown = log_path.read_text(encoding="utf-8", errors="replace")
+    entries: list[AcceptanceEntry] = []
+    for table in markdown_tables(markdown):
+        date_index = table_column_index(table, {"date"})
+        stage_index = table_column_index(table, {"stage"})
+        output_index = table_column_index(table, {"output", "path", "file"})
+        reviewer_index = table_column_index(table, {"reviewer", "accepted by"})
+        status_index = table_column_index(table, {"status", "state"})
+        notes_index = table_column_index(table, {"notes", "note", "rationale"})
+        if output_index is None or status_index is None:
+            continue
+        for row in table.rows:
+            def cell(index: int | None) -> str:
+                if index is None or index >= len(row):
+                    return ""
+                return unquote_markdown_cell(row[index])
+
+            output = cell(output_index)
+            status = cell(status_index)
+            if not output or not status:
+                continue
+            entries.append(
+                AcceptanceEntry(
+                    date=cell(date_index),
+                    stage=cell(stage_index),
+                    output=output.replace("\\", "/"),
+                    reviewer=cell(reviewer_index),
+                    status=status,
+                    notes=cell(notes_index),
+                )
+            )
+    return tuple(entries)
+
+
+def latest_acceptance_entries(workspace_root: Path) -> dict[str, AcceptanceEntry]:
+    latest: dict[str, AcceptanceEntry] = {}
+    for entry in parse_acceptance_log(workspace_root):
+        latest[entry.output.strip()] = entry
+    return latest
+
+
+def acceptance_entry_for_output(workspace_root: Path, output_path: Path) -> AcceptanceEntry | None:
+    relative_output = relative_to_workspace(output_path, workspace_root)
+    entry = latest_acceptance_entries(workspace_root).get(relative_output)
+    if entry and entry.status.strip().lower() in ACCEPTED_STATUSES:
+        return entry
+    return None
+
+
+def output_is_accepted(workspace_root: Path, output_path: Path) -> bool:
+    return acceptance_entry_for_output(workspace_root, output_path) is not None
+
+
+def declared_output_paths(stage_path: Path, requested_output: Path | None = None) -> tuple[Path, ...]:
+    context_path = stage_path / "CONTEXT.md"
+    if not context_path.exists():
+        return ()
+    context_markdown = context_path.read_text(encoding="utf-8", errors="replace")
+    output_paths: list[Path] = []
+    for output_name, location in parse_output_specs(context_markdown):
+        output_path = resolve_contract_path(stage_path, str(Path(location) / output_name))
+        if requested_output is not None and output_path.resolve() != requested_output.resolve():
+            continue
+        if output_path.exists() and output_path.is_file():
+            output_paths.append(output_path)
+    if requested_output is not None and requested_output.exists() and requested_output.is_file() and requested_output not in output_paths:
+        output_paths.append(requested_output)
+    return tuple(output_paths)
+
+
+def acceptance_entries_for_review(workspace_root: Path, review: StageReview) -> tuple[AcceptanceEntry | None, ...]:
+    return tuple(acceptance_entry_for_output(workspace_root, output_path) for output_path in declared_output_paths(review.stage_path, review.output_path))
+
+
+def record_acceptance(
+    workspace_root: Path,
+    output_paths: tuple[Path, ...],
+    reviewer: str,
+    note: str = "",
+    accepted_on: dt.date | None = None,
+) -> tuple[AcceptanceEntry, ...]:
+    workspace_root = workspace_root.expanduser().resolve()
+    log_path = ensure_acceptance_log(workspace_root)
+    date_text = (accepted_on or dt.date.today()).isoformat()
+    entries: list[AcceptanceEntry] = []
+    with log_path.open("a", encoding="utf-8") as log_file:
+        for output_path in output_paths:
+            stage_path = find_stage_for_output(workspace_root, output_path)
+            relative_output = relative_to_workspace(output_path, workspace_root)
+            entry = AcceptanceEntry(
+                date=date_text,
+                stage=stage_path.name,
+                output=relative_output,
+                reviewer=reviewer,
+                status="Accepted",
+                notes=note,
+            )
+            log_file.write(
+                f"| {markdown_cell(entry.date)} | {markdown_cell(entry.stage)} | {markdown_cell(entry.output)} | "
+                f"{markdown_cell(entry.reviewer)} | {markdown_cell(entry.status)} | {markdown_cell(entry.notes)} |\n"
+            )
+            entries.append(entry)
+    return tuple(entries)
+
+
+def accept_reviewed_handoff(
+    workspace_root: Path,
+    target: str,
+    reviewer: str,
+    note: str = "",
+    strict: bool = False,
+    allow_failing_review: bool = False,
+) -> AcceptanceResult:
+    workspace_root = workspace_root.expanduser().resolve()
+    review = review_stage(workspace_root, target)
+    if not review.passed(strict=strict) and not allow_failing_review:
+        raise ValueError("Review checks must pass before accepting this handoff. Re-run with --allow-failing-review to override.")
+    output_paths = declared_output_paths(review.stage_path, review.output_path)
+    if not output_paths:
+        raise ValueError("No existing declared outputs are available to accept.")
+    accepted_entries = record_acceptance(workspace_root, output_paths, reviewer=reviewer, note=note)
+    return AcceptanceResult(log_path=acceptance_log_path(workspace_root), accepted_entries=accepted_entries, review=review)
+
+
 def section_has_content(markdown: str, heading: str) -> bool:
     content = extract_section(markdown, heading)
     stripped = "\n".join(line.strip() for line in content.splitlines()).strip()
@@ -939,6 +1123,7 @@ def intake_needs_input(stage_directory: Path) -> bool:
 
 
 def stage_status(stage_directory: Path) -> StageStatus:
+    workspace_root = stage_directory.parent.parent
     context_path = stage_directory / "CONTEXT.md"
     if not context_path.exists():
         return StageStatus(
@@ -948,6 +1133,8 @@ def stage_status(stage_directory: Path) -> StageStatus:
             declared_outputs=(),
             existing_outputs=existing_output_files(stage_directory),
             missing_outputs=(),
+            accepted_outputs=(),
+            pending_acceptance_outputs=(),
             state="missing_contract",
             note="Add a stage CONTEXT.md before running this stage.",
         )
@@ -956,11 +1143,21 @@ def stage_status(stage_directory: Path) -> StageStatus:
     declared_outputs = parse_declared_outputs(context_markdown)
     existing_outputs = existing_output_files(stage_directory)
     missing_outputs = tuple(output for output in declared_outputs if output not in existing_outputs)
+    declared_existing_outputs = tuple(output for output in declared_outputs if output in existing_outputs)
+    accepted_outputs = tuple(
+        output
+        for output in declared_existing_outputs
+        if output_is_accepted(workspace_root, stage_directory / "output" / output)
+    )
+    pending_acceptance_outputs = tuple(output for output in declared_existing_outputs if output not in accepted_outputs)
     purpose = first_paragraph(extract_section(context_markdown, "Purpose")) or "No purpose found."
 
     if stage_directory.name.startswith("00_") and intake_needs_input(stage_directory):
         state = "needs_input"
         note = "Fill or review the intake brief before running downstream stages."
+    elif declared_outputs and not missing_outputs and not pending_acceptance_outputs:
+        state = "accepted"
+        note = "Declared outputs have human acceptance entries."
     elif missing_outputs and existing_outputs:
         state = "partial"
         note = "Some declared outputs are missing."
@@ -978,6 +1175,8 @@ def stage_status(stage_directory: Path) -> StageStatus:
         declared_outputs=declared_outputs,
         existing_outputs=existing_outputs,
         missing_outputs=missing_outputs,
+        accepted_outputs=accepted_outputs,
+        pending_acceptance_outputs=pending_acceptance_outputs,
         state=state,
         note=note,
     )
@@ -990,6 +1189,9 @@ def workspace_statuses(workspace_root: Path) -> list[StageStatus]:
 def next_stage(statuses: list[StageStatus]) -> StageStatus | None:
     for status in statuses:
         if status.state == "needs_input":
+            return status
+    for status in statuses:
+        if status.state == "ready_for_review":
             return status
     for status in statuses:
         if status.state in {"missing_contract", "partial", "waiting"}:

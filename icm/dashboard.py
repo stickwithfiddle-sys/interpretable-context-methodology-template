@@ -104,7 +104,7 @@ def collect_dashboard_payload(workspace: Path, cli_runner: CliJsonRunner = run_c
     all_doctor_findings = doctor_findings(doctor)
 
     return {
-        "command": f"icm dashboard {path_text(workspace_root)}",
+        "command": command_text(["dashboard", path_text(workspace_root)]),
         "workspace": path_text(workspace_root),
         "read_only": True,
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -113,7 +113,9 @@ def collect_dashboard_payload(workspace: Path, cli_runner: CliJsonRunner = run_c
         "reviews": reviews,
         "summary": {
             "stages": len(status.get("stages", [])),
+            "accepted_stages": sum(1 for stage in status.get("stages", []) if stage.get("state") == "accepted"),
             "ready_for_review": sum(1 for stage in status.get("stages", []) if stage.get("state") == "ready_for_review"),
+            "pending_acceptance": sum(len(stage.get("pending_acceptance_outputs", [])) for stage in status.get("stages", [])),
             "review_failures": review_fails,
             "review_warnings": review_warnings,
             "doctor_failures": finding_count(all_doctor_findings, "FAIL"),
@@ -342,7 +344,8 @@ DASHBOARD_HTML = """<!doctype html>
         line-height: 1;
         white-space: nowrap;
       }
-      .pill.ready_for_review, .pill.pass { background: var(--green-soft); color: var(--teal); }
+      .pill.accepted, .pill.pass { background: var(--green-soft); color: var(--teal); }
+      .pill.ready_for_review { background: var(--blue-soft); color: var(--blue); }
       .pill.needs_input, .pill.waiting, .pill.warn, .pill.partial { background: var(--amber-soft); color: var(--amber); }
       .pill.missing_contract, .pill.fail { background: var(--red-soft); color: var(--red); }
       .pill.info { background: var(--blue-soft); color: var(--blue); }
@@ -531,7 +534,7 @@ DASHBOARD_HTML = """<!doctype html>
         byId("workspace-path").textContent = payload.workspace || "";
         byId("generated-at").textContent = payload.generated_at ? `Updated ${new Date(payload.generated_at).toLocaleString()}` : "";
         byId("metric-stages").textContent = summary.stages ?? 0;
-        byId("metric-ready").textContent = `${summary.ready_for_review ?? 0} ready for review`;
+        byId("metric-ready").textContent = `${summary.accepted_stages ?? 0} accepted, ${summary.ready_for_review ?? 0} machine-passing`;
         byId("metric-review").textContent = summary.review_failures ?? 0;
         byId("metric-review-note").textContent = `${summary.review_warnings ?? 0} warnings`;
         byId("metric-doctor").textContent = summary.doctor_failures ?? 0;
@@ -595,7 +598,7 @@ DASHBOARD_HTML = """<!doctype html>
             <article class="review-item">
               <div class="review-top">
                 <h3>${escapeHtml(review.stage || review.target || "Review")}</h3>
-                ${pill(review.passed ? "passing" : "needs repair", review.passed ? "pass" : "fail")}
+                ${pill(review.acceptance && review.acceptance.accepted ? "accepted" : (review.passed ? "machine passing" : "needs repair"), review.acceptance && review.acceptance.accepted ? "accepted" : (review.passed ? "ready_for_review" : "fail"))}
               </div>
               <div class="summary-line">
                 ${pill(`${summary.fail ?? 0} fail`, "fail")}
@@ -603,6 +606,7 @@ DASHBOARD_HTML = """<!doctype html>
                 ${pill(`${summary.pass ?? 0} pass`, "pass")}
               </div>
               <p class="review-meta">${escapeHtml(review.command || "")}</p>
+              <p class="review-meta">Human acceptance: ${escapeHtml(((review.acceptance || {}).outputs || []).filter((output) => output.accepted).length)} / ${escapeHtml(((review.acceptance || {}).outputs || []).length)} outputs accepted</p>
               <div class="source-links">
                 ${sourceLink(`${review.stage_path}/CONTEXT.md`, "CONTEXT.md")}
                 ${review.output_path ? sourceLink(review.output_path, review.output_path.split("/").pop()) : ""}

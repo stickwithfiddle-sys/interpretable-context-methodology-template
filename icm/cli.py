@@ -3,13 +3,18 @@
 from __future__ import annotations
 
 import argparse
+import getpass
 import json
+import shlex
 import sys
 from pathlib import Path
 
 from . import __version__
 from .workspace import (
+    accept_reviewed_handoff,
+    acceptance_entry_for_output,
     create_workspace,
+    declared_output_paths,
     doctor_workspace,
     extract_section,
     initialize_workspace,
@@ -39,6 +44,10 @@ def path_text(path: Path) -> str:
     return path.as_posix()
 
 
+def command_text(args: list[str]) -> str:
+    return shlex.join(["icm", *args])
+
+
 def relative_path_text(path: Path, root: Path) -> str:
     try:
         return path.relative_to(root).as_posix()
@@ -60,6 +69,14 @@ def stage_status_to_json(status, workspace_root: Path) -> dict:
         "declared_outputs": list(status.declared_outputs),
         "existing_outputs": list(status.existing_outputs),
         "missing_outputs": list(status.missing_outputs),
+        "accepted_outputs": list(status.accepted_outputs),
+        "pending_acceptance_outputs": list(status.pending_acceptance_outputs),
+        "acceptance": {
+            "accepted": status.state == "accepted",
+            "accepted_outputs": list(status.accepted_outputs),
+            "pending_outputs": list(status.pending_acceptance_outputs),
+            "log_path": "shared/acceptance-log.md",
+        },
     }
 
 
@@ -73,7 +90,7 @@ def next_action_to_json(workspace_root: Path, statuses: list) -> dict:
     if recommended is None:
         return {
             "type": "review_or_restart",
-            "message": "All declared outputs are present. Review the latest output or start a new run.",
+            "message": "All declared outputs are accepted or no next stage is blocked. Review the latest output or start a new run.",
         }
     relative_stage = relative_path_text(recommended.path, workspace_root)
     if recommended.state == "needs_input":
@@ -83,6 +100,13 @@ def next_action_to_json(workspace_root: Path, statuses: list) -> dict:
             "stage": recommended.name,
             "path": relative_path_text(intake_path, workspace_root),
             "message": f"Fill or review {relative_stage}/output/project-brief.md.",
+        }
+    if recommended.state == "ready_for_review":
+        return {
+            "type": "review_or_accept_handoff",
+            "stage": recommended.name,
+            "path": relative_stage,
+            "message": f"Review and accept the declared outputs in {relative_stage}.",
         }
     return {
         "type": "run_or_repair_stage",
@@ -109,9 +133,44 @@ def validation_finding_to_json(level: str, message: str) -> dict:
     }
 
 
+def acceptance_entry_to_json(entry) -> dict:
+    if entry is None:
+        return {
+            "accepted": False,
+            "status": "Pending",
+            "date": None,
+            "reviewer": None,
+            "notes": None,
+        }
+    return {
+        "accepted": True,
+        "status": entry.status,
+        "date": entry.date,
+        "reviewer": entry.reviewer,
+        "notes": entry.notes,
+    }
+
+
+def review_acceptance_to_json(workspace_root: Path, review) -> dict:
+    outputs: list[dict] = []
+    for output_path in declared_output_paths(review.stage_path, review.output_path):
+        entry = acceptance_entry_for_output(workspace_root, output_path)
+        outputs.append(
+            {
+                "path": relative_path_text(output_path, workspace_root),
+                **acceptance_entry_to_json(entry),
+            }
+        )
+    return {
+        "accepted": bool(outputs) and all(output["accepted"] for output in outputs),
+        "log_path": "shared/acceptance-log.md",
+        "outputs": outputs,
+    }
+
+
 def review_to_json_payload(workspace_root: Path, target: str, review, strict: bool) -> dict:
     return {
-        "command": f"icm review {target} --workspace {path_text(workspace_root)} --json",
+        "command": command_text(["review", target, "--workspace", path_text(workspace_root), "--json"]),
         "workspace": path_text(workspace_root),
         "target": target,
         "stage": review.stage_name,
@@ -125,6 +184,7 @@ def review_to_json_payload(workspace_root: Path, target: str, review, strict: bo
             "pass": len(review.passes),
         },
         "findings": [review_finding_to_json(finding) for finding in review.findings],
+        "acceptance": review_acceptance_to_json(workspace_root, review),
         "next_actions": [suggest_fix(finding.message) for finding in (*review.errors, *review.warnings)],
     }
 
@@ -136,7 +196,7 @@ def doctor_to_json_payload(workspace_root: Path, validation_result, doctor_resul
     ]
     content_findings = [review_finding_to_json(finding) for finding in doctor_result.findings]
     return {
-        "command": f"icm doctor {path_text(workspace_root)} --json",
+        "command": command_text(["doctor", path_text(workspace_root), "--json"]),
         "workspace": path_text(workspace_root),
         "strict": strict,
         "passed": validation_result.passed(strict=strict) and doctor_result.passed(strict=strict),
@@ -243,12 +303,24 @@ def format_outputs(outputs: tuple[str, ...], missing: tuple[str, ...]) -> str:
     return ", ".join(rendered)
 
 
+def format_acceptance(status) -> str:
+    if not status.declared_outputs:
+        return "-"
+    accepted = len(status.accepted_outputs)
+    declared = len(status.declared_outputs)
+    if accepted == declared:
+        return f"{accepted}/{declared} accepted"
+    if status.pending_acceptance_outputs:
+        return f"{accepted}/{declared} accepted"
+    return f"{accepted}/{declared}"
+
+
 def cmd_status(args: argparse.Namespace) -> int:
     workspace_root = Path(args.workspace).expanduser().resolve()
     statuses = workspace_statuses(workspace_root)
     if args.json:
         payload = {
-            "command": f"icm status {path_text(workspace_root)} --json",
+            "command": command_text(["status", path_text(workspace_root), "--json"]),
             "workspace": path_text(workspace_root),
             "passed": bool(statuses),
             "stages": [stage_status_to_json(status, workspace_root) for status in statuses],
@@ -264,17 +336,22 @@ def cmd_status(args: argparse.Namespace) -> int:
 
     print(f"Workspace: {workspace_root}")
     print()
-    print(f"{'Stage':<24} {'State':<18} Outputs")
-    print(f"{'-' * 24} {'-' * 18} {'-' * 40}")
+    print(f"{'Stage':<24} {'State':<18} {'Acceptance':<16} Outputs")
+    print(f"{'-' * 24} {'-' * 18} {'-' * 16} {'-' * 40}")
     for status in statuses:
-        print(f"{status.name:<24} {status.state:<18} {format_outputs(status.declared_outputs, status.missing_outputs)}")
+        print(
+            f"{status.name:<24} {status.state:<18} {format_acceptance(status):<16} "
+            f"{format_outputs(status.declared_outputs, status.missing_outputs)}"
+        )
 
     recommended = next_stage(statuses)
     print()
     if recommended is None:
-        print("Next: all declared outputs are present. Review the latest output or start a new run.")
+        print("Next: all declared outputs are accepted or no next stage is blocked. Review the latest output or start a new run.")
     elif recommended.state == "needs_input":
         print(f"Next: fill or review {recommended.path / 'output' / 'project-brief.md'}")
+    elif recommended.state == "ready_for_review":
+        print(f"Next: review and accept {recommended.path.relative_to(workspace_root)}")
     else:
         print(f"Next: run or repair {recommended.path.relative_to(workspace_root)}")
     return 0
@@ -301,6 +378,15 @@ def cmd_next(args: argparse.Namespace) -> int:
         print()
         print("Then ask your agent:")
         print(f"Run {relative_stage}. Write the declared output, run Verify, and stop at the Review Gate.")
+        return 0
+
+    if recommended.state == "ready_for_review":
+        print("Next action:")
+        print(f"Review and accept {relative_stage}.")
+        print()
+        print("Commands:")
+        print(command_text(["review", relative_stage.as_posix(), "--workspace", path_text(workspace_root)]))
+        print(command_text(["accept", relative_stage.as_posix(), "--workspace", path_text(workspace_root)]))
         return 0
 
     print("Next agent prompt:")
@@ -413,7 +499,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
         print()
         print("Stage summary:")
         for status in statuses:
-            print(f"- {status.name}: {status.state} ({status.note})")
+            print(f"- {status.name}: {status.state} ({format_acceptance(status)}; {status.note})")
 
         recommended = next_stage(statuses)
         print()
@@ -421,6 +507,12 @@ def cmd_doctor(args: argparse.Namespace) -> int:
             print("Likely next action: review the latest output or start a new run.")
         elif recommended.state == "needs_input":
             print(f"Likely next action: fill or review {recommended.path / 'output' / 'project-brief.md'}")
+        elif recommended.state == "ready_for_review":
+            try:
+                relative_stage = recommended.path.relative_to(workspace_root)
+            except ValueError:
+                relative_stage = recommended.path
+            print(f"Likely next action: review and accept {relative_stage}")
         else:
             try:
                 relative_stage = recommended.path.relative_to(workspace_root)
@@ -439,7 +531,7 @@ def cmd_review(args: argparse.Namespace) -> int:
         if args.json:
             print_json(
                 {
-                    "command": f"icm review {args.target} --workspace {path_text(workspace_root)} --json",
+                    "command": command_text(["review", args.target, "--workspace", path_text(workspace_root), "--json"]),
                     "workspace": path_text(workspace_root),
                     "target": args.target,
                     "passed": False,
@@ -478,6 +570,14 @@ def cmd_review(args: argparse.Namespace) -> int:
     else:
         print("Result: review checks need attention.")
 
+    acceptance = review_acceptance_to_json(workspace_root, review)
+    if acceptance["outputs"]:
+        accepted_count = sum(1 for output in acceptance["outputs"] if output["accepted"])
+        total_count = len(acceptance["outputs"])
+        print(f"Human acceptance: {accepted_count}/{total_count} accepted")
+        if accepted_count < total_count:
+            print(f"Accept after human review: {command_text(['accept', args.target, '--workspace', path_text(workspace_root)])}")
+
     if review.errors or review.warnings:
         print()
         print("Next actions:")
@@ -485,6 +585,52 @@ def cmd_review(args: argparse.Namespace) -> int:
             print(f"- {suggest_fix(finding.message)}")
 
     return review.exit_code(strict=args.strict)
+
+
+def cmd_accept(args: argparse.Namespace) -> int:
+    workspace_root = Path(args.workspace).expanduser().resolve()
+    reviewer = args.reviewer or getpass.getuser()
+    try:
+        result = accept_reviewed_handoff(
+            workspace_root,
+            args.target,
+            reviewer=reviewer,
+            note=args.note or "",
+            strict=args.strict,
+            allow_failing_review=args.allow_failing_review,
+        )
+    except (FileNotFoundError, ValueError) as error:
+        print(f"ERROR {error}", file=sys.stderr)
+        return 1
+
+    if args.json:
+        print_json(
+            {
+                "command": command_text(["accept", args.target, "--workspace", path_text(workspace_root), "--json"]),
+                "workspace": path_text(workspace_root),
+                "target": args.target,
+                "accepted": True,
+                "log_path": relative_path_text(result.log_path, workspace_root),
+                "entries": [
+                    {
+                        "date": entry.date,
+                        "stage": entry.stage,
+                        "output": entry.output,
+                        "reviewer": entry.reviewer,
+                        "status": entry.status,
+                        "notes": entry.notes,
+                    }
+                    for entry in result.accepted_entries
+                ],
+            }
+        )
+        return 0
+
+    print(f"Accepted handoff(s): {len(result.accepted_entries)}")
+    for entry in result.accepted_entries:
+        print(f"- {entry.output} ({entry.stage})")
+    print(f"Acceptance log: {result.log_path}")
+    return 0
 
 
 def cmd_dashboard(args: argparse.Namespace) -> int:
@@ -563,6 +709,16 @@ def build_parser() -> argparse.ArgumentParser:
     review_parser.add_argument("--strict", action="store_true", help="Return failure when warnings exist.")
     review_parser.add_argument("--json", action="store_true", help="Print machine-readable JSON for dashboard integrations.")
     review_parser.set_defaults(func=cmd_review)
+
+    accept_parser = subparsers.add_parser("accept", help="Mark reviewed handoff outputs as human-accepted")
+    accept_parser.add_argument("target", help="Stage name/path or output file path to accept.")
+    accept_parser.add_argument("--workspace", default=".", help="Workspace root. Defaults to the current directory.")
+    accept_parser.add_argument("--reviewer", help="Name or alias for the human reviewer. Defaults to the current OS user.")
+    accept_parser.add_argument("--note", help="Short note explaining what was accepted.")
+    accept_parser.add_argument("--strict", action="store_true", help="Require review warnings to be fixed before accepting.")
+    accept_parser.add_argument("--allow-failing-review", action="store_true", help="Record acceptance even when review checks fail.")
+    accept_parser.add_argument("--json", action="store_true", help="Print machine-readable JSON for dashboard integrations.")
+    accept_parser.set_defaults(func=cmd_accept)
 
     dashboard_parser = subparsers.add_parser("dashboard", help="Start a read-only local dashboard")
     dashboard_parser.add_argument("workspace", nargs="?", default=".", help="Path to the workspace. Defaults to the current directory.")

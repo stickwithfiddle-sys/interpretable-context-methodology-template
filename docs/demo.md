@@ -93,6 +93,8 @@ The rubric requires the discovery report to include a traceability table with `S
 
 - [First workspace tutorial](first-workspace.md)
 - [First 10 minutes](first-10-minutes.md)
+- [End-to-end playtest](e2e-playtest.md)
+- [Handoff acceptance](handoff-acceptance.md)
 - [Review rubrics](review-rubrics.md)
 - [Workflow rubric guide](workflow-rubrics.md)
 - [JSON output](json-output.md)

@@ -28,10 +28,12 @@ This roadmap keeps product work visible without turning the README into a backlo
 - Keep dashboard-readiness criteria visible before building the dashboard.
 - Expose machine-readable `--json` output for `icm status`, `icm review`, and `icm doctor`.
 - Provide a read-only local dashboard prototype through `icm dashboard`.
+- Keep the plain-file human acceptance marker in `shared/acceptance-log.md`.
+- Show accepted vs machine-passing handoffs in CLI JSON and the dashboard.
 
 ## Next
 
-- Define a human acceptance marker for reviewed handoffs without hiding markdown.
+- Add dashboard affordances for copying review and acceptance commands.
 - Add workflow-specific examples for policy/process and lightweight release planning if demand appears.
 
 ## Later

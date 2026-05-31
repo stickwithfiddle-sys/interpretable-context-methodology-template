@@ -20,8 +20,10 @@ def test_dashboard_payload_uses_cli_json_contract(tmp_path: Path) -> None:
                         "name": "00_intake",
                         "path": "stages/00_intake",
                         "purpose": "Capture the brief.",
-                        "state": "ready_for_review",
+                        "state": "accepted",
                         "existing_outputs": ["project-brief.md"],
+                        "accepted_outputs": ["project-brief.md"],
+                        "pending_acceptance_outputs": [],
                     },
                     {
                         "name": "01_discovery",
@@ -29,6 +31,8 @@ def test_dashboard_payload_uses_cli_json_contract(tmp_path: Path) -> None:
                         "purpose": "Discover the workflow.",
                         "state": "waiting",
                         "existing_outputs": [],
+                        "accepted_outputs": [],
+                        "pending_acceptance_outputs": [],
                     },
                 ],
                 "next_action": {"type": "run_or_repair_stage", "message": "Run discovery."},
@@ -48,6 +52,17 @@ def test_dashboard_payload_uses_cli_json_contract(tmp_path: Path) -> None:
                 "stage_path": "stages/00_intake",
                 "output_path": "stages/00_intake/output/project-brief.md",
                 "summary": {"fail": 0, "warn": 0, "pass": 3},
+                "acceptance": {
+                    "accepted": True,
+                    "outputs": [
+                        {
+                            "path": "stages/00_intake/output/project-brief.md",
+                            "accepted": True,
+                            "status": "Accepted",
+                            "reviewer": "Hobo",
+                        }
+                    ],
+                },
                 "findings": [],
             }
         raise AssertionError(f"Unexpected command: {args}")
@@ -56,7 +71,8 @@ def test_dashboard_payload_uses_cli_json_contract(tmp_path: Path) -> None:
 
     assert payload["read_only"] is True
     assert payload["summary"]["stages"] == 2
-    assert payload["summary"]["ready_for_review"] == 1
+    assert payload["summary"]["accepted_stages"] == 1
+    assert payload["summary"]["ready_for_review"] == 0
     assert payload["summary"]["review_failures"] == 0
     assert [call[0] for call in calls] == ["status", "doctor", "review"]
     assert calls[2][1] == "stages/00_intake"
@@ -110,3 +126,5 @@ def test_dashboard_html_contains_runtime_contract() -> None:
     assert "/api/workspace" in html
     assert "CLI Source" in html
     assert "Read-only" in html
+    assert "machine passing" in html
+    assert "Human acceptance" in html

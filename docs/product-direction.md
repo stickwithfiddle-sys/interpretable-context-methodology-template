@@ -37,9 +37,11 @@ icm status
 icm next
 icm explain stages/01_discovery
 icm review stages/01_discovery
+icm accept stages/01_discovery
 icm doctor
 icm status --json
 icm review stages/01_discovery --json
+icm accept stages/01_discovery --json
 icm doctor --json
 icm dashboard
 ```
@@ -57,13 +59,14 @@ icm new my-project
 icm init . --with-common-artifacts
 icm doctor
 icm review stages/01_discovery
+icm accept stages/01_discovery
 icm status --json
 icm dashboard .
 ```
 
-`icm new` is for a clean workspace. `icm init` is for an existing project and skips files that already exist. The `--with-common-artifacts` flag adds starter files for source inventories, release calendars, and decision logs. `icm doctor` checks both structure and content-quality issues such as empty required sections, missing config inputs, undeclared outputs, broken handoffs after outputs are present, and review-rubric failures on declared outputs. `icm review` can load artifact-specific rubrics from stage references, including source-traceability checks, required table-column checks, link/path-count checks, and artifact-shape checks for source inventories, calendars, and decision logs.
+`icm new` is for a clean workspace. `icm init` is for an existing project and skips files that already exist. The `--with-common-artifacts` flag adds starter files for source inventories, release calendars, and decision logs. `icm doctor` checks both structure and content-quality issues such as empty required sections, missing config inputs, undeclared outputs, broken handoffs after outputs are present, and review-rubric failures on declared outputs. `icm review` can load artifact-specific rubrics from stage references, including source-traceability checks, required table-column checks, link/path-count checks, and artifact-shape checks for source inventories, calendars, and decision logs. `icm accept` records human-approved handoffs in `shared/acceptance-log.md`.
 
-The example library now covers content planning, research briefs, documentation refreshes, and project planning. The documentation-refresh and project-planning examples are the clearest demos of the review system because their discovery reports must include a `Source Traceability` table, and their validation stages include source inventories, calendars, and decision logs checked by artifact-shape rubrics. `docs/workflow-rubrics.md` helps beginners choose validators by use case, and `docs/first-10-minutes.md` gives them a fast install-to-review loop before they read the deeper tutorial. `icm dashboard` now gives those same users a read-only browser view over the CLI JSON contract.
+The example library now covers content planning, research briefs, documentation refreshes, and project planning. The documentation-refresh and project-planning examples are the clearest demos of the review system because their discovery reports must include a `Source Traceability` table, and their validation stages include source inventories, calendars, and decision logs checked by artifact-shape rubrics. `docs/workflow-rubrics.md` helps beginners choose validators by use case, and `docs/first-10-minutes.md` gives them a fast install-to-review loop before they read the deeper tutorial. `docs/e2e-playtest.md` gives them a complete idea and playtest script. `icm dashboard` now gives those same users a read-only browser view over the CLI JSON contract and acceptance log.
 
 ## Dashboard Concept
 
@@ -74,13 +77,14 @@ The first dashboard is a read-only local product layer over the CLI and examples
 | Stage Map | Show numbered stages, current status, handoffs, and review gates |
 | Stage Runner | Show current contract, declared inputs, output diff, and verify results |
 | Review Queue | List outputs waiting for human acceptance |
+| Acceptance State | Separate machine-passing checks from human-accepted handoffs |
 | Source Improvements | Suggest edits to `_config/`, `references/`, or `CONTEXT.md` based on repeated fixes |
 | Decision Log | Keep cross-stage decisions visible |
 | Workspace Health | Run validator checks and explain fixes |
 
 The dashboard should feel like a cockpit for the workspace, not a replacement for the workspace.
 
-The dashboard-readiness spec in `docs/dashboard-readiness.md` narrows the prototype to local files, review queues, artifact-shape failures, doctor findings, and explicit human acceptance. The JSON contract in `docs/json-output.md` gives the dashboard stable `status`, `review`, and `doctor` data without inventing a second source of truth. The current read-only implementation is documented in `docs/dashboard-prototype.md`.
+The dashboard-readiness spec in `docs/dashboard-readiness.md` narrows the prototype to local files, review queues, artifact-shape failures, doctor findings, and explicit human acceptance. The JSON contract in `docs/json-output.md` gives the dashboard stable `status`, `review`, `accept`, and `doctor` data without inventing a second source of truth. The current read-only implementation is documented in `docs/dashboard-prototype.md`.
 
 ## Product Risks
 
@@ -91,4 +95,4 @@ The dashboard-readiness spec in `docs/dashboard-readiness.md` narrows the protot
 
 ## Recommended Next Product Step
 
-Next, define a human acceptance marker for reviewed handoffs without hiding markdown. A read/write dashboard should wait until acceptance is represented clearly in the filesystem model.
+Next, add dashboard affordances for copying review and acceptance commands. A read/write dashboard should wait until browser edits have the same plain-file clarity as `icm accept`.

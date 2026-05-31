@@ -25,6 +25,7 @@ def test_create_workspace_from_source_template_preserves_beginner_assets(tmp_pat
     assert (target / "AGENTS.md").is_file()
     assert (target / ".gitignore").is_file()
     assert (target / ".github" / "prompts" / "run-icm-stage.prompt.md").is_file()
+    assert (target / "shared" / "acceptance-log.md").is_file()
     assert (target / "stages" / "01_discovery" / "output" / ".gitkeep").is_file()
     assert (target / "tools" / "validate_icm_workspace.py").is_file()
     assert workspace.validate_workspace(target).passed(strict=True)
@@ -131,6 +132,49 @@ def test_review_completed_example_passes() -> None:
     assert any("Review rubric loaded" in finding.message for finding in review.passes)
     assert any("Rubric required section present" in finding.message for finding in review.passes)
     assert any("Rubric required source cited" in finding.message for finding in review.passes)
+
+
+def test_acceptance_log_marks_stage_outputs_accepted(tmp_path: Path) -> None:
+    target = tmp_path / "demo"
+    workspace.create_workspace(target, name="Demo")
+    brief_path = target / "stages" / "00_intake" / "output" / "project-brief.md"
+    brief_path.write_text(
+        """# Project Brief
+
+## Desired Outcome
+
+Create a small playtest workspace.
+
+## Audience Or Users
+
+The maintainer.
+
+## Success Criteria
+
+The first handoff is reviewable and accepted.
+""",
+        encoding="utf-8",
+    )
+
+    review = workspace.review_stage(target, "stages/00_intake")
+    assert review.passed(strict=True)
+    statuses = workspace.workspace_statuses(target)
+    assert statuses[0].state == "ready_for_review"
+    assert statuses[0].pending_acceptance_outputs == ("project-brief.md",)
+
+    result = workspace.accept_reviewed_handoff(
+        target,
+        "stages/00_intake",
+        reviewer="Hobo",
+        note="Brief is ready for discovery.",
+    )
+
+    assert result.accepted_entries[0].output == "stages/00_intake/output/project-brief.md"
+    assert workspace.acceptance_entry_for_output(target, brief_path).reviewer == "Hobo"
+    statuses = workspace.workspace_statuses(target)
+    assert statuses[0].state == "accepted"
+    assert statuses[0].accepted_outputs == ("project-brief.md",)
+    assert workspace.next_stage(statuses) == statuses[1]
 
 
 def test_review_fails_when_rubric_required_section_is_missing(tmp_path: Path) -> None:

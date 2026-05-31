@@ -8,7 +8,7 @@ The workspace uses folders, markdown contracts, and local scripts as the agent o
 
 1. Fill in `stages/00_intake/output/project-brief.md`.
 2. Ask your agent to run `stages/00_intake`.
-3. Review the output before moving to `stages/01_discovery`.
+3. Review and accept the output before moving to `stages/01_discovery`.
 4. Continue one numbered stage at a time.
 
 Paste this to your agent:
@@ -44,10 +44,13 @@ icm status .
 icm next .
 icm explain stages/01_discovery
 icm review stages/01_discovery
+icm accept stages/01_discovery
 icm doctor .
 ```
 
 `stages/01_discovery/references/discovery-report-rubric.md` shows the starter rubric pattern. The discovery report should include a `Source Traceability` section that cites the input files it used.
+
+Human acceptance is recorded in `shared/acceptance-log.md`. A passing review means machine checks passed; an acceptance row means a human approved the handoff.
 
 ## Layer Map
 

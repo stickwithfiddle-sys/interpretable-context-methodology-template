@@ -24,7 +24,7 @@ icm --version
 Expected version for this release:
 
 ```text
-icm 0.16.0
+icm 0.17.0
 ```
 
 ## Minute 1: Create A Workspace
@@ -112,6 +112,12 @@ stages/00_intake/output/project-brief.md
 
 Edit it directly if needed. The file is now the source of truth for the next stage.
 
+Record the human acceptance in plain markdown:
+
+```bash
+icm accept stages/00_intake --reviewer "Hobo" --note "Brief is ready for discovery."
+```
+
 Then ask:
 
 ```text
@@ -148,6 +154,9 @@ You have seen the whole loop:
 - Run `icm next .` to see the likely next stage.
 - Run `icm explain stages/01_discovery` to inspect the stage contract.
 - Run `icm review stages/01_discovery` after the discovery output exists.
+- Run `icm accept stages/01_discovery` when a human approves the discovery handoff.
 - Run `icm dashboard .` when you want a read-only browser view.
+- Read [handoff-acceptance.md](handoff-acceptance.md) to understand machine-passing vs accepted outputs.
 - Read [demo.md](demo.md) to see completed review checks.
+- Read [e2e-playtest.md](e2e-playtest.md) when you want a complete idea and full workflow script.
 - Read [workflow-rubrics.md](workflow-rubrics.md) when you want deterministic artifact checks.
