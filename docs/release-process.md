@@ -53,6 +53,7 @@ python -m icm doctor examples/completed-content-plan --json
 python -m icm doctor examples/completed-research-brief --strict
 python -m icm doctor examples/completed-documentation-refresh --strict
 python -m icm doctor examples/completed-project-plan --strict
+python -m pytest tests/test_dashboard.py
 python tools/validate_icm_workspace.py templates/icm-workspace --strict
 python examples/completed-content-plan/tools/validate_icm_workspace.py examples/completed-content-plan --strict
 python examples/completed-research-brief/tools/validate_icm_workspace.py examples/completed-research-brief --strict

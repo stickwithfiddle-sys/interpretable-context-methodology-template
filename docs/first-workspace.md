@@ -160,6 +160,7 @@ python -m icm next .
 python -m icm explain stages/01_discovery
 python -m icm review stages/01_discovery
 python -m icm doctor .
+python -m icm dashboard .
 ```
 
 ## Step 6: Improve The Source

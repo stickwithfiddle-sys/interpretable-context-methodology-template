@@ -116,6 +116,7 @@ Start with these files:
 | [docs/release-ready-workspace.md](docs/release-ready-workspace.md) | Release-ready workspace checks for validation, review, changelog, and package upgrades |
 | [docs/workflow-rubrics.md](docs/workflow-rubrics.md) | Pick rubric checks by workflow type |
 | [docs/json-output.md](docs/json-output.md) | Machine-readable CLI output for dashboards and integrations |
+| [docs/dashboard-prototype.md](docs/dashboard-prototype.md) | Read-only local dashboard over the CLI JSON contract |
 | [docs/index.html](docs/index.html) | GitHub Pages visual docs homepage |
 | [docs/dashboard-readiness.md](docs/dashboard-readiness.md) | Dashboard-readiness checklist for review queues and artifact-shape failures |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
@@ -148,6 +149,7 @@ python -m icm doctor ../demo
 python -m icm status ../demo --json
 python -m icm review stages/01_discovery --workspace ../demo --json
 python -m icm doctor ../demo --json
+python -m icm dashboard ../demo
 ```
 
 After installing in a virtual environment with `python -m pip install -e ".[dev]"`, the same commands are available as:
@@ -164,6 +166,7 @@ icm doctor ../demo
 icm status ../demo --json
 icm review stages/01_discovery --workspace ../demo --json
 icm doctor ../demo --json
+icm dashboard ../demo
 ```
 
 ## What Is Included
@@ -188,9 +191,11 @@ tools/
   new_icm_workspace.py      Copies the template into a new project folder
   validate_icm_workspace.py Checks stage naming, contracts, and handoff folders
 icm/
-  cli.py                    Product CLI for new, validate, status, next, explain, review, doctor
+  cli.py                    Product CLI for new, validate, status, next, explain, review, doctor, dashboard
+  dashboard.py              Read-only local web dashboard over CLI JSON
 tests/
   test_cli.py               CLI behavior coverage
+  test_dashboard.py         Dashboard payload and local server coverage
   test_workspace.py         Workspace helper and review coverage
 docs/
   index.html                GitHub Pages visual docs homepage
@@ -198,6 +203,7 @@ docs/
   demo.md                   Copy-paste demo walkthrough
   first-workspace.md        Beginner tutorial
   dashboard-direction.md    Dashboard readiness notes
+  dashboard-prototype.md    Read-only local dashboard commands
   dashboard-readiness.md    Dashboard prototype acceptance criteria
   glossary.md               Plain-language terms
   install.md                Install options and package smoke checks
@@ -289,7 +295,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.15.0`.
+Current package version: `0.16.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 

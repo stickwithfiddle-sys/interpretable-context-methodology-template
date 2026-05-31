@@ -27,14 +27,15 @@ This roadmap keeps product work visible without turning the README into a backlo
 - Keep workflow-specific rubric guidance available for beginners.
 - Keep dashboard-readiness criteria visible before building the dashboard.
 - Expose machine-readable `--json` output for `icm status`, `icm review`, and `icm doctor`.
+- Provide a read-only local dashboard prototype through `icm dashboard`.
 
 ## Next
 
-- Add a read-only local dashboard prototype that shells out to the CLI.
+- Define a human acceptance marker for reviewed handoffs without hiding markdown.
 - Add workflow-specific examples for policy/process and lightweight release planning if demand appears.
 
 ## Later
 
-- Add a lightweight dashboard that reads and writes the same filesystem workspace.
+- Add a lightweight read/write dashboard that reads and writes the same filesystem workspace.
 - Add optional Git integration for showing output diffs at review gates.
 - Add richer release attestations and install verification docs after PyPI is live.

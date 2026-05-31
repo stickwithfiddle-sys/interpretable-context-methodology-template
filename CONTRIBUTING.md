@@ -67,6 +67,7 @@ python -m icm doctor examples/completed-content-plan --json
 python -m icm doctor examples/completed-research-brief --strict
 python -m icm doctor examples/completed-documentation-refresh --strict
 python -m icm doctor examples/completed-project-plan --strict
+python -m pytest tests/test_dashboard.py
 ```
 
 Also run the legacy validators so generated workspaces remain self-contained:

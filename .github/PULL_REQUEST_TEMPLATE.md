@@ -40,6 +40,7 @@ What changed?
 - [ ] `python -m icm doctor examples/completed-research-brief --strict`
 - [ ] `python -m icm doctor examples/completed-documentation-refresh --strict`
 - [ ] `python -m icm doctor examples/completed-project-plan --strict`
+- [ ] `python -m pytest tests/test_dashboard.py`
 - [ ] `python -m build && python -m twine check dist/*` if packaging changed
 - [ ] Release-impacting changes checked against `docs/release-ready-workspace.md`
 

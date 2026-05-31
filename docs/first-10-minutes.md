@@ -24,7 +24,7 @@ icm --version
 Expected version for this release:
 
 ```text
-icm 0.15.0
+icm 0.16.0
 ```
 
 ## Minute 1: Create A Workspace
@@ -148,5 +148,6 @@ You have seen the whole loop:
 - Run `icm next .` to see the likely next stage.
 - Run `icm explain stages/01_discovery` to inspect the stage contract.
 - Run `icm review stages/01_discovery` after the discovery output exists.
+- Run `icm dashboard .` when you want a read-only browser view.
 - Read [demo.md](demo.md) to see completed review checks.
 - Read [workflow-rubrics.md](workflow-rubrics.md) when you want deterministic artifact checks.

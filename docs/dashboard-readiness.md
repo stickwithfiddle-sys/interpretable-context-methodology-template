@@ -13,7 +13,7 @@ ICM is ready for a dashboard prototype because the UI can answer four questions 
 | What needs human review? | Declared output files and `icm review` findings |
 | What needs repair before continuing? | `icm doctor` findings and suggested fixes |
 
-The current CLI vocabulary and JSON output are stable enough for a read-only prototype. A read/write dashboard should wait until the dashboard has proven the review queue and repair UX.
+The current CLI vocabulary and JSON output are stable enough for a read-only prototype. The first prototype now lives behind `icm dashboard`; a read/write dashboard should wait until the dashboard has proven the review queue and repair UX.
 
 ## MVP Views
 
@@ -78,7 +78,7 @@ See [json-output.md](json-output.md) for command examples and response shapes. T
 
 ## Prototype Boundary
 
-Start with a local-only dashboard that reads a workspace folder and shells out to the CLI.
+Start with a local-only dashboard that reads a workspace folder and shells out to the CLI. The current implementation is documented in [dashboard-prototype.md](dashboard-prototype.md).
 
 Do not start with:
 

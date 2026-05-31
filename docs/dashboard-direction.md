@@ -2,13 +2,13 @@
 
 Last updated: 2026-05-31
 
-The dashboard should not replace the filesystem workspace. It should make the same files easier to inspect, edit, review, and validate.
+The dashboard should not replace the filesystem workspace. It should make the same files easier to inspect, review, and eventually edit.
 
-For a more implementation-oriented checklist, see [dashboard-readiness.md](dashboard-readiness.md).
+For a more implementation-oriented checklist, see [dashboard-readiness.md](dashboard-readiness.md). The current read-only prototype is documented in [dashboard-prototype.md](dashboard-prototype.md).
 
 ## Readiness Criteria
 
-Build a dashboard prototype after these are true:
+The read-only prototype is ready because these are true:
 
 - The CLI status model is stable enough to expose visually.
 - `icm doctor` explains most beginner problems without needing source-code knowledge.
@@ -19,7 +19,7 @@ Build a dashboard prototype after these are true:
 
 ## MVP Shape
 
-The first dashboard should be local-first and read/write the current workspace folder.
+The first dashboard is local-first and read-only. A later dashboard can write to the current workspace folder after acceptance semantics are clear.
 
 | View | Purpose |
 | --- | --- |

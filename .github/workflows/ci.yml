@@ -96,6 +96,17 @@ jobs:
       - name: Smoke test project-plan doctor
         run: icm doctor examples/completed-project-plan --strict
 
+      - name: Smoke test dashboard payload
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from icm.dashboard import collect_dashboard_payload
+
+          payload = collect_dashboard_payload(Path("examples/completed-project-plan"))
+          assert payload["summary"]["stages"] == 6
+          assert payload["reviews"]
+          PY
+
       - name: Run legacy validators
         run: |
           python tools/validate_icm_workspace.py templates/icm-workspace --strict

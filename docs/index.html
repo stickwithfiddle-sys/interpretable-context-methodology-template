@@ -147,6 +147,29 @@ icm review stages/01_discovery --workspace examples/completed-documentation-refr
         </figure>
       </section>
 
+      <section class="split-band alternate" id="dashboard">
+        <figure class="screenshot">
+          <img src="assets/screenshot-dashboard.svg" alt="Screenshot-style dashboard view showing stage state, review queue, doctor findings, and CLI source commands.">
+        </figure>
+        <div>
+          <p class="eyebrow">Local dashboard</p>
+          <h2>Inspect the same workspace through a read-only browser view.</h2>
+          <p>
+            The dashboard renders stage status, review findings, doctor findings, source links, and the exact CLI JSON commands that produced the data.
+          </p>
+          <div class="command-card">
+            <div class="command-label">Read-only dashboard</div>
+            <pre><code>python -m pip install icm-workspace-template
+icm dashboard examples/completed-project-plan</code></pre>
+            <button class="copy-button" data-copy="python -m pip install icm-workspace-template&#10;icm dashboard examples/completed-project-plan" aria-label="Copy dashboard demo commands">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V7Z"></path><path d="M4 15V5a2 2 0 0 1 2-2h10"></path></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+          <p><a href="dashboard-prototype.html">Open the dashboard prototype guide</a></p>
+        </div>
+      </section>
+
       <section class="links-band">
         <div class="section-heading">
           <p class="eyebrow">Read next</p>
@@ -164,6 +187,7 @@ icm review stages/01_discovery --workspace examples/completed-documentation-refr
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/review-rubrics.md">Review rubrics</a>
           <a href="workflow-rubrics.html">Workflow rubric guide</a>
           <a href="json-output.html">JSON output</a>
+          <a href="dashboard-prototype.html">Dashboard prototype</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/source-traceability.md">Source traceability</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/pypi-readiness.md">PyPI readiness</a>
           <a href="pypi-upgrade.html">PyPI upgrade checks</a>
@@ -175,15 +199,15 @@ icm review stages/01_discovery --workspace examples/completed-documentation-refr
         </div>
       </section>
 
-      <section class="roadmap-band" id="dashboard">
+      <section class="roadmap-band" id="product-path">
         <div class="section-heading">
           <p class="eyebrow">Product path</p>
-          <h2>CLI first, dashboard after the language stabilizes.</h2>
+          <h2>CLI contract first, dashboard on the same source of truth.</h2>
         </div>
         <ol class="roadmap">
-          <li><strong>Now:</strong> PyPI install, CLI onboarding, first-10-minutes walkthrough, doctor checks, source traceability, artifact validators, common artifact starters, JSON output, workflow-specific rubric guidance, examples, and docs.</li>
-          <li><strong>Next:</strong> a read-only local dashboard prototype that renders status, review, and doctor findings from the CLI JSON contract.</li>
-          <li><strong>Later:</strong> a local-first dashboard over the same filesystem workspace.</li>
+          <li><strong>Now:</strong> PyPI install, CLI onboarding, first-10-minutes walkthrough, doctor checks, source traceability, artifact validators, common artifact starters, JSON output, a read-only dashboard prototype, workflow-specific rubric guidance, examples, and docs.</li>
+          <li><strong>Next:</strong> define a human acceptance marker for reviewed handoffs without hiding markdown.</li>
+          <li><strong>Later:</strong> a local-first read/write dashboard over the same filesystem workspace.</li>
         </ol>
         <p><a href="dashboard-readiness.html">Read the dashboard readiness spec</a></p>
       </section>

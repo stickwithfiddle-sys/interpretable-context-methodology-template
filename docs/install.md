@@ -10,6 +10,7 @@ If you use `pipx`:
 pipx install icm-workspace-template
 icm --version
 icm new my-first-icm-workspace --name "My First ICM Workspace"
+icm dashboard my-first-icm-workspace
 ```
 
 If you prefer a local virtual environment:
@@ -20,6 +21,7 @@ source .venv/bin/activate
 python -m pip install icm-workspace-template
 icm --version
 icm new my-first-icm-workspace --name "My First ICM Workspace"
+icm dashboard my-first-icm-workspace
 ```
 
 ## Install A Pinned GitHub Release
@@ -27,7 +29,7 @@ icm new my-first-icm-workspace --name "My First ICM Workspace"
 Use this path when you want to test a specific repository tag before it reaches PyPI:
 
 ```bash
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.15.0
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.16.0
 icm --version
 ```
 

@@ -487,6 +487,26 @@ def cmd_review(args: argparse.Namespace) -> int:
     return review.exit_code(strict=args.strict)
 
 
+def cmd_dashboard(args: argparse.Namespace) -> int:
+    from .dashboard import serve_dashboard
+
+    try:
+        serve_dashboard(
+            Path(args.workspace),
+            host=args.host,
+            port=args.port,
+            open_browser=not args.no_open,
+        )
+    except KeyboardInterrupt:
+        print()
+        print("Dashboard stopped.")
+        return 0
+    except OSError as error:
+        print(f"ERROR Could not start dashboard: {error}", file=sys.stderr)
+        return 1
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="icm", description="Work with Interpretable Context Methodology workspaces.")
     parser.add_argument("--version", action="version", version=f"icm {__version__}")
@@ -543,6 +563,13 @@ def build_parser() -> argparse.ArgumentParser:
     review_parser.add_argument("--strict", action="store_true", help="Return failure when warnings exist.")
     review_parser.add_argument("--json", action="store_true", help="Print machine-readable JSON for dashboard integrations.")
     review_parser.set_defaults(func=cmd_review)
+
+    dashboard_parser = subparsers.add_parser("dashboard", help="Start a read-only local dashboard")
+    dashboard_parser.add_argument("workspace", nargs="?", default=".", help="Path to the workspace. Defaults to the current directory.")
+    dashboard_parser.add_argument("--host", default="127.0.0.1", help="Host interface for the local dashboard. Defaults to 127.0.0.1.")
+    dashboard_parser.add_argument("--port", type=int, help="Port for the local dashboard. Defaults to 8765 and tries nearby ports if busy.")
+    dashboard_parser.add_argument("--no-open", action="store_true", help="Do not open the dashboard in a browser.")
+    dashboard_parser.set_defaults(func=cmd_dashboard)
 
     return parser
 

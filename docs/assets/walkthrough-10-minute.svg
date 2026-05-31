@@ -17,7 +17,7 @@
   <text x="110" y="348" fill="#f1f5f4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17">icm-workspace</text>
   <text x="110" y="381" fill="#f1f5f4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17">-template</text>
   <rect x="112" y="416" width="128" height="34" fill="#0f766e"/>
-  <text x="128" y="439" fill="#ffffff" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16">icm 0.15.0</text>
+  <text x="128" y="439" fill="#ffffff" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16">icm 0.16.0</text>
 
   <rect x="338" y="238" width="220" height="236" fill="#fff8e6" stroke="#a16207" stroke-width="2"/>
   <text x="362" y="292" fill="#a16207" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="22" font-weight="800">Create</text>
