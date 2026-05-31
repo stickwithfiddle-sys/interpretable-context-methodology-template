@@ -65,7 +65,7 @@ python -m pip install -e ".[dev]"
 icm status examples/completed-content-plan
 ```
 
-For pipx, GitHub fallback, and local development install options, see [docs/install.md](docs/install.md). The visual docs site is published at [stickwithfiddle-sys.github.io/interpretable-context-methodology-template](https://stickwithfiddle-sys.github.io/interpretable-context-methodology-template/).
+For pipx, GitHub fallback, and local development install options, see [docs/install.md](docs/install.md). If you want the fastest guided path, use [docs/first-10-minutes.md](docs/first-10-minutes.md). The visual docs site is published at [stickwithfiddle-sys.github.io/interpretable-context-methodology-template](https://stickwithfiddle-sys.github.io/interpretable-context-methodology-template/).
 
 Want to see a completed review before creating your own workflow? Start with the [demo walkthrough](docs/demo.md) and the completed documentation-refresh example.
 
@@ -108,6 +108,7 @@ Start with these files:
 | File | Use |
 | --- | --- |
 | [docs/first-workspace.md](docs/first-workspace.md) | Step-by-step first run tutorial |
+| [docs/first-10-minutes.md](docs/first-10-minutes.md) | Fast beginner walkthrough from install to first review loop |
 | [docs/demo.md](docs/demo.md) | Copy-paste demo for first install and completed review checks |
 | [docs/glossary.md](docs/glossary.md) | Plain-language definitions of ICM terms |
 | [docs/install.md](docs/install.md) | GitHub, virtualenv, and local install options |
@@ -115,6 +116,7 @@ Start with these files:
 | [docs/release-ready-workspace.md](docs/release-ready-workspace.md) | Release-ready workspace checks for validation, review, changelog, and package upgrades |
 | [docs/workflow-rubrics.md](docs/workflow-rubrics.md) | Pick rubric checks by workflow type |
 | [docs/index.html](docs/index.html) | GitHub Pages visual docs homepage |
+| [docs/dashboard-readiness.md](docs/dashboard-readiness.md) | Dashboard-readiness checklist for review queues and artifact-shape failures |
 | [examples/completed-content-plan](examples/completed-content-plan) | Completed example workspace with filled stage outputs |
 | [examples/completed-research-brief](examples/completed-research-brief) | Completed research-brief example with review rubrics |
 | [examples/completed-documentation-refresh](examples/completed-documentation-refresh) | Completed documentation-refresh example with table, path-count, and artifact-shape rubric checks |
@@ -185,9 +187,11 @@ tests/
   test_workspace.py         Workspace helper and review coverage
 docs/
   index.html                GitHub Pages visual docs homepage
+  first-10-minutes.md       Fast beginner walkthrough from install to review
   demo.md                   Copy-paste demo walkthrough
   first-workspace.md        Beginner tutorial
   dashboard-direction.md    Dashboard readiness notes
+  dashboard-readiness.md    Dashboard prototype acceptance criteria
   glossary.md               Plain-language terms
   install.md                Install options and package smoke checks
   pypi-upgrade.md           Beginner upgrade and install verification commands
@@ -277,7 +281,7 @@ Use a conventional framework instead when you need real-time multi-agent collabo
 
 Experimental starter kit. The template is intended to make ICM easy to try, inspect, and adapt; it is not an official release of the original ICM protocol.
 
-Current package version: `0.13.0`.
+Current package version: `0.14.0`.
 
 Release notes live in [CHANGELOG.md](CHANGELOG.md). Contribution and review practices live in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/release-process.md](docs/release-process.md).
 

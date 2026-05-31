@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 640" role="img" aria-labelledby="title desc">
+  <title id="title">First 10 minutes with ICM walkthrough</title>
+  <desc id="desc">A visual walkthrough showing install, create, review, and validate steps for a first ICM workspace.</desc>
+  <rect width="1120" height="640" fill="#f5f7fa"/>
+  <rect x="56" y="52" width="1008" height="536" fill="#ffffff" stroke="#d7dce2" stroke-width="2"/>
+
+  <text x="88" y="104" fill="#0f766e" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="18" font-weight="800">FIRST 10 MINUTES</text>
+  <text x="88" y="150" fill="#171717" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="42" font-weight="800">Install, create, review, validate.</text>
+  <text x="88" y="186" fill="#5a5f66" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20">One short loop shows how ICM keeps agent work inspectable.</text>
+
+  <rect x="88" y="238" width="220" height="236" fill="#151719" stroke="#30353a" stroke-width="2"/>
+  <rect x="88" y="238" width="220" height="34" fill="#22272c"/>
+  <circle cx="108" cy="255" r="5" fill="#d94841"/>
+  <circle cx="126" cy="255" r="5" fill="#d9a441"/>
+  <circle cx="144" cy="255" r="5" fill="#3fb37f"/>
+  <text x="110" y="315" fill="#94d7ca" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17">$ pip install</text>
+  <text x="110" y="348" fill="#f1f5f4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17">icm-workspace</text>
+  <text x="110" y="381" fill="#f1f5f4" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17">-template</text>
+  <rect x="112" y="416" width="128" height="34" fill="#0f766e"/>
+  <text x="128" y="439" fill="#ffffff" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16">icm 0.14.0</text>
+
+  <rect x="338" y="238" width="220" height="236" fill="#fff8e6" stroke="#a16207" stroke-width="2"/>
+  <text x="362" y="292" fill="#a16207" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="22" font-weight="800">Create</text>
+  <text x="362" y="326" fill="#171717" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17">icm new</text>
+  <text x="362" y="357" fill="#171717" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17">my-workspace</text>
+  <text x="362" y="401" fill="#5a5f66" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="17">Open the first brief</text>
+  <text x="362" y="430" fill="#5a5f66" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16">00_intake/output/</text>
+
+  <rect x="588" y="238" width="220" height="236" fill="#eef8f6" stroke="#0f766e" stroke-width="2"/>
+  <text x="612" y="292" fill="#0f766e" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="22" font-weight="800">Review</text>
+  <text x="612" y="329" fill="#171717" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="18">Run one stage.</text>
+  <text x="612" y="359" fill="#171717" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="18">Stop at the gate.</text>
+  <path d="M622 401h150" stroke="#0f766e" stroke-width="4"/>
+  <path d="M622 432h94" stroke="#0f766e" stroke-width="4"/>
+  <circle cx="770" cy="401" r="11" fill="#0f766e"/>
+  <path d="M764 401l5 5 9-13" fill="none" stroke="#ffffff" stroke-width="3"/>
+
+  <rect x="838" y="238" width="220" height="236" fill="#f8f9fb" stroke="#7b8794" stroke-width="2"/>
+  <text x="862" y="292" fill="#171717" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="22" font-weight="800">Validate</text>
+  <text x="862" y="326" fill="#171717" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17">icm doctor .</text>
+  <text x="862" y="357" fill="#171717" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="17">icm validate .</text>
+  <rect x="862" y="402" width="154" height="36" fill="#171717"/>
+  <text x="878" y="426" fill="#94d7ca" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16">0 warnings</text>
+
+  <path d="M312 356h20" stroke="#3f4852" stroke-width="3"/>
+  <path d="M326 348l14 8-14 8z" fill="#3f4852"/>
+  <path d="M562 356h20" stroke="#3f4852" stroke-width="3"/>
+  <path d="M576 348l14 8-14 8z" fill="#3f4852"/>
+  <path d="M812 356h20" stroke="#3f4852" stroke-width="3"/>
+  <path d="M826 348l14 8-14 8z" fill="#3f4852"/>
+
+  <text x="88" y="538" fill="#5a5f66" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="18">The habit: change files, review files, improve upstream context when the same fix repeats.</text>
+</svg>

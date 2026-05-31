@@ -12,6 +12,18 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.14.0] - 2026-05-31
+
+### Added
+
+- Added a first-10-minutes beginner walkthrough from install to first review loop.
+- Added a dashboard-readiness spec for review queues, artifact-shape failures, doctor findings, and human acceptance.
+- Added a visual walkthrough asset to the GitHub Pages docs homepage.
+
+### Changed
+
+- README, docs site, demo guide, roadmap, product direction, revision audit, and release metadata now reflect the walkthrough and dashboard-readiness release.
+
 ## [0.13.0] - 2026-05-30
 
 ### Added
@@ -183,7 +195,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.13.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.10.0...v0.11.0

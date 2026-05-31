@@ -1,8 +1,8 @@
 # Revision Audit
 
-Last updated: 2026-05-30
+Last updated: 2026-05-31
 
-Current release: `0.13.0`
+Current release: `0.14.0`
 
 ## What We Have Achieved
 
@@ -31,32 +31,33 @@ Current release: `0.13.0`
 - Release-ready workspace documentation tying together validation, review, changelog updates, and PyPI upgrade checks.
 - A completed project-planning example workspace with source-inventory, project-calendar, and decision-log checks.
 - Workflow-specific rubric guidance for choosing validators by use case.
+- A first-10-minutes beginner walkthrough linked from the docs homepage.
+- A dashboard-readiness spec for review queues, artifact-shape failures, doctor findings, and human acceptance.
 
 ## Roadmap Position
 
-The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path checks, source-inventory/calendar/decision-log checks, common artifact starters, doctor-surfaced rubric failures, release-ready docs, workflow-specific rubric guidance, and four completed examples are all covered.
+The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path checks, source-inventory/calendar/decision-log checks, common artifact starters, doctor-surfaced rubric failures, release-ready docs, workflow-specific rubric guidance, dashboard-readiness notes, and four completed examples are all covered.
 
 The highest-value `Next` work is:
 
-- More example workspaces for project planning and other common use cases.
-- Short recorded demo or animated walkthrough for the docs site.
-- More workflow-specific rubric guidance for beginners.
-- A dashboard prototype once the CLI vocabulary and example library settle.
+- Machine-readable CLI output for `icm status`, `icm review`, and `icm doctor`.
+- A read-only local dashboard prototype that shells out to the CLI.
+- More workflow-specific examples for policy/process and lightweight release planning if demand appears.
 
 ## Beginner UX Assessment
 
-The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, add common artifact starters, fill the first brief, run doctor checks, validate structure, inspect completed examples, and choose a rubric pattern by workflow type.
+The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, add common artifact starters, follow the first-10-minutes guide, fill the first brief, run doctor checks, validate structure, inspect completed examples, and choose a rubric pattern by workflow type.
 
-It is closer to world-class beginner UX, but not there yet. The main gaps are no short demo recording, no project-planning example, and no local dashboard for visual review queues.
+It is closer to world-class beginner UX, but not there yet. The main gaps are no machine-readable CLI output for UI surfaces, no local dashboard for visual review queues, and no animated or recorded demo embedded directly in the docs site.
 
 ## Direction Options
 
-1. Demo polish: add a short screen recording or animated walkthrough.
-2. Dashboard readiness: map review queues and artifact-shape failures to a future UI.
-3. Example library: add policy/process or release-planning examples if demand appears.
-4. Dashboard prototype: build a read/write web UI over the same filesystem workspace.
-5. Distribution polish: add release verification docs and upgrade guidance.
+1. JSON CLI contract: add `--json` output for status, review, and doctor.
+2. Dashboard prototype: build a read-only local UI over the same filesystem workspace.
+3. Demo polish: add an animated or recorded walkthrough embedded in the docs site.
+4. Example library: add policy/process or release-planning examples if demand appears.
+5. Distribution polish: keep PyPI install, upgrade, and verification docs current.
 
 ## Recommendation
 
-For `0.14.0`, prioritize a short recorded walkthrough plus dashboard-readiness notes for review queues and artifact-shape failures. After that, consider the first dashboard prototype if the review vocabulary still feels stable.
+For `0.15.0`, prioritize machine-readable CLI output for `icm status`, `icm review`, and `icm doctor`. That creates the cleanest path to a dashboard without inventing a second source of truth.

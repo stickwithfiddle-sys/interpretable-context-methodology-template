@@ -20,15 +20,17 @@ This roadmap keeps product work visible without turning the README into a backlo
 - Keep package metadata, build checks, and Trusted Publishing workflow ready for PyPI.
 - Maintain at least three completed example workspaces, including content planning, research briefs, and documentation refreshes.
 - Keep a copy-paste demo path visible from the docs homepage.
+- Keep a first-10-minutes walkthrough visible from the docs homepage.
 - Keep beginner-facing PyPI upgrade and install verification docs available.
 - Keep a release-ready workspace checklist available for validation, review, changelog, and upgrade checks.
 - Maintain a completed project-planning example with source-inventory, calendar, and decision-log checks.
 - Keep workflow-specific rubric guidance available for beginners.
+- Keep dashboard-readiness criteria visible before building the dashboard.
 
 ## Next
 
-- Add a short demo recording or animated walkthrough for the docs site.
-- Add dashboard readiness notes for visualizing review queues and artifact-shape failures.
+- Add machine-readable CLI output for `icm status`, `icm review`, and `icm doctor`.
+- Add a read-only local dashboard prototype that shells out to the CLI.
 - Add workflow-specific examples for policy/process and lightweight release planning if demand appears.
 
 ## Later

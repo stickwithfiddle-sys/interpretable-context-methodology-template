@@ -15,10 +15,11 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="#start">Start</a>
+        <a href="#walkthrough">10 Minutes</a>
         <a href="#existing">Existing Project</a>
         <a href="#doctor">Doctor</a>
         <a href="#demo">Demo</a>
-        <a href="#roadmap">Roadmap</a>
+        <a href="#dashboard">Dashboard</a>
       </nav>
     </header>
 
@@ -44,6 +45,31 @@ icm doctor my-first-icm-workspace</code></pre>
         <figure class="screenshot">
           <img src="assets/screenshot-new.svg" alt="Terminal screenshot showing icm new creating a workspace and listing next steps.">
         </figure>
+      </section>
+
+      <section class="split-band alternate" id="walkthrough">
+        <figure class="screenshot">
+          <img src="assets/walkthrough-10-minute.svg" alt="Visual walkthrough showing install, create, review, and validate steps for a first ICM workspace.">
+        </figure>
+        <div>
+          <p class="eyebrow">First 10 minutes</p>
+          <h2>See the whole loop before reading the theory.</h2>
+          <p>
+            The first-10-minutes guide gets a beginner from install to a validated workspace, one review gate, and the core habit: run one stage, inspect the output, then continue.
+          </p>
+          <div class="command-card">
+            <div class="command-label">Fast walkthrough</div>
+            <pre><code>python -m pip install icm-workspace-template
+icm new my-first-icm-workspace --name "My First ICM Workspace" --with-common-artifacts
+cd my-first-icm-workspace
+icm doctor .</code></pre>
+            <button class="copy-button" data-copy="python -m pip install icm-workspace-template&#10;icm new my-first-icm-workspace --name &quot;My First ICM Workspace&quot; --with-common-artifacts&#10;cd my-first-icm-workspace&#10;icm doctor ." aria-label="Copy first 10 minutes commands">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V7Z"></path><path d="M4 15V5a2 2 0 0 1 2-2h10"></path></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+          <p><a href="first-10-minutes.html">Open the first-10-minutes guide</a></p>
+        </div>
       </section>
 
       <section class="flow-band" aria-labelledby="flow-title">
@@ -128,6 +154,7 @@ icm review stages/01_discovery --workspace examples/completed-documentation-refr
         </div>
         <div class="link-grid">
           <a href="demo.html">Demo walkthrough</a>
+          <a href="first-10-minutes.html">First 10 minutes</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/first-workspace.md">First workspace tutorial</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-content-plan">Content-plan example</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/tree/main/examples/completed-research-brief">Research-brief example</a>
@@ -140,22 +167,24 @@ icm review stages/01_discovery --workspace examples/completed-documentation-refr
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/pypi-readiness.md">PyPI readiness</a>
           <a href="pypi-upgrade.html">PyPI upgrade checks</a>
           <a href="release-ready-workspace.html">Release-ready workspace</a>
+          <a href="dashboard-readiness.html">Dashboard readiness</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/blob/main/docs/product-direction.md">Product direction</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/releases">Releases</a>
           <a href="https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template">GitHub repository</a>
         </div>
       </section>
 
-      <section class="roadmap-band" id="roadmap">
+      <section class="roadmap-band" id="dashboard">
         <div class="section-heading">
           <p class="eyebrow">Product path</p>
           <h2>CLI first, dashboard after the language stabilizes.</h2>
         </div>
         <ol class="roadmap">
-          <li><strong>Now:</strong> PyPI install, CLI onboarding, doctor checks, source traceability, table/path validators, artifact-shape validators, common artifact starters, workflow-specific rubric guidance, examples, and docs.</li>
-          <li><strong>Next:</strong> a short recorded walkthrough and a dashboard-readiness pass over review queues.</li>
-          <li><strong>Later:</strong> a dashboard over the same filesystem workspace.</li>
+          <li><strong>Now:</strong> PyPI install, CLI onboarding, first-10-minutes walkthrough, doctor checks, source traceability, artifact validators, common artifact starters, workflow-specific rubric guidance, examples, and docs.</li>
+          <li><strong>Next:</strong> machine-readable CLI output for status, review, and doctor findings so a dashboard can render the same facts.</li>
+          <li><strong>Later:</strong> a local-first dashboard over the same filesystem workspace.</li>
         </ol>
+        <p><a href="dashboard-readiness.html">Read the dashboard readiness spec</a></p>
       </section>
     </main>
 

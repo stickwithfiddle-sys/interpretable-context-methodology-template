@@ -1,8 +1,10 @@
 # Dashboard Direction
 
-Last updated: 2026-05-30
+Last updated: 2026-05-31
 
 The dashboard should not replace the filesystem workspace. It should make the same files easier to inspect, edit, review, and validate.
+
+For a more implementation-oriented checklist, see [dashboard-readiness.md](dashboard-readiness.md).
 
 ## Readiness Criteria
 
@@ -13,6 +15,7 @@ Build a dashboard prototype after these are true:
 - At least three example workspaces show different real use cases.
 - Review checks can distinguish structure problems from artifact-quality problems.
 - The docs site explains the core flow without relying on a live demo.
+- The CLI can expose status, review, and doctor findings in a machine-readable form.
 
 ## MVP Shape
 
@@ -24,6 +27,7 @@ The first dashboard should be local-first and read/write the current workspace f
 | Stage Detail | Show the stage contract, declared inputs, output files, and review gate |
 | Review Queue | List outputs that are ready for human review |
 | Doctor Panel | Run structure and content checks with suggested fixes |
+| Artifact Shapes | Show source-inventory, calendar, and decision-log failures with the exact markdown table path |
 | Decision Log | Show cross-stage decisions without hiding the underlying markdown |
 
 ## Product Rules
@@ -33,6 +37,7 @@ The first dashboard should be local-first and read/write the current workspace f
 - The UI should never hide where an output lives on disk.
 - A user should be able to close the dashboard and keep working with only the CLI.
 - Dashboard actions should map to CLI verbs wherever possible.
+- Passing machine checks should not automatically mean a handoff is accepted.
 
 ## Not Yet
 

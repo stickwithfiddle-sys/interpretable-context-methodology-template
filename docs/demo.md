@@ -5,6 +5,8 @@ This walkthrough gives a beginner two fast wins:
 1. Install the CLI and create a clean workspace.
 2. Inspect a completed example and see deterministic review checks pass.
 
+For the fastest install-to-review path, start with [first-10-minutes.md](first-10-minutes.md). This page is the longer copy-paste demo.
+
 ## First Install
 
 Use a virtual environment so the demo stays isolated:
@@ -90,6 +92,7 @@ The rubric requires the discovery report to include a traceability table with `S
 ## What To Read Next
 
 - [First workspace tutorial](first-workspace.md)
+- [First 10 minutes](first-10-minutes.md)
 - [Review rubrics](review-rubrics.md)
 - [Workflow rubric guide](workflow-rubrics.md)
 - [Source traceability](source-traceability.md)
