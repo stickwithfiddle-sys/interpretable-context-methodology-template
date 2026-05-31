@@ -19,7 +19,7 @@ The read-only prototype is ready because these are true:
 
 ## MVP Shape
 
-The first dashboard is local-first and read-only. It shows acceptance from `shared/acceptance-log.md` and gives copyable terminal commands for review and acceptance. A later dashboard can write to the current workspace folder after command-copy and edit boundaries are clear.
+The first dashboard is local-first and read-only. It shows acceptance from `shared/acceptance-log.md`, previews the source files behind review items, and gives copyable terminal commands for review and acceptance. A later dashboard can write to the current workspace folder after command-copy and edit boundaries are clear.
 
 | View | Purpose |
 | --- | --- |

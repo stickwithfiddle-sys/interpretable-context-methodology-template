@@ -66,7 +66,7 @@ icm dashboard .
 
 `icm new` is for a clean workspace. `icm init` is for an existing project and skips files that already exist. The `--with-common-artifacts` flag adds starter files for source inventories, release calendars, and decision logs. `icm doctor` checks both structure and content-quality issues such as empty required sections, missing config inputs, undeclared outputs, broken handoffs after outputs are present, and review-rubric failures on declared outputs. `icm review` can load artifact-specific rubrics from stage references, including source-traceability checks, required table-column checks, link/path-count checks, and artifact-shape checks for source inventories, calendars, and decision logs. `icm accept` records human-approved handoffs in `shared/acceptance-log.md`.
 
-The example library now covers content planning, research briefs, documentation refreshes, and project planning. The documentation-refresh and project-planning examples are the clearest demos of the review system because their discovery reports must include a `Source Traceability` table, and their validation stages include source inventories, calendars, and decision logs checked by artifact-shape rubrics. `docs/workflow-rubrics.md` helps beginners choose validators by use case, and `docs/first-10-minutes.md` gives them a fast install-to-review loop before they read the deeper tutorial. `docs/e2e-playtest.md` gives them a complete idea and playtest script. `icm dashboard` now gives those same users a read-only browser view over the CLI JSON contract and acceptance log, with copyable review and acceptance commands in the review queue.
+The example library now covers content planning, research briefs, documentation refreshes, and project planning. The documentation-refresh and project-planning examples are the clearest demos of the review system because their discovery reports must include a `Source Traceability` table, and their validation stages include source inventories, calendars, and decision logs checked by artifact-shape rubrics. `docs/workflow-rubrics.md` helps beginners choose validators by use case, and `docs/first-10-minutes.md` gives them a fast install-to-review loop before they read the deeper tutorial. `docs/e2e-playtest.md` gives them a complete idea and playtest script. `icm dashboard` now gives those same users a read-only browser view over the CLI JSON contract and acceptance log, with copyable review and acceptance commands plus source previews in the review queue.
 
 ## Dashboard Concept
 
@@ -84,7 +84,7 @@ The first dashboard is a read-only local product layer over the CLI and examples
 
 The dashboard should feel like a cockpit for the workspace, not a replacement for the workspace.
 
-The dashboard-readiness spec in `docs/dashboard-readiness.md` narrows the prototype to local files, review queues, artifact-shape failures, doctor findings, and explicit human acceptance. The JSON contract in `docs/json-output.md` gives the dashboard stable `status`, `review`, `accept`, and `doctor` data without inventing a second source of truth. The current read-only implementation is documented in `docs/dashboard-prototype.md`; it now exposes copy buttons for review, acceptance, and JSON source commands.
+The dashboard-readiness spec in `docs/dashboard-readiness.md` narrows the prototype to local files, review queues, artifact-shape failures, doctor findings, and explicit human acceptance. The JSON contract in `docs/json-output.md` gives the dashboard stable `status`, `review`, `accept`, and `doctor` data without inventing a second source of truth. The current read-only implementation is documented in `docs/dashboard-prototype.md`; it now exposes source previews and copy buttons for review, acceptance, and JSON source commands.
 
 ## Product Risks
 
@@ -95,4 +95,4 @@ The dashboard-readiness spec in `docs/dashboard-readiness.md` narrows the protot
 
 ## Recommended Next Product Step
 
-Next, improve dashboard source-file previews for review failures and acceptance-log entries. A read/write dashboard should wait until browser edits have the same plain-file clarity as `icm accept`.
+Next, add a guided visual walkthrough or recorded demo for the first successful review loop, then add line-level dashboard anchors where CLI findings can provide exact rows. A read/write dashboard should wait until browser edits have the same plain-file clarity as `icm accept`.

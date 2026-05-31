@@ -13,7 +13,7 @@ ICM is ready for a dashboard prototype because the UI can answer four questions 
 | What needs human review? | Declared output files, `icm review` findings, and `shared/acceptance-log.md` |
 | What needs repair before continuing? | `icm doctor` findings and suggested fixes |
 
-The current CLI vocabulary and JSON output are stable enough for a read-only prototype. The first prototype now lives behind `icm dashboard`; a read/write dashboard should wait until the dashboard has proven the review queue and repair UX.
+The current CLI vocabulary and JSON output are stable enough for a read-only prototype. The first prototype now lives behind `icm dashboard`; it includes source-preview excerpts for review items and acceptance-log entries. A read/write dashboard should wait until the dashboard has proven the review queue and repair UX.
 
 ## MVP Views
 
@@ -96,6 +96,7 @@ Do not start with:
 - A beginner can see the next action without reading every file.
 - Every dashboard item links back to the markdown file it came from.
 - A failed review shows the rubric or contract that produced the failure.
+- Review items preview the relevant contract, output, finding source, or acceptance-log row where possible.
 - The dashboard can be closed and the workspace still works through the CLI.
 - The first prototype works against `examples/completed-documentation-refresh` and `examples/completed-project-plan`.
 - The dashboard does not mark a handoff accepted without a row in `shared/acceptance-log.md`.

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 import shlex
 import subprocess
 import sys
@@ -18,6 +19,10 @@ from urllib.parse import parse_qs, urlparse
 
 
 CliJsonRunner = Callable[[list[str], Path], dict]
+PATH_REFERENCE_PATTERN = re.compile(
+    r"(?<![\w/.-])(?:(?:\.\./)+|\./)?(?:[\w.-]+/)*[\w.-]+\.(?:md|txt|json|yaml|yml|toml|py|ps1)"
+)
+PREVIEW_LINE_LIMIT = 8
 
 
 @dataclass(frozen=True)
@@ -79,6 +84,140 @@ def doctor_findings(doctor: dict) -> list[dict]:
     return [*structure_findings, *content_findings]
 
 
+def source_excerpt(
+    text: str,
+    needles: tuple[str, ...] = (),
+    max_lines: int = PREVIEW_LINE_LIMIT,
+) -> str:
+    lines = text.splitlines()
+    normalized_needles = tuple(needle for needle in needles if needle)
+    if normalized_needles:
+        matching = [line for line in lines if any(needle in line for needle in normalized_needles)]
+        if matching:
+            headers = [
+                line
+                for line in lines
+                if line.strip().startswith("| Date |") or line.strip().startswith("| --- |")
+            ]
+            return "\n".join([*headers[:2], *matching[:max_lines]]).strip()
+    excerpt = [line for line in lines if line.strip()]
+    return "\n".join(excerpt[:max_lines]).strip()
+
+
+def preview_for_path(
+    workspace_root: Path,
+    relative_path: str,
+    title: str,
+    needles: tuple[str, ...] = (),
+    missing_excerpt: str = "",
+) -> dict:
+    try:
+        source_path = resolve_workspace_file(workspace_root, relative_path)
+    except (FileNotFoundError, ValueError):
+        return {
+            "title": title,
+            "path": relative_path,
+            "exists": False,
+            "excerpt": missing_excerpt or "Source file is not present yet.",
+        }
+
+    text = source_path.read_text(encoding="utf-8", errors="replace")
+    excerpt = source_excerpt(text, needles=needles)
+    return {
+        "title": title,
+        "path": source_path.relative_to(workspace_root).as_posix(),
+        "exists": True,
+        "excerpt": excerpt or "(empty file)",
+    }
+
+
+def candidate_source_paths(workspace_root: Path, stage_path: str, raw_path: str) -> tuple[str, ...]:
+    cleaned = raw_path.strip("`'\"()[]{}.,:;")
+    if not cleaned or Path(cleaned).is_absolute():
+        return ()
+
+    stage_root = workspace_root / stage_path
+    candidates = [
+        workspace_root / cleaned,
+        stage_root / cleaned,
+        stage_root / "output" / cleaned,
+        stage_root / "references" / cleaned,
+    ]
+    found: list[str] = []
+    for candidate in candidates:
+        try:
+            resolved = candidate.resolve()
+            resolved.relative_to(workspace_root)
+        except ValueError:
+            continue
+        if resolved.is_file():
+            relative = resolved.relative_to(workspace_root).as_posix()
+            if relative not in found:
+                found.append(relative)
+    return tuple(found)
+
+
+def review_source_previews(workspace_root: Path, review: dict) -> list[dict]:
+    stage_path = str(review.get("stage_path") or "")
+    if not stage_path:
+        return []
+    acceptance = review.get("acceptance") if isinstance(review.get("acceptance"), dict) else {}
+
+    paths: list[tuple[str, str, tuple[str, ...]]] = []
+    paths.append((f"{stage_path}/CONTEXT.md", "Stage contract", ()))
+
+    output_paths = [
+        path
+        for path in [
+            review.get("output_path"),
+            *(
+                output.get("path")
+                for output in acceptance.get("outputs", [])
+                if isinstance(output, dict)
+            ),
+        ]
+        if isinstance(path, str) and path
+    ]
+    for output_path in output_paths:
+        paths.append((output_path, "Reviewed output", ()))
+
+    important_findings = [finding for finding in review.get("findings", []) if finding.get("level") != "PASS"]
+    for finding in important_findings:
+        message = str(finding.get("message") or "")
+        for raw_path in PATH_REFERENCE_PATTERN.findall(message):
+            for source_path in candidate_source_paths(workspace_root, stage_path, raw_path):
+                paths.append((source_path, "Finding source", (raw_path,)))
+
+    previews: list[dict] = []
+    seen: set[str] = set()
+    for source_path, title, needles in paths:
+        if source_path in seen:
+            continue
+        seen.add(source_path)
+        preview = preview_for_path(workspace_root, source_path, title, needles=needles)
+        if preview["exists"]:
+            previews.append(preview)
+        if len(previews) >= 4:
+            break
+    return previews
+
+
+def acceptance_log_preview(workspace_root: Path, review: dict) -> dict:
+    acceptance = review.get("acceptance") if isinstance(review.get("acceptance"), dict) else {}
+    outputs = tuple(
+        output.get("path")
+        for output in acceptance.get("outputs", [])
+        if isinstance(output, dict) and isinstance(output.get("path"), str)
+    )
+    return preview_for_path(
+        workspace_root,
+        "shared/acceptance-log.md",
+        "Acceptance log",
+        needles=outputs,
+        missing_excerpt="No acceptance log exists yet. Run icm accept to create shared/acceptance-log.md.",
+    )
+
+
 def collect_dashboard_payload(workspace: Path, cli_runner: CliJsonRunner = run_cli_json) -> dict:
     """Build the dashboard model by consuming the CLI JSON contract."""
     workspace_root = workspace.expanduser().resolve()
@@ -102,6 +241,10 @@ def collect_dashboard_payload(workspace: Path, cli_runner: CliJsonRunner = run_c
             "accept": command_text(["accept", stage_path, "--workspace", path_text(workspace_root)]),
             "accept_json": command_text(["accept", stage_path, "--workspace", path_text(workspace_root), "--json"]),
         }
+        review["source_previews"] = review_source_previews(workspace_root, review)
+        if not isinstance(review.get("acceptance"), dict):
+            review["acceptance"] = {}
+        review["acceptance"]["log_preview"] = acceptance_log_preview(workspace_root, review)
         reviews.append(review)
 
     review_fails = sum(int(review.get("summary", {}).get("fail", 0)) for review in reviews)
@@ -312,7 +455,7 @@ DASHBOARD_HTML = """<!doctype html>
         line-height: 1.35;
         overflow-wrap: anywhere;
       }
-      .stage-list, .review-list, .finding-list, .command-list, .review-actions {
+      .stage-list, .review-list, .finding-list, .command-list, .review-actions, .source-preview-list {
         display: grid;
         gap: 10px;
       }
@@ -372,6 +515,53 @@ DASHBOARD_HTML = """<!doctype html>
         font-size: 12px;
         font-weight: 800;
         overflow-wrap: anywhere;
+      }
+      .source-preview-list {
+        margin-top: 12px;
+        gap: 0;
+        border-top: 1px solid var(--line);
+      }
+      .source-preview {
+        padding: 12px 0 0;
+      }
+      .source-preview + .source-preview {
+        margin-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+      .source-preview-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .source-preview-title {
+        font-size: 12px;
+        font-weight: 850;
+        text-transform: uppercase;
+        color: var(--teal);
+      }
+      .source-preview-path, .source-preview-head a {
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 12px;
+        overflow-wrap: anywhere;
+        text-align: right;
+      }
+      .source-preview pre {
+        margin: 0;
+        padding: 10px;
+        max-height: 170px;
+        overflow: auto;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        color: var(--text);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 12px;
+        line-height: 1.45;
       }
       .review-item, .finding-item {
         border: 1px solid var(--line);
@@ -614,6 +804,35 @@ DASHBOARD_HTML = """<!doctype html>
         `).join("");
       }
 
+      function renderSourcePreviews(review) {
+        const acceptance = review.acceptance || {};
+        const previews = [
+          ...(review.source_previews || []),
+          acceptance.log_preview
+        ].filter(Boolean);
+        if (!previews.length) return "";
+        return `
+          <div class="source-preview-list" aria-label="Source previews">
+            ${previews.map((preview) => {
+              const title = escapeHtml(preview.title || "Source preview");
+              const path = escapeHtml(preview.path || "");
+              const pathLabel = preview.exists
+                ? sourceLink(preview.path, preview.path)
+                : `<span class="source-preview-path">${path}</span>`;
+              return `
+                <section class="source-preview">
+                  <div class="source-preview-head">
+                    <span class="source-preview-title">${title}</span>
+                    ${pathLabel}
+                  </div>
+                  <pre>${escapeHtml(preview.excerpt || "")}</pre>
+                </section>
+              `;
+            }).join("")}
+          </div>
+        `;
+      }
+
       function renderReviews(reviews) {
         byId("review-command").textContent = reviews && reviews.length ? `${reviews.length} reviewed` : "";
         if (!reviews || !reviews.length) {
@@ -649,6 +868,7 @@ DASHBOARD_HTML = """<!doctype html>
                 ${review.output_path ? sourceLink(review.output_path, review.output_path.split("/").pop()) : ""}
               </div>
               ${renderReviewFindings(review.findings)}
+              ${renderSourcePreviews(review)}
             </article>
           `;
         }).join("");

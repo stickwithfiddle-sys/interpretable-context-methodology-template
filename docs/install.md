@@ -29,7 +29,7 @@ icm dashboard my-first-icm-workspace
 Use this path when you want to test a specific repository tag before it reaches PyPI:
 
 ```bash
-python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.18.0
+python -m pip install git+https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template.git@v0.19.0
 icm --version
 ```
 

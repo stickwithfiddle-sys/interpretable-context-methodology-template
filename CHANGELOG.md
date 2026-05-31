@@ -12,6 +12,17 @@ This project follows [Semantic Versioning](https://semver.org/) while it is pre-
 
 Use this section while preparing the next version.
 
+## [0.19.0] - 2026-05-31
+
+### Added
+
+- Added dashboard source-preview excerpts for stage contracts, reviewed outputs, and finding-related source files.
+- Added acceptance-log previews to dashboard review items so accepted handoffs point back to `shared/acceptance-log.md`.
+
+### Changed
+
+- Dashboard docs, product direction, roadmap, revision audit, docs homepage, and dashboard tests now reflect the source-preview workflow.
+
 ## [0.18.0] - 2026-05-31
 
 ### Added
@@ -245,7 +256,8 @@ Use this section while preparing the next version.
 - Added workspace generator and validator scripts.
 - Added research summary, template design notes, MIT license, and attribution notice.
 
-[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.18.0...HEAD
+[Unreleased]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.19.0...HEAD
+[0.19.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.17.0...v0.18.0
 [0.17.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/stickwithfiddle-sys/interpretable-context-methodology-template/compare/v0.15.0...v0.16.0

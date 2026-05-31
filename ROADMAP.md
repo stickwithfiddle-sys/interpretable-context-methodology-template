@@ -31,11 +31,13 @@ This roadmap keeps product work visible without turning the README into a backlo
 - Keep the plain-file human acceptance marker in `shared/acceptance-log.md`.
 - Show accepted vs machine-passing handoffs in CLI JSON and the dashboard.
 - Provide dashboard affordances for copying review and acceptance commands.
+- Show dashboard source-file previews for review findings and acceptance-log entries.
 
 ## Next
 
 - Add workflow-specific examples for policy/process and lightweight release planning if demand appears.
-- Add clearer dashboard source-file previews for review failures and acceptance-log entries.
+- Add a guided visual walkthrough or recorded demo for the first successful review loop.
+- Add line-level dashboard anchors for source previews where CLI findings can provide exact rows.
 
 ## Later
 

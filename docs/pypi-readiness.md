@@ -52,7 +52,7 @@ For TestPyPI, use the same repository and workflow with the `testpypi` environme
 
 ## Publish Flow
 
-1. Create and push a release tag, for example `v0.18.0`.
+1. Create and push a release tag, for example `v0.19.0`.
 2. In GitHub Actions, run `Publish Python Package`.
 3. Select the release tag as the workflow ref.
 4. Choose `testpypi` first.

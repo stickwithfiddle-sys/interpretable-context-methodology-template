@@ -2,7 +2,7 @@
 
 Last updated: 2026-05-31
 
-Current release: `0.18.0`
+Current release: `0.19.0`
 
 ## What We Have Achieved
 
@@ -40,30 +40,32 @@ Current release: `0.18.0`
 - Dashboard and CLI JSON now distinguish machine-passing outputs from human-accepted handoffs.
 - End-to-end playtest guide with a complete project idea.
 - Dashboard review queue command affordances for copying `icm review` and `icm accept` commands.
+- Dashboard source previews for stage contracts, reviewed outputs, finding-related files, and matching acceptance-log entries.
 
 ## Roadmap Position
 
-The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path checks, source-inventory/calendar/decision-log checks, common artifact starters, doctor-surfaced rubric failures, release-ready docs, workflow-specific rubric guidance, dashboard-readiness notes, machine-readable CLI output, plain-file human acceptance, a read-only local dashboard with copyable review and acceptance commands, and four completed examples are all covered.
+The current `Now` work is mostly in place: first-run clarity, self-contained generated workspaces, PyPI install reliability, release hygiene, safe existing-project adoption, visual docs, deterministic review rubrics, source traceability, table/path checks, source-inventory/calendar/decision-log checks, common artifact starters, doctor-surfaced rubric failures, release-ready docs, workflow-specific rubric guidance, dashboard-readiness notes, machine-readable CLI output, plain-file human acceptance, a read-only local dashboard with copyable review and acceptance commands, dashboard source previews, and four completed examples are all covered.
 
 The highest-value `Next` work is:
 
-- Clearer dashboard source-file previews for review failures and acceptance-log entries.
+- A guided visual walkthrough or recorded demo for the first successful review loop.
+- Line-level dashboard anchors where CLI findings can provide exact rows.
 - More workflow-specific examples for policy/process and lightweight release planning if demand appears.
 
 ## Beginner UX Assessment
 
-The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, add common artifact starters, follow the first-10-minutes guide, run the complete e2e playtest idea, fill the first brief, run doctor checks, validate structure, inspect completed examples, choose a rubric pattern by workflow type, expose the same state as JSON for local tooling, accept reviewed handoffs in a markdown log, and open a read-only dashboard for stage and review status with copyable terminal commands.
+The product is beginner-friendly for a technical user who can run Python commands. A new user can install the CLI, create or initialize a workspace, add common artifact starters, follow the first-10-minutes guide, run the complete e2e playtest idea, fill the first brief, run doctor checks, validate structure, inspect completed examples, choose a rubric pattern by workflow type, expose the same state as JSON for local tooling, accept reviewed handoffs in a markdown log, and open a read-only dashboard for stage and review status with source previews and copyable terminal commands.
 
-It is closer to world-class beginner UX, but not there yet. The main gaps are limited source-file preview depth inside the dashboard, no read/write dashboard flow, and no animated or recorded demo embedded directly in the docs site.
+It is closer to world-class beginner UX, but not there yet. The main gaps are no guided visual or recorded demo embedded directly in the docs site, no read/write dashboard flow, limited line-level anchors inside dashboard previews, and limited examples beyond technical planning/documentation workflows.
 
 ## Direction Options
 
-1. Dashboard source previews: show the exact source rows, rubric files, and acceptance-log entries behind each review item.
-2. Read/write dashboard path: decide which edits can safely happen in the browser.
-3. Demo polish: add an animated or recorded walkthrough embedded in the docs site.
+1. Demo polish: add an animated or recorded walkthrough embedded in the docs site.
+2. Dashboard line anchors: connect CLI findings to exact source rows where possible.
+3. Read/write dashboard path: decide which edits can safely happen in the browser.
 4. Example library: add policy/process or release-planning examples if demand appears.
 5. Distribution polish: keep PyPI install, upgrade, and verification docs current.
 
 ## Recommendation
 
-For `0.19.0`, prioritize clearer dashboard source previews for review failures and acceptance-log entries. The dashboard should still avoid hidden state and should keep `shared/acceptance-log.md` visible.
+For `0.20.0`, prioritize a guided visual walkthrough or recorded demo for the first successful review loop, then add line-level dashboard anchors where the CLI can identify exact source rows. This is the best next step for world-class beginner UX because it helps users feel the workflow before asking them to learn every file.

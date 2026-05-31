@@ -7,6 +7,25 @@ from icm.dashboard import bind_dashboard_server, collect_dashboard_payload, rend
 
 
 def test_dashboard_payload_uses_cli_json_contract(tmp_path: Path) -> None:
+    stage_root = tmp_path / "stages" / "00_intake"
+    output_root = stage_root / "output"
+    shared_root = tmp_path / "shared"
+    output_root.mkdir(parents=True)
+    shared_root.mkdir()
+    (stage_root / "CONTEXT.md").write_text(
+        "# Intake Contract\n\nCapture the brief before discovery.\n",
+        encoding="utf-8",
+    )
+    (output_root / "project-brief.md").write_text(
+        "# Project Brief\n\n## Source Traceability\n\n- README.md confirms the setup path.\n",
+        encoding="utf-8",
+    )
+    (shared_root / "acceptance-log.md").write_text(
+        "| Date | Stage | Output | Reviewer | Status | Notes |\n"
+        "| --- | --- | --- | --- | --- | --- |\n"
+        "| 2026-05-31 | stages/00_intake | stages/00_intake/output/project-brief.md | Hobo | Accepted | Accepted during dashboard preview test. |\n",
+        encoding="utf-8",
+    )
     calls: list[list[str]] = []
 
     def fake_runner(args: list[str], workspace_root: Path) -> dict:
@@ -51,7 +70,7 @@ def test_dashboard_payload_uses_cli_json_contract(tmp_path: Path) -> None:
                 "stage": "00_intake",
                 "stage_path": "stages/00_intake",
                 "output_path": "stages/00_intake/output/project-brief.md",
-                "summary": {"fail": 0, "warn": 0, "pass": 3},
+                "summary": {"fail": 0, "warn": 1, "pass": 3},
                 "acceptance": {
                     "accepted": True,
                     "outputs": [
@@ -63,7 +82,13 @@ def test_dashboard_payload_uses_cli_json_contract(tmp_path: Path) -> None:
                         }
                     ],
                 },
-                "findings": [],
+                "findings": [
+                    {
+                        "level": "WARN",
+                        "message": "Source Traceability in project-brief.md should name at least one source.",
+                        "suggested_fix": "Add the source filename or URL used for the brief.",
+                    }
+                ],
             }
         raise AssertionError(f"Unexpected command: {args}")
 
@@ -74,11 +99,22 @@ def test_dashboard_payload_uses_cli_json_contract(tmp_path: Path) -> None:
     assert payload["summary"]["accepted_stages"] == 1
     assert payload["summary"]["ready_for_review"] == 0
     assert payload["summary"]["review_failures"] == 0
+    assert payload["summary"]["review_warnings"] == 1
     assert [call[0] for call in calls] == ["status", "doctor", "review"]
     assert calls[2][1] == "stages/00_intake"
-    assert payload["reviews"][0]["stage"] == "00_intake"
-    assert payload["reviews"][0]["commands"]["review"] == f"icm review stages/00_intake --workspace {tmp_path.resolve().as_posix()}"
-    assert payload["reviews"][0]["commands"]["accept"] == f"icm accept stages/00_intake --workspace {tmp_path.resolve().as_posix()}"
+    review = payload["reviews"][0]
+    assert review["stage"] == "00_intake"
+    assert review["commands"]["review"] == f"icm review stages/00_intake --workspace {tmp_path.resolve().as_posix()}"
+    assert review["commands"]["accept"] == f"icm accept stages/00_intake --workspace {tmp_path.resolve().as_posix()}"
+    preview_by_path = {preview["path"]: preview for preview in review["source_previews"]}
+    assert "stages/00_intake/CONTEXT.md" in preview_by_path
+    assert "stages/00_intake/output/project-brief.md" in preview_by_path
+    assert "Capture the brief" in preview_by_path["stages/00_intake/CONTEXT.md"]["excerpt"]
+    assert "Source Traceability" in preview_by_path["stages/00_intake/output/project-brief.md"]["excerpt"]
+    log_preview = review["acceptance"]["log_preview"]
+    assert log_preview["path"] == "shared/acceptance-log.md"
+    assert log_preview["exists"] is True
+    assert "Accepted during dashboard preview test" in log_preview["excerpt"]
 
 
 def test_dashboard_serves_workspace_json(tmp_path: Path) -> None:
@@ -132,4 +168,6 @@ def test_dashboard_html_contains_runtime_contract() -> None:
     assert "Human acceptance" in html
     assert "copyCommandButton" in html
     assert "commandRow" in html
+    assert "renderSourcePreviews" in html
+    assert "Source previews" in html
     assert "data-copy" in html
