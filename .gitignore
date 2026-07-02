@@ -12,3 +12,11 @@ dist/
 *.egg-info/
 .icm-generated/
 .tmp/
+
+# added by PC-migration backup
+.env
+.env.*
+*.key
+*.pem
+*.sqlite
+*.db
